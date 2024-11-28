@@ -41,6 +41,9 @@
 
 #define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
 
+
+#include "Enemy.h"
+
 int screenWidth;
 int screenHeight;
 
@@ -394,7 +397,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	GenerarTextura(textureIntro2, textureInit2ID);
 	Texture textureIntro3("../textures/naruto.png");
 	GenerarTextura(textureIntro3, textureInit3ID);
-	Texture textureScreen("..proyecto/textures/Screen.png");
+	Texture textureScreen("../textures/Screen.png");
 	GenerarTextura(textureScreen, textureScreenID);
 	textureActivaID = textureInit1ID;
 }
@@ -725,6 +728,9 @@ void applicationLoop() {
 	camera->setSensitivity(1.2f);
 	camera->setDistanceFromTarget(distanceFromPlayer);
 
+	// Creamos un enemigo
+	Enemy enemigo = Enemy("../models/enemy/Zombie2.fbx", &shaderMulLighting);
+
 	while (psi) {
 		currTime = TimeManager::Instance().GetTime();
 		if(currTime - lastTime < 0.016666667){
@@ -1045,6 +1051,21 @@ void applicationLoop() {
 					break;
 			}
 		}
+
+		glm::vec3 posicionPersonaje = glm::vec3(0.0f);
+
+		if(modelSelected == Personaje::KRATOS) {
+
+			posicionPersonaje = glm::vec3(modelMatrixKratos[3]);
+		} else if(modelSelected == Personaje::NARUTO) {
+			posicionPersonaje = glm::vec3(modelMatrixNaruto[3]);
+		} else if(modelSelected == Personaje::KAKASHI) {
+			posicionPersonaje = glm::vec3(modelMatrixKakashi[3]);
+		}
+
+		enemigo.modelMatrix[3][1] = island1.getHeightTerrain(enemigo.modelMatrix[3][0], enemigo.modelMatrix[3][2]);
+		enemigo.update(deltaTime, posicionPersonaje);
+		enemigo.render();
 
 
 		/*******************************************
