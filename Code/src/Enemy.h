@@ -24,13 +24,19 @@ Shader* shader;
 std::string modelPath;
 
 // Constructor
-Enemy(std::string modelPath, Shader* shader);
+Enemy(std::string modelPath, Shader* shader, glm::vec3 position, float radius);
+
 // Destructor
 ~Enemy();
 
 void update(float dt, glm::vec3 posicionObjetivo);
 void render();
-void followTarget(glm::vec3 targetPosition, float speed, float dt);
+void seguirObjetivo(glm::vec3 targetPosition, float speed, float dt);
+bool objetivoEstaEnElArea(glm::vec3 targetPosition);
+
+private:
+glm::vec3 posicionInicial;
+float radioDeteccion; 
 
 };
 

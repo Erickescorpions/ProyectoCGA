@@ -728,8 +728,9 @@ void applicationLoop() {
 	camera->setSensitivity(1.2f);
 	camera->setDistanceFromTarget(distanceFromPlayer);
 
+	glm::vec3 posicionEnemigo = glm::vec3(0.0f, 0.1f, 0.0f);
 	// Creamos un enemigo
-	Enemy enemigo = Enemy("../models/enemy/Zombie2.fbx", &shaderMulLighting);
+	Enemy enemigo = Enemy("../models/enemy/Zombie2.fbx", &shaderMulLighting, posicionEnemigo, 15.0f);
 
 	while (psi) {
 		currTime = TimeManager::Instance().GetTime();
