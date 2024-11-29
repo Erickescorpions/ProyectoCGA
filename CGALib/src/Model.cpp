@@ -6,8 +6,6 @@
  */
 
 #include "Headers/Model.h"
-#include "Headers/TimeManager.h"
-#include "Headers/mathUtil.h"
 
 Model::Model() {
 	this->aabb.mins.x = FLT_MAX;
@@ -17,6 +15,7 @@ Model::Model() {
 	this->aabb.maxs.y = -FLT_MAX;
 	this->aabb.maxs.z = -FLT_MAX;
 	this->animationIndex = 0;
+	this->starterAnimationTime = TimeManager::Instance().GetTime();
 }
 
 Model::~Model() {
@@ -29,7 +28,8 @@ Model::~Model() {
 }
 
 void Model::render(glm::mat4 parentTrans) {
-	float runningTime = TimeManager::Instance().GetRunningTime();
+	//float runningTime = TimeManager::Instance().GetRunningTime();
+	float runningTime = TimeManager::Instance().GetTime() - this->starterAnimationTime;
 	//float runningTime = TimeManager::Instance().DeltaTime;
 	for (GLuint i = 0; i < this->meshes.size(); i++) {
 		this->meshes[i]->setShader(this->getShader());

@@ -12,6 +12,7 @@
 #include "Headers/Shader.h"
 #include <string>
 #include <iostream>
+#include <chrono>
 
 class Enemy
 {
@@ -33,11 +34,14 @@ void update(float dt, glm::vec3 posicionObjetivo);
 void render();
 void seguirObjetivo(glm::vec3 targetPosition, float speed, float dt);
 bool objetivoEstaEnElArea(glm::vec3 targetPosition);
+bool golpearObjetivo(glm::vec3 posicionObjetivo);
 
 private:
 glm::vec3 posicionInicial;
-float radioDeteccion; 
-
+float radioDeteccion;
+float radioGolpe;
+bool empiezaPersecucion; 
+std::chrono::steady_clock::time_point inicioPersecucion;
 };
 
 
