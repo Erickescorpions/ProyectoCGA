@@ -47,6 +47,9 @@
 #include "Enemy.h"
 #include "Cube.h"
 
+// Include Colision headers functions
+#include "Headers/Colisiones.h"
+
 
 int screenWidth;
 int screenHeight;
@@ -68,10 +71,15 @@ GLuint textureActivaID, textureInit1ID, textureInit2ID, textureInit3ID, textureS
 
 //=========================Variables para el conteno de cubos=====================================
 GLuint textureCuboID;
+// Colliders
+std::map<std::string, std::tuple<AbstractModel::OBB, glm::mat4, glm::mat4> > collidersOBB;
+std::map<std::string, std::tuple<AbstractModel::SBB, glm::mat4, glm::mat4> > collidersSBB;
 
 // Modelo para renderizar la pantalla de introducción
 Box boxIntro;
+Box Conteo;
 Shader shaderTexture;
+Box boxCollider;
 
 std::shared_ptr<ThirdPersonCamera> camera(new ThirdPersonCamera());
 float distanceFromPlayer = 6.5f;
@@ -87,8 +95,6 @@ Box boxWalls;
 Box boxHighway;
 Box boxLandingPad;
 Sphere esfera1(10, 10);
-
-Box Conteo;
 
 // Lamps
 Model modelLamp1;
@@ -206,6 +212,7 @@ void destroy();
 bool processInput(bool continueApplication = true);
 void GenerarTextura(Texture texture, GLuint &textureID);
 void RenderTextura(GLuint Cesped, GLuint R, GLuint G, GLuint B, GLuint BlendMap);
+bool checkCollision(const AbstractModel::OBB& box1, const AbstractModel::OBB& box2);
 
 // Implementacion de todas las funciones.
 void init(int width, int height, std::string strTitle, bool bFullScreen) {
@@ -409,8 +416,8 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	GenerarTextura(textureIntro2, textureInit2ID);
 	Texture textureIntro3("../textures/naruto.png");
 	GenerarTextura(textureIntro3, textureInit3ID);
-	Texture textureScreen("../textures/Screen.png");
-	GenerarTextura(textureScreen, textureScreenID);
+	// Texture textureScreen("../textures/Screen.png");
+	// GenerarTextura(textureScreen, textureScreenID);
 	textureActivaID = textureInit1ID;
 
 	Texture textureCubo("../texture/cubo.png");
@@ -427,6 +434,16 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	// Se inicializa el model de render text
 	modelText = new FontTypeRendering::FontTypeRendering(screenWidth, screenHeight);
 	modelText->Initialize();
+}
+
+// Verificar si dos AABBs se superponen
+bool checkCollision(const AbstractModel::OBB& box1, const AbstractModel::OBB& box2) {
+    // Comprueba si las cajas no se superponen en cualquiera de los ejes
+    if (std::abs(box1.c.x - box2.c.x) > (box1.e.x + box2.e.x)) return false;
+    if (std::abs(box1.c.y - box2.c.y) > (box1.e.y + box2.e.y)) return false;
+    if (std::abs(box1.c.z - box2.c.z) > (box1.e.z + box2.e.z)) return false;
+
+    return true; // Las cajas se superponen
 }
 
 void destroy() {
@@ -586,7 +603,7 @@ bool processInput(bool continueApplication) {
         else if(textureActivaID == textureInit3ID){
             modelSelected = Personaje::NARUTO;
         }
-        textureActivaID = textureScreenID;
+        textureActivaID = textureCuboID;
     }
     else if(!presionarOpcion && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS){
         presionarOpcion = true;
@@ -1160,6 +1177,73 @@ void applicationLoop() {
 		skyboxSphere.render();
 		glCullFace(oldCullFaceMode);
 		glDepthFunc(oldDepthFuncMode);
+
+		//========================================Collider para los personajes========================================================
+		glm::mat4 modelMatrixColliderKakashi = glm::mat4(modelMatrixKakashi); // Copia de la matriz de kakashi
+		AbstractModel::OBB kakashiCollider;
+		// Establece la orientación del collider
+		kakashiCollider.u = glm::quat_cast(modelMatrixKakashi);
+		// Escalar el collider según las dimensiones del cubo
+		modelMatrixColliderKakashi = glm::scale(modelMatrixKakashi, glm::vec3(1.5f, 1.5f, 1.5f)); // Ajusta la escala si es necesario
+		// Traducir el collider al centro del modelo
+		modelMatrixColliderKakashi = glm::translate(modelMatrixKakashi,
+			glm::vec3(modelKakashiCorriendo.getObb().c.x,  // Centro en X del modelo
+					modelKakashiCorriendo.getObb().c.y,  // Centro en Y del modelo
+					modelKakashiCorriendo.getObb().c.z)  // Centro en Z del modelo
+		);
+		// Establecer el centro del collider
+		kakashiCollider.c = glm::vec3(modelMatrixColliderKakashi[3]);
+		// Establecer la escala del collider según las dimensiones originales del OBB del modelo y la escala aplicada
+		kakashiCollider.e = modelKakashiCorriendo.getObb().e * glm::vec3(1.0f, 1.0f, 1.0f); // Ajusta según la escala aplicada
+		// Actualizar o agregar el collider del cubo en el mapa de colliders
+		addOrUpdateColliders(collidersOBB, "kakashi", kakashiCollider, modelMatrixKakashi);
+
+		// Collider para el enemigo
+		glm::mat4 modelMatrixColliderEnemigo = glm::mat4(enemigo.modelMatrix); // Copia de la matriz del enemigo
+		AbstractModel::OBB enemigoCollider;
+		// Establece la orientación del collider
+		enemigoCollider.u = glm::quat_cast(modelMatrixColliderEnemigo);
+		// Escalar el collider según las dimensiones del enemigo (ajustar según sea necesario)
+		modelMatrixColliderEnemigo = glm::scale(modelMatrixColliderEnemigo, glm::vec3(1.0f, 1.0f, 1.0f)); // Ajustar escala
+		// Traducir el collider al centro del modelo del enemigo
+		modelMatrixColliderEnemigo = glm::translate(modelMatrixColliderEnemigo,
+			glm::vec3(enemigo.modelMatrix[3][0],  // Centro en X del enemigo
+					enemigo.modelMatrix[3][1],  // Centro en Y del enemigo
+					enemigo.modelMatrix[3][2])  // Centro en Z del enemigo
+		);
+		// Establecer el centro del collider
+		enemigoCollider.c = glm::vec3(modelMatrixColliderEnemigo[3]);
+		// Establecer la escala del collider según las dimensiones originales del OBB del enemigo y la escala aplicada
+		enemigoCollider.e = glm::vec3(1.0f, 1.0f, 1.0f); // Ajusta según la escala aplicada
+		// Actualizar o agregar el collider del enemigo en el mapa de colliders
+		addOrUpdateColliders(collidersOBB, "enemigo", enemigoCollider, modelMatrixColliderEnemigo);
+
+		//=====================================Colisiones===================================================
+		AbstractModel::OBB kakashiCollideUpdate = std::get<0>(collidersOBB["kakashi"]);
+		AbstractModel::OBB enemigoColliderUpdate = std::get<0>(collidersOBB["enemigo"]);
+		// Calcular la distancia entre los centros de los collide	
+		glm::vec3 direction = enemigoColliderUpdate.c - kakashiCollideUpdate.c;
+		float distance = glm::length(direction);
+		// Sumar los radios (la mitad de las dimensiones de cada collider)
+		float combinedRadius = kakashiCollideUpdate.e.x + enemigoColliderUpdate.e.x;  // En el caso de un AABB, se suman las dimensiones
+		// Si la distancia entre los centros es menor que la suma de los radios, hay colisión
+		if (distance < combinedRadius) {
+			// Si hay colisión, normalizamos la dirección de colisión y movemos al enemigo fuera de la colisión
+			glm::vec3 moveDirection = glm::normalize(direction);
+						// Calculamos el solapamiento y lo movemos fuera de la colisión
+			float overlap = combinedRadius - distance;
+			enemigo.modelMatrix[3] += moveDirection * overlap;  // Mueve al enemigo fuera del collider de Kakashi
+		}
+		
+
+		// shaderTexture.setMatrix4("projection", 1, false, glm::value_ptr(glm::mat4(1.0)));
+		// shaderTexture.setMatrix4("view", 1, false, glm::value_ptr(glm::mat4(1.0)));
+		// glActiveTexture(GL_TEXTURE0);
+		// glBindTexture(GL_TEXTURE_2D, textureActivaID);
+		// shaderTexture.setInt("outTexture", 0);
+		// glEnable(GL_BLEND);
+		// boxIntro.render();
+		// glDisable(GL_BLEND);
 
 		glfwSwapBuffers(window);
 	}
