@@ -796,7 +796,7 @@ void applicationLoop() {
 	camera->setDistanceFromTarget(distanceFromPlayer);
 
 	//===================================Creacion del cubo===================================================================
-	Cube cube("../models/cubo/cubo.obj", &shaderMulLighting);
+	Cube cube("../models/cubo/cubo.fbx", &shaderMulLighting);
 	
 	// Creamos un enemigo
 	Enemy enemigo = Enemy("../models/enemy/Zombie2.fbx", &shaderMulLighting);
