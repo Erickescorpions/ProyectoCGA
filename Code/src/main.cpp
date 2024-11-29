@@ -1137,17 +1137,6 @@ void applicationLoop() {
 		std::string text = "0/5";  
 		renderContador(textureCuboID, modelText, text);
 
-
-		// Para la actualización del enemigo
-		glm::vec3 posicionPersonaje = glm::vec3(0.0f);
-		if(modelSelected == Personaje::KRATOS) {
-			posicionPersonaje = glm::vec3(modelMatrixKratos[3]);
-		} else if(modelSelected == Personaje::NARUTO) {
-			posicionPersonaje = glm::vec3(modelMatrixNaruto[3]);
-		} else if(modelSelected == Personaje::KAKASHI) {
-			posicionPersonaje = glm::vec3(modelMatrixKakashi[3]);
-		}
-
 		enemigo.modelMatrix[3][1] = island1.getHeightTerrain(enemigo.modelMatrix[3][0], enemigo.modelMatrix[3][2]);
 		enemigo.update(deltaTime, posicionPersonaje);
 		enemigo.render();
