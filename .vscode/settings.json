@@ -1,6 +1,7 @@
 {
   "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
   "files.associations": {
+    "*.embeddedhtml": "html",
     "*.h": "c",
     "*.html": "html",
     "iostream": "cpp",
@@ -66,6 +67,7 @@
     "thread": "cpp",
     "cinttypes": "cpp",
     "typeinfo": "cpp",
-    "variant": "cpp"
+    "variant": "cpp",
+    "glm.hpp": "c"
   }
 }

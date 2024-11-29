@@ -41,8 +41,12 @@
 
 #define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
 
+// Font rendering include
+#include "Headers/FontTypeRendering.h"
 
 #include "Enemy.h"
+#include "Cube.h"
+
 
 int screenWidth;
 int screenHeight;
@@ -62,6 +66,9 @@ bool iniciaPartida = false, presionarOpcion = false;
 bool player1 = false, player2 = false, player3 = false;
 GLuint textureActivaID, textureInit1ID, textureInit2ID, textureInit3ID, textureScreenID;
 
+//=========================Variables para el conteno de cubos=====================================
+GLuint textureCuboID;
+
 // Modelo para renderizar la pantalla de introducción
 Box boxIntro;
 Shader shaderTexture;
@@ -80,6 +87,8 @@ Box boxWalls;
 Box boxHighway;
 Box boxLandingPad;
 Sphere esfera1(10, 10);
+
+Box Conteo;
 
 // Lamps
 Model modelLamp1;
@@ -178,6 +187,9 @@ std::vector<float> lamp2Orientation = {
 
 double deltaTime;
 double currTime, lastTime;
+
+// Modelo para el render del texto
+FontTypeRendering::FontTypeRendering *modelText;
 
 // Se definen todos las funciones.
 void reshapeCallback(GLFWwindow *Window, int widthRes, int heightRes);
@@ -400,6 +412,21 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	Texture textureScreen("../textures/Screen.png");
 	GenerarTextura(textureScreen, textureScreenID);
 	textureActivaID = textureInit1ID;
+
+	Texture textureCubo("../texture/cubo.png");
+	GLuint textureCuboID;
+	// Generar y cargar la textura
+	GenerarTextura(textureCubo, textureCuboID);
+	// Enlazar la textura
+	glBindTexture(GL_TEXTURE_2D, textureCuboID);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // Ajustes de wrapping
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); // Ajustes de wrapping
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); // Filtro de minimización
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // Filtro de maximización
+
+	// Se inicializa el model de render text
+	modelText = new FontTypeRendering::FontTypeRendering(screenWidth, screenHeight);
+	modelText->Initialize();
 }
 
 void destroy() {
@@ -701,6 +728,46 @@ bool processInput(bool continueApplication) {
 	return continueApplication;
 }
 
+
+void renderContador(GLuint textureCuboID, FontTypeRendering::FontTypeRendering *modelText, const std::string& text) {
+    // 1. Renderiza la textura (el cubo)
+    glBindTexture(GL_TEXTURE_2D, textureCuboID);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    // Define el Quad con la textura
+    float quadVertices[] = {
+        1.0f,  1.0f, 0.0f,    1.0f, 1.0f, // Arriba derecha
+       -1.0f,  1.0f, 0.0f,    0.0f, 1.0f, // Arriba izquierda
+       -1.0f, -1.0f, 0.0f,    0.0f, 0.0f, // Abajo izquierda
+        1.0f, -1.0f, 0.0f,    1.0f, 0.0f  // Abajo derecha
+    };
+
+    GLuint VBO, VAO;
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
+
+    // Configuración de atributos
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+    // Renderiza la textura
+    glBindTexture(GL_TEXTURE_2D, textureCuboID);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+
+    // 2. Renderiza el texto
+    // Aquí es donde se utiliza el modelo de texto para renderizar el texto.
+    modelText->render(text, 0.9f, 0.9f);  // Posiciona el texto en la parte superior derecha
+}
+
+
 void applicationLoop() {
 	bool psi = true;
 
@@ -728,6 +795,9 @@ void applicationLoop() {
 	camera->setSensitivity(1.2f);
 	camera->setDistanceFromTarget(distanceFromPlayer);
 
+	//===================================Creacion del cubo===================================================================
+	Cube cube("../models/cubo/cubo.obj", &shaderMulLighting);
+	
 	// Creamos un enemigo
 	Enemy enemigo = Enemy("../models/enemy/Zombie2.fbx", &shaderMulLighting);
 
@@ -1063,9 +1133,27 @@ void applicationLoop() {
 			posicionPersonaje = glm::vec3(modelMatrixKakashi[3]);
 		}
 
+		//=======================================================Contador para los fragmentos recogido===========================================================
+		std::string text = "0/5";  
+		renderContador(textureCuboID, modelText, text);
+
+
+		// Para la actualización del enemigo
+		glm::vec3 posicionPersonaje = glm::vec3(0.0f);
+		if(modelSelected == Personaje::KRATOS) {
+			posicionPersonaje = glm::vec3(modelMatrixKratos[3]);
+		} else if(modelSelected == Personaje::NARUTO) {
+			posicionPersonaje = glm::vec3(modelMatrixNaruto[3]);
+		} else if(modelSelected == Personaje::KAKASHI) {
+			posicionPersonaje = glm::vec3(modelMatrixKakashi[3]);
+		}
+
 		enemigo.modelMatrix[3][1] = island1.getHeightTerrain(enemigo.modelMatrix[3][0], enemigo.modelMatrix[3][2]);
 		enemigo.update(deltaTime, posicionPersonaje);
 		enemigo.render();
+
+		cube.modelMatrix[3][1] = island1.getHeightTerrain(cube.modelMatrix[3][0], cube.modelMatrix[3][2]); 
+		cube.render(); 
 
 
 		/*******************************************
