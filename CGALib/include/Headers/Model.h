@@ -39,6 +39,8 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include "Headers/TimeManager.h"
+#include "Headers/mathUtil.h"
 
 class DLL_PUBLIC Model : public AbstractModel{
 public:
@@ -53,8 +55,10 @@ public:
 	int getAnimationIndex(){
 		return animationIndex;
 	}
-	void setAnimationIndex(int animationIndex){
-		this->animationIndex = animationIndex;
+	void setAnimationIndex(int index){
+		if(this->animationIndex == index) return;
+		this->animationIndex = index;
+		starterAnimationTime = TimeManager::Instance().GetTime();
 	}
 private:
 	void processNode(aiNode* node, const aiScene* scene);
@@ -72,6 +76,8 @@ private:
 	Assimp::Importer importer;
 	int animationIndex;
 	bool gammaCorrection;
+	
+	double starterAnimationTime;
 };
 
 #endif /* MODEL_H_ */
