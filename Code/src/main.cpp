@@ -71,9 +71,13 @@ GLuint textureActivaID, textureInit1ID, textureInit2ID, textureInit3ID, textureS
 
 //=========================Variables para el conteno de cubos=====================================
 GLuint textureCuboID;
+glm::mat4 modelMatrixCubo = glm::mat4(1.0f);
 // Colliders
 std::map<std::string, std::tuple<AbstractModel::OBB, glm::mat4, glm::mat4> > collidersOBB;
 std::map<std::string, std::tuple<AbstractModel::SBB, glm::mat4, glm::mat4> > collidersSBB;
+int cuboContador = 0;
+bool cuboAgarrado = false;  // Bandera que indica si el cubo ha sido agarrado
+float proximidadUmbral = 1.0f;  // Umbral de proximidad para que el personaje agarre el cubo
 
 // Modelo para renderizar la pantalla de introducción
 Box boxIntro;
@@ -806,6 +810,11 @@ void applicationLoop() {
 	modelMatrixNaruto = glm::scale(modelMatrixNaruto, glm::vec3(0.01f));
 	modelMatrixNaruto = glm::rotate(modelMatrixNaruto, glm::radians(0.0f), glm::vec3(0, 1, 0));
 
+	// Aplicar las transformaciones al cubo
+	modelMatrixCubo = glm::translate(modelMatrixCubo, glm::vec3(10.0f, 0.05f, 0.0f)); 
+	modelMatrixCubo = glm::scale(modelMatrixCubo, glm::vec3(0.5f)); 
+	modelMatrixCubo = glm::rotate(modelMatrixCubo, glm::radians(0.0f), glm::vec3(0, 1, 0)); 
+
 	lastTime = TimeManager::Instance().GetTime();
 
 	// Inicializacoin de valores de la camara
@@ -1150,16 +1159,26 @@ void applicationLoop() {
 			posicionPersonaje = glm::vec3(modelMatrixKakashi[3]);
 		}
 
-		//=======================================================Contador para los fragmentos recogido===========================================================
-		std::string text = "0/5";  
-		renderContador(textureCuboID, modelText, text);
-
 		enemigo.modelMatrix[3][1] = island1.getHeightTerrain(enemigo.modelMatrix[3][0], enemigo.modelMatrix[3][2]);
 		enemigo.update(deltaTime, posicionPersonaje);
 		enemigo.render();
-
-		cube.modelMatrix[3][1] = island1.getHeightTerrain(cube.modelMatrix[3][0], cube.modelMatrix[3][2]); 
-		cube.render(); 
+		//=======================================================Contador para los fragmentos recogido===========================================================
+		// Asignar el terreno al cubo
+		cube.setTerrain(&island1);  
+		// Actualiza la lógica del cubo (flotación, rotación)
+		cube.update(deltaTime, posicionPersonaje);
+		// Obtener la posición del cubo
+		glm::vec3 posicionCubo = glm::vec3(cube.modelMatrix[3]); // O usar otro método si modelMatrix no tiene la posición directamente
+		float distancia = glm::distance(posicionPersonaje, posicionCubo);
+		if (distancia < proximidadUmbral && !cuboAgarrado) {
+			cuboAgarrado = true;
+			cuboContador++; 
+		}
+		if (!cuboAgarrado) {
+			cube.render(); 
+		}
+		std::string text = std::to_string(cuboContador) + "/5";
+		renderContador(textureCuboID, modelText, text); // Actualiza el contador en pantalla
 
 
 		/*******************************************
@@ -1178,62 +1197,62 @@ void applicationLoop() {
 		glCullFace(oldCullFaceMode);
 		glDepthFunc(oldDepthFuncMode);
 
-		//========================================Collider para los personajes========================================================
-		glm::mat4 modelMatrixColliderKakashi = glm::mat4(modelMatrixKakashi); // Copia de la matriz de kakashi
-		AbstractModel::OBB kakashiCollider;
-		// Establece la orientación del collider
-		kakashiCollider.u = glm::quat_cast(modelMatrixKakashi);
-		// Escalar el collider según las dimensiones del cubo
-		modelMatrixColliderKakashi = glm::scale(modelMatrixKakashi, glm::vec3(1.5f, 1.5f, 1.5f)); // Ajusta la escala si es necesario
-		// Traducir el collider al centro del modelo
-		modelMatrixColliderKakashi = glm::translate(modelMatrixKakashi,
-			glm::vec3(modelKakashiCorriendo.getObb().c.x,  // Centro en X del modelo
-					modelKakashiCorriendo.getObb().c.y,  // Centro en Y del modelo
-					modelKakashiCorriendo.getObb().c.z)  // Centro en Z del modelo
-		);
-		// Establecer el centro del collider
-		kakashiCollider.c = glm::vec3(modelMatrixColliderKakashi[3]);
-		// Establecer la escala del collider según las dimensiones originales del OBB del modelo y la escala aplicada
-		kakashiCollider.e = modelKakashiCorriendo.getObb().e * glm::vec3(1.0f, 1.0f, 1.0f); // Ajusta según la escala aplicada
-		// Actualizar o agregar el collider del cubo en el mapa de colliders
-		addOrUpdateColliders(collidersOBB, "kakashi", kakashiCollider, modelMatrixKakashi);
+		// //========================================Collider para los personajes========================================================
+		// glm::mat4 modelMatrixColliderKakashi = glm::mat4(modelMatrixKakashi); // Copia de la matriz de kakashi
+		// AbstractModel::OBB kakashiCollider;
+		// // Establece la orientación del collider
+		// kakashiCollider.u = glm::quat_cast(modelMatrixKakashi);
+		// // Escalar el collider según las dimensiones del cubo
+		// modelMatrixColliderKakashi = glm::scale(modelMatrixKakashi, glm::vec3(1.5f, 1.5f, 1.5f)); // Ajusta la escala si es necesario
+		// // Traducir el collider al centro del modelo
+		// modelMatrixColliderKakashi = glm::translate(modelMatrixKakashi,
+		// 	glm::vec3(modelKakashiCorriendo.getObb().c.x,  // Centro en X del modelo
+		// 			modelKakashiCorriendo.getObb().c.y,  // Centro en Y del modelo
+		// 			modelKakashiCorriendo.getObb().c.z)  // Centro en Z del modelo
+		// );
+		// // Establecer el centro del collider
+		// kakashiCollider.c = glm::vec3(modelMatrixColliderKakashi[3]);
+		// // Establecer la escala del collider según las dimensiones originales del OBB del modelo y la escala aplicada
+		// kakashiCollider.e = modelKakashiCorriendo.getObb().e * glm::vec3(1.0f, 1.0f, 1.0f); // Ajusta según la escala aplicada
+		// // Actualizar o agregar el collider del cubo en el mapa de colliders
+		// addOrUpdateColliders(collidersOBB, "kakashi", kakashiCollider, modelMatrixKakashi);
 
-		// Collider para el enemigo
-		glm::mat4 modelMatrixColliderEnemigo = glm::mat4(enemigo.modelMatrix); // Copia de la matriz del enemigo
-		AbstractModel::OBB enemigoCollider;
-		// Establece la orientación del collider
-		enemigoCollider.u = glm::quat_cast(modelMatrixColliderEnemigo);
-		// Escalar el collider según las dimensiones del enemigo (ajustar según sea necesario)
-		modelMatrixColliderEnemigo = glm::scale(modelMatrixColliderEnemigo, glm::vec3(1.0f, 1.0f, 1.0f)); // Ajustar escala
-		// Traducir el collider al centro del modelo del enemigo
-		modelMatrixColliderEnemigo = glm::translate(modelMatrixColliderEnemigo,
-			glm::vec3(enemigo.modelMatrix[3][0],  // Centro en X del enemigo
-					enemigo.modelMatrix[3][1],  // Centro en Y del enemigo
-					enemigo.modelMatrix[3][2])  // Centro en Z del enemigo
-		);
-		// Establecer el centro del collider
-		enemigoCollider.c = glm::vec3(modelMatrixColliderEnemigo[3]);
-		// Establecer la escala del collider según las dimensiones originales del OBB del enemigo y la escala aplicada
-		enemigoCollider.e = glm::vec3(1.0f, 1.0f, 1.0f); // Ajusta según la escala aplicada
-		// Actualizar o agregar el collider del enemigo en el mapa de colliders
-		addOrUpdateColliders(collidersOBB, "enemigo", enemigoCollider, modelMatrixColliderEnemigo);
+		// // Collider para el enemigo
+		// glm::mat4 modelMatrixColliderEnemigo = glm::mat4(enemigo.modelMatrix); // Copia de la matriz del enemigo
+		// AbstractModel::OBB enemigoCollider;
+		// // Establece la orientación del collider
+		// enemigoCollider.u = glm::quat_cast(modelMatrixColliderEnemigo);
+		// // Escalar el collider según las dimensiones del enemigo (ajustar según sea necesario)
+		// modelMatrixColliderEnemigo = glm::scale(modelMatrixColliderEnemigo, glm::vec3(1.0f, 1.0f, 1.0f)); // Ajustar escala
+		// // Traducir el collider al centro del modelo del enemigo
+		// modelMatrixColliderEnemigo = glm::translate(modelMatrixColliderEnemigo,
+		// 	glm::vec3(enemigo.modelMatrix[3][0],  // Centro en X del enemigo
+		// 			enemigo.modelMatrix[3][1],  // Centro en Y del enemigo
+		// 			enemigo.modelMatrix[3][2])  // Centro en Z del enemigo
+		// );
+		// // Establecer el centro del collider
+		// enemigoCollider.c = glm::vec3(modelMatrixColliderEnemigo[3]);
+		// // Establecer la escala del collider según las dimensiones originales del OBB del enemigo y la escala aplicada
+		// enemigoCollider.e = glm::vec3(1.0f, 1.0f, 1.0f); // Ajusta según la escala aplicada
+		// // Actualizar o agregar el collider del enemigo en el mapa de colliders
+		// addOrUpdateColliders(collidersOBB, "enemigo", enemigoCollider, modelMatrixColliderEnemigo);
 
 		//=====================================Colisiones===================================================
-		AbstractModel::OBB kakashiCollideUpdate = std::get<0>(collidersOBB["kakashi"]);
-		AbstractModel::OBB enemigoColliderUpdate = std::get<0>(collidersOBB["enemigo"]);
-		// Calcular la distancia entre los centros de los collide	
-		glm::vec3 direction = enemigoColliderUpdate.c - kakashiCollideUpdate.c;
-		float distance = glm::length(direction);
-		// Sumar los radios (la mitad de las dimensiones de cada collider)
-		float combinedRadius = kakashiCollideUpdate.e.x + enemigoColliderUpdate.e.x;  // En el caso de un AABB, se suman las dimensiones
-		// Si la distancia entre los centros es menor que la suma de los radios, hay colisión
-		if (distance < combinedRadius) {
-			// Si hay colisión, normalizamos la dirección de colisión y movemos al enemigo fuera de la colisión
-			glm::vec3 moveDirection = glm::normalize(direction);
-						// Calculamos el solapamiento y lo movemos fuera de la colisión
-			float overlap = combinedRadius - distance;
-			enemigo.modelMatrix[3] += moveDirection * overlap;  // Mueve al enemigo fuera del collider de Kakashi
-		}
+		// AbstractModel::OBB kakashiCollideUpdate = std::get<0>(collidersOBB["kakashi"]);
+		// AbstractModel::OBB enemigoColliderUpdate = std::get<0>(collidersOBB["enemigo"]);
+		// // Calcular la distancia entre los centros de los collide	
+		// glm::vec3 direction = enemigoColliderUpdate.c - kakashiCollideUpdate.c;
+		// float distance = glm::length(direction);
+		// // Sumar los radios (la mitad de las dimensiones de cada collider)
+		// float combinedRadius = kakashiCollideUpdate.e.x + enemigoColliderUpdate.e.x;  // En el caso de un AABB, se suman las dimensiones
+		// // Si la distancia entre los centros es menor que la suma de los radios, hay colisión
+		// if (distance < combinedRadius) {
+		// 	// Si hay colisión, normalizamos la dirección de colisión y movemos al enemigo fuera de la colisión
+		// 	glm::vec3 moveDirection = glm::normalize(direction);
+		// 				// Calculamos el solapamiento y lo movemos fuera de la colisión
+		// 	float overlap = combinedRadius - distance;
+		// 	enemigo.modelMatrix[3] += moveDirection * overlap;  // Mueve al enemigo fuera del collider de Kakashi
+		// }
 		
 
 		// shaderTexture.setMatrix4("projection", 1, false, glm::value_ptr(glm::mat4(1.0)));
