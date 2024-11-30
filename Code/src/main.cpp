@@ -71,13 +71,12 @@ GLuint textureActivaID, textureInit1ID, textureInit2ID, textureInit3ID, textureS
 
 //=========================Variables para el conteno de cubos=====================================
 GLuint textureCuboID;
-glm::mat4 modelMatrixCubo = glm::mat4(1.0f);
 // Colliders
 std::map<std::string, std::tuple<AbstractModel::OBB, glm::mat4, glm::mat4> > collidersOBB;
 std::map<std::string, std::tuple<AbstractModel::SBB, glm::mat4, glm::mat4> > collidersSBB;
 int cuboContador = 0;
 bool cuboAgarrado = false;  // Bandera que indica si el cubo ha sido agarrado
-float proximidadUmbral = 1.0f;  // Umbral de proximidad para que el personaje agarre el cubo
+float proximidadUmbral = 3.0f;  // Umbral de proximidad para que el personaje agarre el cubo
 
 // Modelo para renderizar la pantalla de introducción
 Box boxIntro;
@@ -810,22 +809,19 @@ void applicationLoop() {
 	modelMatrixNaruto = glm::scale(modelMatrixNaruto, glm::vec3(0.01f));
 	modelMatrixNaruto = glm::rotate(modelMatrixNaruto, glm::radians(0.0f), glm::vec3(0, 1, 0));
 
-	// Aplicar las transformaciones al cubo
-	modelMatrixCubo = glm::translate(modelMatrixCubo, glm::vec3(10.0f, 0.05f, 0.0f)); 
-	modelMatrixCubo = glm::scale(modelMatrixCubo, glm::vec3(0.5f)); 
-	modelMatrixCubo = glm::rotate(modelMatrixCubo, glm::radians(0.0f), glm::vec3(0, 1, 0)); 
-
 	lastTime = TimeManager::Instance().GetTime();
 
 	// Inicializacoin de valores de la camara
 	camera->setSensitivity(1.2f);
 	camera->setDistanceFromTarget(distanceFromPlayer);
 
-	Cube cube("../models/cubo/cubo.fbx", &shaderMulLighting);
+	Cube cube("../models/cubo/cubo.fbx", &shaderMulLighting, glm::vec3(0.0f, 0.0f, 0.0f));
+	cube.setTerrain(&island1);  
 
-	glm::vec3 posicionEnemigo = glm::vec3(0.0f, 2.0f, 0.0f);
+	glm::vec3 posicionEnemigo = glm::vec3(0.0f, 3.0f, 0.0f);
 	// Creamos un enemigo
 	Enemy enemigo = Enemy("../models/enemy/Zombie1.fbx", &shaderMulLighting, posicionEnemigo, 15.0f);
+	enemigo.setTerrain(&island1);
 
 	while (psi) {
 		currTime = TimeManager::Instance().GetTime();
@@ -1151,7 +1147,6 @@ void applicationLoop() {
 		glm::vec3 posicionPersonaje = glm::vec3(0.0f);
 
 		if(modelSelected == Personaje::KRATOS) {
-
 			posicionPersonaje = glm::vec3(modelMatrixKratos[3]);
 		} else if(modelSelected == Personaje::NARUTO) {
 			posicionPersonaje = glm::vec3(modelMatrixNaruto[3]);
@@ -1159,12 +1154,9 @@ void applicationLoop() {
 			posicionPersonaje = glm::vec3(modelMatrixKakashi[3]);
 		}
 
-		enemigo.modelMatrix[3][1] = island1.getHeightTerrain(enemigo.modelMatrix[3][0], enemigo.modelMatrix[3][2]);
 		enemigo.update(deltaTime, posicionPersonaje);
 		enemigo.render();
 		//=======================================================Contador para los fragmentos recogido===========================================================
-		// Asignar el terreno al cubo
-		cube.setTerrain(&island1);  
 		// Actualiza la lógica del cubo (flotación, rotación)
 		cube.update(deltaTime, posicionPersonaje);
 		// Obtener la posición del cubo

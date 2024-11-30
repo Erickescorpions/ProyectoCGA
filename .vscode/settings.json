@@ -1,8 +1,8 @@
 {
   "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
   "files.associations": {
-    "*.embeddedhtml": "html",
     "*.h": "c",
+    "*.embeddedhtml": "html",
     "*.html": "html",
     "iostream": "cpp",
     "matrix_transform.hpp": "c",
@@ -69,6 +69,7 @@
     "typeinfo": "cpp",
     "variant": "cpp",
     "glm.hpp": "c",
-    "text_encoding": "cpp"
+    "text_encoding": "cpp",
+    "type_ptr.hpp": "c"
   }
 }

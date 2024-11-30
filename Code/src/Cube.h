@@ -7,7 +7,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "Headers/Model.h"
 #include "Headers/Shader.h"
-#include "Headers/Terrain.h" // Incluir Terrain.h
+#include "Headers/Terrain.h"
 
 class Cube {
 public:
@@ -18,7 +18,7 @@ public:
     bool cuboAgarrado = false;
 
     // Constructor
-    Cube(const std::string& modelPath, Shader* shader);
+    Cube(const std::string& modelPath, Shader* shader, glm::vec3 posicionInicial);
 
     // Destructor
     ~Cube();
