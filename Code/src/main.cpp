@@ -41,8 +41,15 @@
 
 #define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
 
+// Font rendering include
+#include "Headers/FontTypeRendering.h"
 
 #include "Enemy.h"
+#include "Cube.h"
+
+// Include Colision headers functions
+#include "Headers/Colisiones.h"
+
 
 int screenWidth;
 int screenHeight;
@@ -62,9 +69,21 @@ bool iniciaPartida = false, presionarOpcion = false;
 bool player1 = false, player2 = false, player3 = false;
 GLuint textureActivaID, textureInit1ID, textureInit2ID, textureInit3ID, textureScreenID;
 
+//=========================Variables para el conteno de cubos=====================================
+GLuint textureCuboID;
+glm::mat4 modelMatrixCubo = glm::mat4(1.0f);
+// Colliders
+std::map<std::string, std::tuple<AbstractModel::OBB, glm::mat4, glm::mat4> > collidersOBB;
+std::map<std::string, std::tuple<AbstractModel::SBB, glm::mat4, glm::mat4> > collidersSBB;
+int cuboContador = 0;
+bool cuboAgarrado = false;  // Bandera que indica si el cubo ha sido agarrado
+float proximidadUmbral = 1.0f;  // Umbral de proximidad para que el personaje agarre el cubo
+
 // Modelo para renderizar la pantalla de introducción
 Box boxIntro;
+Box Conteo;
 Shader shaderTexture;
+Box boxCollider;
 
 std::shared_ptr<ThirdPersonCamera> camera(new ThirdPersonCamera());
 float distanceFromPlayer = 6.5f;
@@ -179,6 +198,9 @@ std::vector<float> lamp2Orientation = {
 double deltaTime;
 double currTime, lastTime;
 
+// Modelo para el render del texto
+FontTypeRendering::FontTypeRendering *modelText;
+
 // Se definen todos las funciones.
 void reshapeCallback(GLFWwindow *Window, int widthRes, int heightRes);
 void keyCallback(GLFWwindow *window, int key, int scancode, int action,
@@ -194,6 +216,7 @@ void destroy();
 bool processInput(bool continueApplication = true);
 void GenerarTextura(Texture texture, GLuint &textureID);
 void RenderTextura(GLuint Cesped, GLuint R, GLuint G, GLuint B, GLuint BlendMap);
+bool checkCollision(const AbstractModel::OBB& box1, const AbstractModel::OBB& box2);
 
 // Implementacion de todas las funciones.
 void init(int width, int height, std::string strTitle, bool bFullScreen) {
@@ -397,9 +420,34 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	GenerarTextura(textureIntro2, textureInit2ID);
 	Texture textureIntro3("../textures/naruto.png");
 	GenerarTextura(textureIntro3, textureInit3ID);
-	Texture textureScreen("../textures/Screen.png");
-	GenerarTextura(textureScreen, textureScreenID);
+	// Texture textureScreen("../textures/Screen.png");
+	// GenerarTextura(textureScreen, textureScreenID);
 	textureActivaID = textureInit1ID;
+
+	Texture textureCubo("../texture/cubo.png");
+	GLuint textureCuboID;
+	// Generar y cargar la textura
+	GenerarTextura(textureCubo, textureCuboID);
+	// Enlazar la textura
+	glBindTexture(GL_TEXTURE_2D, textureCuboID);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // Ajustes de wrapping
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); // Ajustes de wrapping
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); // Filtro de minimización
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // Filtro de maximización
+
+	// Se inicializa el model de render text
+	modelText = new FontTypeRendering::FontTypeRendering(screenWidth, screenHeight);
+	modelText->Initialize();
+}
+
+// Verificar si dos AABBs se superponen
+bool checkCollision(const AbstractModel::OBB& box1, const AbstractModel::OBB& box2) {
+    // Comprueba si las cajas no se superponen en cualquiera de los ejes
+    if (std::abs(box1.c.x - box2.c.x) > (box1.e.x + box2.e.x)) return false;
+    if (std::abs(box1.c.y - box2.c.y) > (box1.e.y + box2.e.y)) return false;
+    if (std::abs(box1.c.z - box2.c.z) > (box1.e.z + box2.e.z)) return false;
+
+    return true; // Las cajas se superponen
 }
 
 void destroy() {
@@ -559,7 +607,7 @@ bool processInput(bool continueApplication) {
         else if(textureActivaID == textureInit3ID){
             modelSelected = Personaje::NARUTO;
         }
-        textureActivaID = textureScreenID;
+        textureActivaID = textureCuboID;
     }
     else if(!presionarOpcion && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS){
         presionarOpcion = true;
@@ -701,6 +749,46 @@ bool processInput(bool continueApplication) {
 	return continueApplication;
 }
 
+
+void renderContador(GLuint textureCuboID, FontTypeRendering::FontTypeRendering *modelText, const std::string& text) {
+    // 1. Renderiza la textura (el cubo)
+    glBindTexture(GL_TEXTURE_2D, textureCuboID);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    // Define el Quad con la textura
+    float quadVertices[] = {
+        1.0f,  1.0f, 0.0f,    1.0f, 1.0f, // Arriba derecha
+       -1.0f,  1.0f, 0.0f,    0.0f, 1.0f, // Arriba izquierda
+       -1.0f, -1.0f, 0.0f,    0.0f, 0.0f, // Abajo izquierda
+        1.0f, -1.0f, 0.0f,    1.0f, 0.0f  // Abajo derecha
+    };
+
+    GLuint VBO, VAO;
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
+
+    // Configuración de atributos
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+    // Renderiza la textura
+    glBindTexture(GL_TEXTURE_2D, textureCuboID);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+
+    // 2. Renderiza el texto
+    // Aquí es donde se utiliza el modelo de texto para renderizar el texto.
+    modelText->render(text, 0.9f, 0.9f);  // Posiciona el texto en la parte superior derecha
+}
+
+
 void applicationLoop() {
 	bool psi = true;
 
@@ -722,11 +810,18 @@ void applicationLoop() {
 	modelMatrixNaruto = glm::scale(modelMatrixNaruto, glm::vec3(0.01f));
 	modelMatrixNaruto = glm::rotate(modelMatrixNaruto, glm::radians(0.0f), glm::vec3(0, 1, 0));
 
+	// Aplicar las transformaciones al cubo
+	modelMatrixCubo = glm::translate(modelMatrixCubo, glm::vec3(10.0f, 0.05f, 0.0f)); 
+	modelMatrixCubo = glm::scale(modelMatrixCubo, glm::vec3(0.5f)); 
+	modelMatrixCubo = glm::rotate(modelMatrixCubo, glm::radians(0.0f), glm::vec3(0, 1, 0)); 
+
 	lastTime = TimeManager::Instance().GetTime();
 
 	// Inicializacoin de valores de la camara
 	camera->setSensitivity(1.2f);
 	camera->setDistanceFromTarget(distanceFromPlayer);
+
+	Cube cube("../models/cubo/cubo.fbx", &shaderMulLighting);
 
 	glm::vec3 posicionEnemigo = glm::vec3(0.0f, 2.0f, 0.0f);
 	// Creamos un enemigo
@@ -1067,6 +1162,23 @@ void applicationLoop() {
 		enemigo.modelMatrix[3][1] = island1.getHeightTerrain(enemigo.modelMatrix[3][0], enemigo.modelMatrix[3][2]);
 		enemigo.update(deltaTime, posicionPersonaje);
 		enemigo.render();
+		//=======================================================Contador para los fragmentos recogido===========================================================
+		// Asignar el terreno al cubo
+		cube.setTerrain(&island1);  
+		// Actualiza la lógica del cubo (flotación, rotación)
+		cube.update(deltaTime, posicionPersonaje);
+		// Obtener la posición del cubo
+		glm::vec3 posicionCubo = glm::vec3(cube.modelMatrix[3]); // O usar otro método si modelMatrix no tiene la posición directamente
+		float distancia = glm::distance(posicionPersonaje, posicionCubo);
+		if (distancia < proximidadUmbral && !cuboAgarrado) {
+			cuboAgarrado = true;
+			cuboContador++; 
+		}
+		if (!cuboAgarrado) {
+			cube.render(); 
+		}
+		std::string text = std::to_string(cuboContador) + "/5";
+		renderContador(textureCuboID, modelText, text); // Actualiza el contador en pantalla
 
 
 		/*******************************************
@@ -1084,6 +1196,73 @@ void applicationLoop() {
 		skyboxSphere.render();
 		glCullFace(oldCullFaceMode);
 		glDepthFunc(oldDepthFuncMode);
+
+		// //========================================Collider para los personajes========================================================
+		// glm::mat4 modelMatrixColliderKakashi = glm::mat4(modelMatrixKakashi); // Copia de la matriz de kakashi
+		// AbstractModel::OBB kakashiCollider;
+		// // Establece la orientación del collider
+		// kakashiCollider.u = glm::quat_cast(modelMatrixKakashi);
+		// // Escalar el collider según las dimensiones del cubo
+		// modelMatrixColliderKakashi = glm::scale(modelMatrixKakashi, glm::vec3(1.5f, 1.5f, 1.5f)); // Ajusta la escala si es necesario
+		// // Traducir el collider al centro del modelo
+		// modelMatrixColliderKakashi = glm::translate(modelMatrixKakashi,
+		// 	glm::vec3(modelKakashiCorriendo.getObb().c.x,  // Centro en X del modelo
+		// 			modelKakashiCorriendo.getObb().c.y,  // Centro en Y del modelo
+		// 			modelKakashiCorriendo.getObb().c.z)  // Centro en Z del modelo
+		// );
+		// // Establecer el centro del collider
+		// kakashiCollider.c = glm::vec3(modelMatrixColliderKakashi[3]);
+		// // Establecer la escala del collider según las dimensiones originales del OBB del modelo y la escala aplicada
+		// kakashiCollider.e = modelKakashiCorriendo.getObb().e * glm::vec3(1.0f, 1.0f, 1.0f); // Ajusta según la escala aplicada
+		// // Actualizar o agregar el collider del cubo en el mapa de colliders
+		// addOrUpdateColliders(collidersOBB, "kakashi", kakashiCollider, modelMatrixKakashi);
+
+		// // Collider para el enemigo
+		// glm::mat4 modelMatrixColliderEnemigo = glm::mat4(enemigo.modelMatrix); // Copia de la matriz del enemigo
+		// AbstractModel::OBB enemigoCollider;
+		// // Establece la orientación del collider
+		// enemigoCollider.u = glm::quat_cast(modelMatrixColliderEnemigo);
+		// // Escalar el collider según las dimensiones del enemigo (ajustar según sea necesario)
+		// modelMatrixColliderEnemigo = glm::scale(modelMatrixColliderEnemigo, glm::vec3(1.0f, 1.0f, 1.0f)); // Ajustar escala
+		// // Traducir el collider al centro del modelo del enemigo
+		// modelMatrixColliderEnemigo = glm::translate(modelMatrixColliderEnemigo,
+		// 	glm::vec3(enemigo.modelMatrix[3][0],  // Centro en X del enemigo
+		// 			enemigo.modelMatrix[3][1],  // Centro en Y del enemigo
+		// 			enemigo.modelMatrix[3][2])  // Centro en Z del enemigo
+		// );
+		// // Establecer el centro del collider
+		// enemigoCollider.c = glm::vec3(modelMatrixColliderEnemigo[3]);
+		// // Establecer la escala del collider según las dimensiones originales del OBB del enemigo y la escala aplicada
+		// enemigoCollider.e = glm::vec3(1.0f, 1.0f, 1.0f); // Ajusta según la escala aplicada
+		// // Actualizar o agregar el collider del enemigo en el mapa de colliders
+		// addOrUpdateColliders(collidersOBB, "enemigo", enemigoCollider, modelMatrixColliderEnemigo);
+
+		//=====================================Colisiones===================================================
+		// AbstractModel::OBB kakashiCollideUpdate = std::get<0>(collidersOBB["kakashi"]);
+		// AbstractModel::OBB enemigoColliderUpdate = std::get<0>(collidersOBB["enemigo"]);
+		// // Calcular la distancia entre los centros de los collide	
+		// glm::vec3 direction = enemigoColliderUpdate.c - kakashiCollideUpdate.c;
+		// float distance = glm::length(direction);
+		// // Sumar los radios (la mitad de las dimensiones de cada collider)
+		// float combinedRadius = kakashiCollideUpdate.e.x + enemigoColliderUpdate.e.x;  // En el caso de un AABB, se suman las dimensiones
+		// // Si la distancia entre los centros es menor que la suma de los radios, hay colisión
+		// if (distance < combinedRadius) {
+		// 	// Si hay colisión, normalizamos la dirección de colisión y movemos al enemigo fuera de la colisión
+		// 	glm::vec3 moveDirection = glm::normalize(direction);
+		// 				// Calculamos el solapamiento y lo movemos fuera de la colisión
+		// 	float overlap = combinedRadius - distance;
+		// 	enemigo.modelMatrix[3] += moveDirection * overlap;  // Mueve al enemigo fuera del collider de Kakashi
+		// }
+		
+
+		// shaderTexture.setMatrix4("projection", 1, false, glm::value_ptr(glm::mat4(1.0)));
+		// shaderTexture.setMatrix4("view", 1, false, glm::value_ptr(glm::mat4(1.0)));
+		// glActiveTexture(GL_TEXTURE0);
+		// glBindTexture(GL_TEXTURE_2D, textureActivaID);
+		// shaderTexture.setInt("outTexture", 0);
+		// glEnable(GL_BLEND);
+		// boxIntro.render();
+		// glDisable(GL_BLEND);
 
 		glfwSwapBuffers(window);
 	}

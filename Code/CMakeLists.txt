@@ -30,7 +30,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     include_directories(${CMAKE_SOURCE_DIR}/CGALib/include "/usr/include/freetype2")
 endif()
 
-add_executable(proyecto ./src/main.cpp ./src/Enemy.cpp)
+add_executable(proyecto ./src/main.cpp ./src/Enemy.cpp ./src/Cube.cpp)
 
 set_target_properties(proyecto
     PROPERTIES
