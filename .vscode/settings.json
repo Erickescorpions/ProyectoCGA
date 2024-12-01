@@ -71,5 +71,14 @@
     "glm.hpp": "c",
     "text_encoding": "cpp",
     "type_ptr.hpp": "c"
-  }
+  },
+
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": true,
+  "files.eol": "\n",
+  "[cpp]": {
+      "editor.tabSize": 2,
+      "editor.insertSpaces": true
+  },
 }
