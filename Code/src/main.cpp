@@ -48,8 +48,7 @@
 #include "Cube.h"
 #include "Player.h"
 
-// Include Colision headers functions
-#include "Headers/Colisiones.h"
+#include "CollidersController.h"
 
 int screenWidth;
 int screenHeight;
@@ -708,6 +707,8 @@ void applicationLoop()
 	camera->setSensitivity(1.2f);
 	camera->setDistanceFromTarget(distanceFromPlayer);
 
+	CollidersController* cc = new CollidersController(&shader);
+
 	Player jugador = Player(&shaderMulLighting);
 	jugador.setTerrain(&island1);
 
@@ -716,7 +717,7 @@ void applicationLoop()
 
 	glm::vec3 posicionEnemigo = glm::vec3(0.0f, 3.0f, 0.0f);
 	// Creamos un enemigo
-	Enemy enemigo = Enemy("../models/enemy/Zombie1.fbx", &shaderMulLighting, posicionEnemigo, 15.0f);
+	Enemy enemigo = Enemy("../models/enemy/zombie.fbx", &shaderMulLighting, cc, posicionEnemigo, 15.0f);
 	enemigo.setTerrain(&island1);
 
 	while (psi)
@@ -997,6 +998,8 @@ void applicationLoop()
 		std::string text = std::to_string(cuboContador) + "/5";
 		renderContador(textureCuboID, modelText, text); // Actualiza el contador en pantalla
 
+		cc->render();
+
 		/*******************************************
 		 * Skybox
 		 *******************************************/
@@ -1012,72 +1015,6 @@ void applicationLoop()
 		skyboxSphere.render();
 		glCullFace(oldCullFaceMode);
 		glDepthFunc(oldDepthFuncMode);
-
-		// //========================================Collider para los personajes========================================================
-		// glm::mat4 modelMatrixColliderKakashi = glm::mat4(modelMatrixKakashi); // Copia de la matriz de kakashi
-		// AbstractModel::OBB kakashiCollider;
-		// // Establece la orientación del collider
-		// kakashiCollider.u = glm::quat_cast(modelMatrixKakashi);
-		// // Escalar el collider según las dimensiones del cubo
-		// modelMatrixColliderKakashi = glm::scale(modelMatrixKakashi, glm::vec3(1.5f, 1.5f, 1.5f)); // Ajusta la escala si es necesario
-		// // Traducir el collider al centro del modelo
-		// modelMatrixColliderKakashi = glm::translate(modelMatrixKakashi,
-		// 	glm::vec3(modelKakashiCorriendo.getObb().c.x,  // Centro en X del modelo
-		// 			modelKakashiCorriendo.getObb().c.y,  // Centro en Y del modelo
-		// 			modelKakashiCorriendo.getObb().c.z)  // Centro en Z del modelo
-		// );
-		// // Establecer el centro del collider
-		// kakashiCollider.c = glm::vec3(modelMatrixColliderKakashi[3]);
-		// // Establecer la escala del collider según las dimensiones originales del OBB del modelo y la escala aplicada
-		// kakashiCollider.e = modelKakashiCorriendo.getObb().e * glm::vec3(1.0f, 1.0f, 1.0f); // Ajusta según la escala aplicada
-		// // Actualizar o agregar el collider del cubo en el mapa de colliders
-		// addOrUpdateColliders(collidersOBB, "kakashi", kakashiCollider, modelMatrixKakashi);
-
-		// // Collider para el enemigo
-		// glm::mat4 modelMatrixColliderEnemigo = glm::mat4(enemigo.modelMatrix); // Copia de la matriz del enemigo
-		// AbstractModel::OBB enemigoCollider;
-		// // Establece la orientación del collider
-		// enemigoCollider.u = glm::quat_cast(modelMatrixColliderEnemigo);
-		// // Escalar el collider según las dimensiones del enemigo (ajustar según sea necesario)
-		// modelMatrixColliderEnemigo = glm::scale(modelMatrixColliderEnemigo, glm::vec3(1.0f, 1.0f, 1.0f)); // Ajustar escala
-		// // Traducir el collider al centro del modelo del enemigo
-		// modelMatrixColliderEnemigo = glm::translate(modelMatrixColliderEnemigo,
-		// 	glm::vec3(enemigo.modelMatrix[3][0],  // Centro en X del enemigo
-		// 			enemigo.modelMatrix[3][1],  // Centro en Y del enemigo
-		// 			enemigo.modelMatrix[3][2])  // Centro en Z del enemigo
-		// );
-		// // Establecer el centro del collider
-		// enemigoCollider.c = glm::vec3(modelMatrixColliderEnemigo[3]);
-		// // Establecer la escala del collider según las dimensiones originales del OBB del enemigo y la escala aplicada
-		// enemigoCollider.e = glm::vec3(1.0f, 1.0f, 1.0f); // Ajusta según la escala aplicada
-		// // Actualizar o agregar el collider del enemigo en el mapa de colliders
-		// addOrUpdateColliders(collidersOBB, "enemigo", enemigoCollider, modelMatrixColliderEnemigo);
-
-		//=====================================Colisiones===================================================
-		// AbstractModel::OBB kakashiCollideUpdate = std::get<0>(collidersOBB["kakashi"]);
-		// AbstractModel::OBB enemigoColliderUpdate = std::get<0>(collidersOBB["enemigo"]);
-		// // Calcular la distancia entre los centros de los collide
-		// glm::vec3 direction = enemigoColliderUpdate.c - kakashiCollideUpdate.c;
-		// float distance = glm::length(direction);
-		// // Sumar los radios (la mitad de las dimensiones de cada collider)
-		// float combinedRadius = kakashiCollideUpdate.e.x + enemigoColliderUpdate.e.x;  // En el caso de un AABB, se suman las dimensiones
-		// // Si la distancia entre los centros es menor que la suma de los radios, hay colisión
-		// if (distance < combinedRadius) {
-		// 	// Si hay colisión, normalizamos la dirección de colisión y movemos al enemigo fuera de la colisión
-		// 	glm::vec3 moveDirection = glm::normalize(direction);
-		// 				// Calculamos el solapamiento y lo movemos fuera de la colisión
-		// 	float overlap = combinedRadius - distance;
-		// 	enemigo.modelMatrix[3] += moveDirection * overlap;  // Mueve al enemigo fuera del collider de Kakashi
-		// }
-
-		// shaderTexture.setMatrix4("projection", 1, false, glm::value_ptr(glm::mat4(1.0)));
-		// shaderTexture.setMatrix4("view", 1, false, glm::value_ptr(glm::mat4(1.0)));
-		// glActiveTexture(GL_TEXTURE0);
-		// glBindTexture(GL_TEXTURE_2D, textureActivaID);
-		// shaderTexture.setInt("outTexture", 0);
-		// glEnable(GL_BLEND);
-		// boxIntro.render();
-		// glDisable(GL_BLEND);
 
 		glfwSwapBuffers(window);
 	}

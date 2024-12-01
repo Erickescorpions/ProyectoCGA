@@ -14,6 +14,8 @@
 #include <string>
 #include <iostream>
 #include <chrono>
+#include "Headers/AbstractModel.h"
+#include "CollidersController.h"
 
 class Enemy
 {
@@ -23,9 +25,11 @@ public:
   glm::vec3 position;
   Shader *shader;
   std::string modelPath;
+  int ataque = 1;
+  AbstractModel::OBB collider;
 
   // Constructor
-  Enemy(std::string modelPath, Shader *shader, glm::vec3 position, float radius);
+  Enemy(std::string modelPath, Shader *shader, CollidersController* cc, glm::vec3 position, float radius);
 
   // Destructor
   ~Enemy();
@@ -45,6 +49,10 @@ private:
   std::chrono::steady_clock::time_point inicioPersecucion;
   Terrain *terrain;
   float angulo;
+  glm::mat4 modelMatrixCollider;
+  CollidersController* cc;
+
+  float scaleFactor;
 };
 
 #endif // ENEMY_H

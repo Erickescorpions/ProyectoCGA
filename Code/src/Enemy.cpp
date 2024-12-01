@@ -1,16 +1,17 @@
 #include "Enemy.h"
 
-Enemy::Enemy(std::string modelPath, Shader *shader, glm::vec3 position, float radius)
-    : posicionInicial(position), radioDeteccion(radius), angulo(0.0f)
+Enemy::Enemy(std::string modelPath, Shader *shader, CollidersController *cc, glm::vec3 position, float radius)
+    : posicionInicial(position), radioDeteccion(radius), angulo(0.0f), scaleFactor(0.035f)
 {
   this->position = position; // Posición inicial actual
   this->modelo.loadModel(modelPath);
   this->modelo.setShader(shader);
   this->radioGolpe = 5.0f;
+  this->cc = cc;
 
   this->modelMatrix = glm::mat4(1.0f);
   this->modelMatrix = glm::translate(this->modelMatrix, position);
-  this->modelMatrix = glm::scale(this->modelMatrix, glm::vec3(0.035f));
+  this->modelMatrix = glm::scale(this->modelMatrix, glm::vec3(this->scaleFactor));
 }
 
 Enemy::~Enemy() {}
@@ -22,7 +23,7 @@ void Enemy::update(float dt, glm::vec3 posicionObjetivo)
   if (!objetivoEstaEnElArea(posicionObjetivo))
   {
     // animacion acostado
-    modelo.setAnimationIndex(3);
+    modelo.setAnimationIndex(4);
     this->empiezaPersecucion = false;
   }
   else
@@ -31,7 +32,7 @@ void Enemy::update(float dt, glm::vec3 posicionObjetivo)
     {
       this->inicioPersecucion = std::chrono::steady_clock::now();
       // animacion levantandose
-      this->modelo.setAnimationIndex(1);
+      this->modelo.setAnimationIndex(3);
     }
 
     this->empiezaPersecucion = true;
@@ -56,16 +57,31 @@ void Enemy::update(float dt, glm::vec3 posicionObjetivo)
       this->seguirObjetivo(posicionObjetivo, speed, dt);
     }
   }
+
+  this->position.y = terrain->getHeightTerrain(this->position.x, this->position.z);
+  this->modelMatrix = glm::translate(glm::mat4(1.0f), this->position);
+  this->modelMatrix = glm::rotate(this->modelMatrix, this->angulo, glm::vec3(0.0f, 1.0f, 0.0f));
+  this->modelMatrix = glm::scale(this->modelMatrix, glm::vec3(this->scaleFactor));
+
+  this->modelMatrixCollider = glm::mat4(1.0f);
+  this->modelMatrixCollider = glm::rotate(this->modelMatrixCollider, this->angulo, glm::vec3(0, 1, 0));
+  this->collider.u = glm::quat_cast(this->modelMatrixCollider);
+  this->modelMatrixCollider = glm::scale(this->modelMatrixCollider, glm::vec3(5.0f));
+  this->modelMatrixCollider = glm::translate(this->modelMatrixCollider,
+                                             glm::vec3(this->modelo.getObb().c.x, this->modelo.getObb().c.y, this->modelo.getObb().c.z));
+
+  this->collider.e = this->modelo.getObb().e * glm::vec3(this->scaleFactor) * glm::vec3(0.787401574, 0.787401574, 0.787401574);
+  this->collider.c = glm::vec3(this->modelMatrix[3]);
+  this->collider.c.y += 3.0f;
+
+  // agregamos la colision al collider controller
+  this->cc->addOrUpdateCollidersOBB("enemigo", this->collider, this->modelMatrixCollider);
 }
 
 void Enemy::render()
 {
-  this->position.y = terrain->getHeightTerrain(this->position.x, this->position.z);
-  this->modelMatrix = glm::translate(glm::mat4(1.0f), this->position);
-  this->modelMatrix = glm::rotate(this->modelMatrix, this->angulo, glm::vec3(0.0f, 1.0f, 0.0f));
-  this->modelMatrix = glm::scale(this->modelMatrix, glm::vec3(0.035));
-
   this->modelo.render(this->modelMatrix);
+  // this->collider.render(this->modelMatrixCollider);
 }
 
 void Enemy::seguirObjetivo(glm::vec3 targetPosition, float speed, float dt)
