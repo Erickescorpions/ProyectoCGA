@@ -139,20 +139,7 @@ int lastMousePosX, offsetX = 0;
 int lastMousePosY, offsetY = 0;
 
 glm::mat4 matrixModelCirculo = glm::mat4(1.0);
-uint8_t modelSelected = 0;
 bool enableCountSelected = true;
-
-enum Personaje
-{
-	KAKASHI = 0,
-	KRATOS = 1,
-	NARUTO = 2
-};
-
-uint8_t numeroPersonajesIntercambiar = 3;
-uint8_t kakashiState = 0;
-uint8_t kratosState = 0;
-uint8_t narutoState = 0;
 
 // Lamps position
 std::vector<glm::vec3> lamp1Position = {
@@ -553,21 +540,17 @@ bool processInput(bool continueApplication, Player *jugador)
 		if (presionarEnter)
 		{
 			iniciaPartida = true;
-			// Set modelSelected based on the active texture before changing textureActivaID
 			if (textureActivaID == textureInit1ID)
 			{
-				modelSelected = Personaje::KAKASHI;
-				jugador->setJugador("kakashi");
+				jugador->setJugador(Personaje::KAKASHI);
 			}
 			else if (textureActivaID == textureInit2ID)
 			{
-				modelSelected = Personaje::KRATOS;
-				jugador->setJugador("kratos");
+				jugador->setJugador(Personaje::KRATOS);
 			}
 			else if (textureActivaID == textureInit3ID)
 			{
-				modelSelected = Personaje::NARUTO;
-				jugador->setJugador("naruto");
+				jugador->setJugador(Personaje::NARUTO);
 			}
 			textureActivaID = textureCuboID;
 		}
@@ -577,17 +560,14 @@ bool processInput(bool continueApplication, Player *jugador)
 			if (textureActivaID == textureInit1ID)
 			{
 				textureActivaID = textureInit2ID;
-				modelSelected = Personaje::KRATOS;
 			}
 			else if (textureActivaID == textureInit2ID)
 			{
 				textureActivaID = textureInit3ID;
-				modelSelected = Personaje::NARUTO;
 			}
 			else if (textureActivaID == textureInit3ID)
 			{
 				textureActivaID = textureInit1ID;
-				modelSelected = Personaje::KAKASHI;
 			}
 		}
 		else if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE)
@@ -634,9 +614,7 @@ bool processInput(bool continueApplication, Player *jugador)
 
 	offsetX = 0;
 	offsetY = 0;
-	kakashiState = 0;
-	kratosState = 0;
-	narutoState = 0;
+	jugador->setAccion(AccionJugador::QUIETO);
 
 	// Controles para mover izquierda y a la derecha
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
@@ -656,18 +634,18 @@ bool processInput(bool continueApplication, Player *jugador)
 	{
 		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 		{
-			kakashiState = 2; // Estado de correr
+			jugador->setAccion(AccionJugador::CORRIENDO);
 			jugador->modelMatrix = glm::translate(jugador->modelMatrix, glm::vec3(0.0, 0.0, 20.0));
 		}
 		else
 		{
-			kakashiState = 1; // Estado de caminar
+			jugador->setAccion(AccionJugador::CAMINANDO);
 			jugador->modelMatrix = glm::translate(jugador->modelMatrix, glm::vec3(0.0, 0.0, 5.0));
 		}
 	}
 	else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 	{
-		kakashiState = 3;
+		jugador->setAccion(AccionJugador::REVERSA);
 		jugador->modelMatrix = glm::translate(jugador->modelMatrix, glm::vec3(0.0, 0.0, -5.0));
 	}
 

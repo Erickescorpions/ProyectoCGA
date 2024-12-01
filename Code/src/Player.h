@@ -16,24 +16,45 @@
 #include <map>
 #include <string>
 
-extern std::map<std::string, std::map<std::string, std::string>> modelosJugador;
+
+enum AccionJugador {
+  CAMINANDO = 0,
+  CORRIENDO,
+  QUIETO,
+  REVERSA
+};
+
+enum Personaje
+{
+	KAKASHI = 0,
+	KRATOS = 1,
+	NARUTO = 2
+};
+
+extern std::map<Personaje, std::map<std::string, std::string>> modelosJugador;
 
 class Player
 {
 public:
   glm::vec3 posicion;
   glm::mat4 modelMatrix;
-  Model modelo;
-  std::string jugadorSeleccionado;
 
   Player(Shader* shader);
   void render();
   void setTerrain(Terrain *terrain);
-  void setJugador(std::string jugador);
+  void setJugador(Personaje jugador);
+  void setAccion(AccionJugador accion);
 
 private:
   Terrain* terrain;
   Shader* shader;
+  Model modeloCaminando;
+  Model modeloQuieto;
+  Model modeloCorriendo;
+  Model modeloReversa;
+  Model* modelo;
+  Personaje jugadorSeleccionado;
+  AccionJugador accion;
 };
 
 #endif // PLAYER_H
