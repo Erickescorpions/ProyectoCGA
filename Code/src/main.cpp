@@ -46,6 +46,7 @@
 
 #include "Enemy.h"
 #include "Cube.h"
+#include "Player.h"
 
 // Include Colision headers functions
 #include "Headers/Colisiones.h"
@@ -104,26 +105,6 @@ Model modelLamp1;
 Model modelLamp2;
 Model modelLampPost2;
 
-// Modelos animados
-
-// Kakashi
-Model modelKakashiReversa;
-Model modelKakashiCaminando;
-Model modelKakashiCorriendo;
-Model modelKakashiQuieto;
-
-// Kratos
-Model modelKratosReversa;
-Model modelKratosCaminando;
-Model modelKratosCorriendo;
-Model modelKratosQuieto;
-
-// Naruto
-Model modelNarutoReversa;
-Model modelNarutoCaminando;
-Model modelNarutoCorriendo;
-Model modelNarutoQuieto;
-
 // Teletransporte
 Model modelCirculoMagico;
 
@@ -159,19 +140,16 @@ bool exitApp = false;
 int lastMousePosX, offsetX = 0;
 int lastMousePosY, offsetY = 0;
 
-// Model matrix definitions
 glm::mat4 matrixModelCirculo = glm::mat4(1.0);
-glm::mat4 modelMatrixKakashi = glm::mat4(1.0f);
-glm::mat4 modelMatrixKratos = glm::mat4(1.0f);
-glm::mat4 modelMatrixNaruto = glm::mat4(1.0f);
-
 uint8_t modelSelected = 0;
 bool enableCountSelected = true;
+
 enum Personaje {
 	KAKASHI = 0,
 	KRATOS = 1,
 	NARUTO = 2
 };
+
 uint8_t numeroPersonajesIntercambiar = 3;
 uint8_t kakashiState = 0;
 uint8_t kratosState = 0;
@@ -212,7 +190,7 @@ void scrollCallback(GLFWwindow *window, double xoffset, double yoffset);
 
 void init(int width, int height, std::string strTitle, bool bFullScreen);
 void destroy();
-bool processInput(bool continueApplication = true);
+bool processInput(bool continueApplication = true, Player* jugador = nullptr);
 void GenerarTextura(Texture texture, GLuint &textureID);
 void RenderTextura(GLuint Cesped, GLuint R, GLuint G, GLuint B, GLuint BlendMap);
 bool checkCollision(const AbstractModel::OBB& box1, const AbstractModel::OBB& box2);
@@ -307,35 +285,6 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	modelLampPost2.loadModel("../models/Street_Light/LampPost.obj");
 	modelLampPost2.setShader(&shaderMulLighting);
 
-	// Kakashi
-	modelKakashiReversa.loadModel("../models/kakashi/KakashiReversa.fbx");
-	modelKakashiReversa.setShader(&shaderMulLighting);
-	modelKakashiCaminando.loadModel("../models/kakashi/KakashiCaminando.fbx");
-	modelKakashiCaminando.setShader(&shaderMulLighting);
-	modelKakashiCorriendo.loadModel("../models/kakashi/KakashiRun.fbx");
-	modelKakashiCorriendo.setShader(&shaderMulLighting);
-	modelKakashiQuieto.loadModel("../models/kakashi/KakashiQuieto.fbx");
-	modelKakashiQuieto.setShader(&shaderMulLighting);
-	
-	// Kratos
-	modelKratosReversa.loadModel("../models/kratos/KratosReversa.fbx");
-	modelKratosReversa.setShader(&shaderMulLighting);
-	modelKratosCaminando.loadModel("../models/kratos/KratosCaminando.fbx");
-	modelKratosCaminando.setShader(&shaderMulLighting);
-	modelKratosCorriendo.loadModel("../models/kratos/KratosRun.fbx");
-	modelKratosCorriendo.setShader(&shaderMulLighting);
-	modelKratosQuieto.loadModel("../models/kratos/KratosQuieto.fbx");
-	modelKratosQuieto.setShader(&shaderMulLighting);
-
-	// Naruto
-	modelNarutoReversa.loadModel("../models/naruto/NarutoReversa.fbx");
-	modelNarutoReversa.setShader(&shaderMulLighting);
-	modelNarutoCaminando.loadModel("../models/naruto/NarutoCaminando.fbx");
-	modelNarutoCaminando.setShader(&shaderMulLighting);
-	modelNarutoCorriendo.loadModel("../models/naruto/NarutoRun.fbx");
-	modelNarutoCorriendo.setShader(&shaderMulLighting);
-	modelNarutoQuieto.loadModel("../models/naruto/NarutoQuieto.fbx");
-	modelNarutoQuieto.setShader(&shaderMulLighting);
 
 	// Circulo de transporte
 	modelCirculoMagico.loadModel("../models/teletransportador/circulo_magico.obj");
@@ -475,18 +424,6 @@ void destroy() {
 	modelLamp1.destroy();
 	modelLamp2.destroy();
 	modelLampPost2.destroy();
-	modelKakashiReversa.destroy();
-	modelKakashiCaminando.destroy();
-	modelKakashiCorriendo.destroy();
-	modelKakashiQuieto.destroy();
-	modelKratosReversa.destroy();
-	modelKratosCaminando.destroy();
-	modelKratosCorriendo.destroy();
-	modelKratosQuieto.destroy();
-	modelNarutoReversa.destroy();
-	modelNarutoCaminando.destroy();
-	modelNarutoCorriendo.destroy();
-	modelNarutoQuieto.destroy();
 	modelCirculoMagico.destroy();
 
 	// Terrains objects Delete
@@ -587,7 +524,7 @@ void scrollCallback(GLFWwindow *window, double xoffset, double yoffset) {
 	camera->setDistanceFromTarget(distanceFromPlayer);
 }
 
-bool processInput(bool continueApplication) {
+bool processInput(bool continueApplication, Player* jugador) {
 	if (exitApp || glfwWindowShouldClose(window) != 0) {
 		return false;
 	}
@@ -599,12 +536,15 @@ bool processInput(bool continueApplication) {
         // Set modelSelected based on the active texture before changing textureActivaID
         if(textureActivaID == textureInit1ID){
             modelSelected = Personaje::KAKASHI;
+					jugador->setJugador("kakashi");
         }
         else if(textureActivaID == textureInit2ID){
             modelSelected = Personaje::KRATOS;
+					jugador->setJugador("kratos");
         }
         else if(textureActivaID == textureInit3ID){
             modelSelected = Personaje::NARUTO;
+					jugador->setJugador("naruto");
         }
         textureActivaID = textureCuboID;
     }
@@ -673,76 +613,28 @@ bool processInput(bool continueApplication) {
 	// Controles para mover izquierda y a la derecha
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
 		angleTarget += 0.02f;
-		if(modelSelected == Personaje::KAKASHI) {
-			modelMatrixKakashi = glm::rotate(modelMatrixKakashi, 0.02f, glm::vec3(0, 1, 0));
-		} 
-		else if(modelSelected == Personaje::KRATOS) {
-			modelMatrixKratos = glm::rotate(modelMatrixKratos, 0.02f, glm::vec3(0, 1, 0));
-		} 
-		else if(modelSelected == Personaje::NARUTO) {
-			modelMatrixNaruto = glm::rotate(modelMatrixNaruto, 0.02f, glm::vec3(0, 1, 0));
-		}
+		jugador->modelMatrix = glm::rotate(jugador->modelMatrix, 0.02f, glm::vec3(0, 1, 0));
 	} 
+
 	else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
 		angleTarget -= 0.02f;
-		
-		if(modelSelected == Personaje::KAKASHI) {
-			modelMatrixKakashi = glm::rotate(modelMatrixKakashi, -0.02f, glm::vec3(0, 1, 0));
-		}
-		else if(modelSelected == Personaje::KRATOS) {
-			modelMatrixKratos = glm::rotate(modelMatrixKratos, -0.02f, glm::vec3(0, 1, 0));
-		} 
-		else if(modelSelected == Personaje::NARUTO) {
-			modelMatrixNaruto = glm::rotate(modelMatrixNaruto, -0.02f, glm::vec3(0, 1, 0));
-		}
+		jugador->modelMatrix = glm::rotate(jugador->modelMatrix, -0.02f, glm::vec3(0, 1, 0));
 	}
 
 	// Controles para ir adelante y atras
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-		if (modelSelected == Personaje::KAKASHI) {
-			if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
-				kakashiState = 2; // Estado de correr
-				modelMatrixKakashi = glm::translate(modelMatrixKakashi, glm::vec3(0.0, 0.0, 20.0));
-			} else {
-				kakashiState = 1; // Estado de caminar
-				modelMatrixKakashi = glm::translate(modelMatrixKakashi, glm::vec3(0.0, 0.0, 5.0));
-			}
-		}
-		else if (modelSelected == Personaje::KRATOS) {
-			if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
-				kratosState = 2; // Estado de correr
-				modelMatrixKratos = glm::translate(modelMatrixKratos, glm::vec3(0.0, 0.0, 20.0));
-			} else {
-				kratosState = 1; // Estado de caminar
-				modelMatrixKratos = glm::translate(modelMatrixKratos, glm::vec3(0.0, 0.0, 5.0));
-			}
-		}
-		else if (modelSelected == Personaje::NARUTO) {
-			if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
-				narutoState = 2; // Estado de correr
-				modelMatrixNaruto = glm::translate(modelMatrixNaruto, glm::vec3(0.0, 0.0, 20.0));
-			} else {
-				narutoState = 1; // Estado de caminar
-				modelMatrixNaruto = glm::translate(modelMatrixNaruto, glm::vec3(0.0, 0.0, 5.0));
-			}
+		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+			kakashiState = 2; // Estado de correr
+			jugador->modelMatrix = glm::translate(jugador->modelMatrix, glm::vec3(0.0, 0.0, 20.0));
+		} else {
+			kakashiState = 1; // Estado de caminar
+			jugador->modelMatrix = glm::translate(jugador->modelMatrix, glm::vec3(0.0, 0.0, 5.0));
 		}
 	}
 	else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-		if(modelSelected == Personaje::KAKASHI) {
-			kakashiState = 3;
-			modelMatrixKakashi = glm::translate(modelMatrixKakashi, glm::vec3(0.0, 0.0, -5.0));
-		}
-		else if(modelSelected == Personaje::KRATOS) {
-			kratosState = 3;
-			modelMatrixKratos = glm::translate(modelMatrixKratos, glm::vec3(0.0, 0.0, -5.0));
-		}
-		else if(modelSelected == Personaje::NARUTO) {
-			narutoState = 3;
-			modelMatrixNaruto = glm::translate(modelMatrixNaruto, glm::vec3(0.0, 0.0, -5.0));
-		}
+		kakashiState = 3;
+		jugador->modelMatrix = glm::translate(jugador->modelMatrix, glm::vec3(0.0, 0.0, -5.0));
 	}
-	/* if(modelSelected == Personaje::KAKASHI && glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) {
-		kakashiState = 2; } */
 
 	glfwPollEvents();
 	return continueApplication;
@@ -797,23 +689,14 @@ void applicationLoop() {
 	int numberAdvance = 0;
 	int maxAdvance = 0.0;
 
-	modelMatrixKakashi = glm::translate(modelMatrixKakashi, glm::vec3(10.0f, 0.05f, 0.0f));
-	modelMatrixKakashi = glm::scale(modelMatrixKakashi, glm::vec3(0.01f));
-	modelMatrixKakashi = glm::rotate(modelMatrixKakashi, glm::radians(0.0f), glm::vec3(0, 1, 0));
-
-	modelMatrixKratos = glm::translate(modelMatrixKratos, glm::vec3(20.0f, 0.05f, 0.0f));
-	modelMatrixKratos = glm::scale(modelMatrixKratos, glm::vec3(0.01f));
-	modelMatrixKratos = glm::rotate(modelMatrixKratos, glm::radians(0.0f), glm::vec3(0, 1, 0));
-
-	modelMatrixNaruto = glm::translate(modelMatrixNaruto, glm::vec3(30.0f, 0.05f, 0.0f));
-	modelMatrixNaruto = glm::scale(modelMatrixNaruto, glm::vec3(0.01f));
-	modelMatrixNaruto = glm::rotate(modelMatrixNaruto, glm::radians(0.0f), glm::vec3(0, 1, 0));
-
 	lastTime = TimeManager::Instance().GetTime();
 
 	// Inicializacoin de valores de la camara
 	camera->setSensitivity(1.2f);
 	camera->setDistanceFromTarget(distanceFromPlayer);
+
+	Player jugador = Player(&shaderMulLighting);
+	jugador.setTerrain(&island1);
 
 	Cube cube("../models/cubo/cubo.fbx", &shaderMulLighting, glm::vec3(0.0f, 0.0f, 0.0f));
 	cube.setTerrain(&island1);  
@@ -832,12 +715,12 @@ void applicationLoop() {
 		lastTime = currTime;
 		TimeManager::Instance().CalculateFrameRate(true);
 		deltaTime = TimeManager::Instance().DeltaTime;
-		psi = processInput(true);
+		psi = processInput(true, &jugador);
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Renderizar la introducción si aún no ha comenzado la partida
-		if(!iniciaPartida){
+		if(!iniciaPartida) {
 			// Configuración de matrices de proyección y vista para la introducción
 			shaderTexture.setMatrix4("projection", 1, false, glm::value_ptr(glm::mat4(1.0)));
 			shaderTexture.setMatrix4("view", 1, false, glm::value_ptr(glm::mat4(1.0)));
@@ -859,20 +742,8 @@ void applicationLoop() {
 		glm::mat4 projection = glm::perspective(glm::radians(45.0f),
 				(float) screenWidth / (float) screenHeight, 0.01f, 1000.0f);
 
-		if(modelSelected == 0){
-			positionTarget = modelMatrixKakashi[3];
-			positionTarget.y += 3.0f;
-		}
-		else if(modelSelected == 1){
-			positionTarget = modelMatrixKratos[3];
-			positionTarget.y += 3.0f;
-			positionTarget.x += 1.0f;
-		}
-
-		else if(modelSelected == 2){
-			positionTarget = modelMatrixNaruto[3];
-			positionTarget.y += 3.0f;
-		}
+		positionTarget = jugador.modelMatrix[3];
+		positionTarget.y += 3.0f;
 
 		glm::mat4 view;
 		if (isFirstPersonActive) {
@@ -935,7 +806,7 @@ void applicationLoop() {
 		 *******************************************/
 		shaderMulLighting.setInt("spotLightCount", 1);
 		shaderTerrain.setInt("spotLightCount", 1);
-		glm::vec3 spotPosition = glm::vec3(modelMatrixKakashi * glm::vec4(0.0, 0.2, 1.75, 1.0));
+		glm::vec3 spotPosition = glm::vec3(jugador.modelMatrix * glm::vec4(0.0, 0.2, 1.75, 1.0));
 		shaderMulLighting.setVectorFloat3("spotLights[0].light.ambient", glm::value_ptr(glm::vec3(0.0, 0.0, 0.0)));
 		shaderMulLighting.setVectorFloat3("spotLights[0].light.diffuse", glm::value_ptr(glm::vec3(0.2, 0.2, 0.2)));
 		shaderMulLighting.setVectorFloat3("spotLights[0].light.specular", glm::value_ptr(glm::vec3(0.3, 0.3, 0.3)));
@@ -1074,94 +945,21 @@ void applicationLoop() {
 		}
 		
 		/*****************************************
-		 * Personajes
+		 * Jugador
 		 * **************************************/
-		// Character Rendering
-		if (modelSelected == Personaje::KAKASHI) {
-			// Render Kakashi
-			glm::mat4 modelMatrixKakashiBody = glm::mat4(modelMatrixKakashi);
-			// Adjust y-axis based on terrain height
-			modelMatrixKakashiBody[3][1] = island1.getHeightTerrain(modelMatrixKakashiBody[3][0], modelMatrixKakashiBody[3][2]);
-			switch (kakashiState) {
-				case 0:
-					modelKakashiQuieto.render(modelMatrixKakashiBody);
-					break;
-				case 1:
-					modelKakashiCaminando.render(modelMatrixKakashiBody);
-					break;
-				case 2:
-					modelKakashiCorriendo.render(modelMatrixKakashiBody);
-					break;
-				case 3:
-					modelKakashiReversa.render(modelMatrixKakashiBody);
-					break;
-				default:
-					break;
-			}
-		}
-		else if (modelSelected == Personaje::KRATOS) {
-			// Render Kratos
-			glm::mat4 modelMatrixKratosBody = glm::mat4(modelMatrixKratos);
-			// Adjust y-axis based on terrain height
-			modelMatrixKratosBody[3][1] = island1.getHeightTerrain(modelMatrixKratosBody[3][0], modelMatrixKratosBody[3][2]);
-			switch (kratosState) {
-				case 0:
-					modelKratosQuieto.render(modelMatrixKratosBody);
-					break;
-				case 1:
-					modelKratosCaminando.render(modelMatrixKratosBody);
-					break;
-				case 2:
-					modelKratosCorriendo.render(modelMatrixKratosBody);
-					break;
-				case 3:
-					modelKratosReversa.render(modelMatrixKratosBody);
-					break;
-				default:
-					break;
-			}
-		}
-		else if (modelSelected == Personaje::NARUTO) {
-			// Render Naruto
-			glm::mat4 modelMatrixNarutoBody = glm::mat4(modelMatrixNaruto);
-			// Adjust y-axis based on terrain height
-			modelMatrixNarutoBody[3][1] = island1.getHeightTerrain(modelMatrixNarutoBody[3][0], modelMatrixNarutoBody[3][2]);
-			switch (narutoState) {
-				case 0:
-					modelNarutoQuieto.render(modelMatrixNarutoBody);
-					break;
-				case 1:
-					modelNarutoCaminando.render(modelMatrixNarutoBody);
-					break;
-				case 2:
-					modelNarutoCorriendo.render(modelMatrixNarutoBody);
-					break;
-				case 3:
-					modelNarutoReversa.render(modelMatrixNarutoBody);
-					break;
-				default:
-					break;
-			}
-		}
+		// Renderizamos al jugador
+		jugador.render();
 
-		glm::vec3 posicionPersonaje = glm::vec3(0.0f);
+		glm::vec3 posicionJugador = jugador.modelMatrix[3];
 
-		if(modelSelected == Personaje::KRATOS) {
-			posicionPersonaje = glm::vec3(modelMatrixKratos[3]);
-		} else if(modelSelected == Personaje::NARUTO) {
-			posicionPersonaje = glm::vec3(modelMatrixNaruto[3]);
-		} else if(modelSelected == Personaje::KAKASHI) {
-			posicionPersonaje = glm::vec3(modelMatrixKakashi[3]);
-		}
-
-		enemigo.update(deltaTime, posicionPersonaje);
+		enemigo.update(deltaTime, posicionJugador);
 		enemigo.render();
 		//=======================================================Contador para los fragmentos recogido===========================================================
 		// Actualiza la lógica del cubo (flotación, rotación)
-		cube.update(deltaTime, posicionPersonaje);
+		cube.update(deltaTime, posicionJugador);
 		// Obtener la posición del cubo
 		glm::vec3 posicionCubo = glm::vec3(cube.modelMatrix[3]); // O usar otro método si modelMatrix no tiene la posición directamente
-		float distancia = glm::distance(posicionPersonaje, posicionCubo);
+		float distancia = glm::distance(posicionJugador, posicionCubo);
 		if (distancia < proximidadUmbral && !cuboAgarrado) {
 			cuboAgarrado = true;
 			cuboContador++; 
