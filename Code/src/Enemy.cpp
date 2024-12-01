@@ -8,7 +8,8 @@ Enemy::Enemy(std::string modelPath, Shader *shader, glm::vec3 position, float ra
   this->modelo.setShader(shader);
   this->radioGolpe = 5.0f;
 
-  this->modelMatrix = glm::translate(glm::mat4(1.0f), position);
+  this->modelMatrix = glm::mat4(1.0f);
+  this->modelMatrix = glm::translate(this->modelMatrix, position);
   this->modelMatrix = glm::scale(this->modelMatrix, glm::vec3(0.035f));
 }
 
