@@ -17,6 +17,8 @@
 #include <map>
 #include <string>
 
+#define MAXIMA_VIDA 4
+
 enum AccionJugador {
   CAMINANDO = 0,
   CORRIENDO,
@@ -49,6 +51,9 @@ public:
   void setJugador(Personaje jugador);
   void setAccion(AccionJugador accion);
   void moverJugador(AccionJugador accion, int direccion);
+  int getVida() {
+    return this->vida;
+  }
 
 private:
   Terrain* terrain;
@@ -65,6 +70,8 @@ private:
   // Para colisiones
   glm::mat4 modelMatrixCollider;
   CollidersController* cc;
+
+  int vida;
 
   void addOrUpdateCollider();
 };

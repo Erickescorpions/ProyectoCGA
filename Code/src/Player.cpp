@@ -6,7 +6,7 @@ std::map<Personaje, std::map<std::string, std::string>> modelosJugador = {
     {Personaje::KAKASHI, {{"caminando", "../models/kakashi/KakashiCaminando.fbx"}, {"corriendo", "../models/kakashi/KakashiRun.fbx"}, {"quieto", "../models/kakashi/KakashiQuieto.fbx"}, {"reversa", "../models/kakashi/KakashiReversa.fbx"}}}};
 
 Player::Player(Shader *shader, CollidersController *cc)
-    : scaleFactor(0.01f)
+    : scaleFactor(0.01f), vida(MAXIMA_VIDA)
 {
   this->shader = shader;
   this->cc = cc;
@@ -16,9 +16,6 @@ Player::Player(Shader *shader, CollidersController *cc)
   this->modelMatrixCollider = glm::mat4(1.0f);
 
   this->posicion = glm::vec3(30.0f, 3.0f, 0.0f);
-  this->modelMatrix = glm::translate(this->modelMatrix, this->posicion);
-  this->modelMatrix = glm::scale(this->modelMatrix, glm::vec3(this->scaleFactor));
-  this->modelMatrix = glm::rotate(this->modelMatrix, glm::radians(0.0f), glm::vec3(0, 1, 0));
 }
 
 Player::~Player()
@@ -61,6 +58,8 @@ void Player::setJugador(Personaje jugador)
   this->modeloReversa.loadModel(modelosJugador[jugador]["reversa"]);
   this->modeloReversa.setShader(this->shader);
   this->modelo = &this->modeloQuieto;
+
+  this->modelMatrix = glm::mat4(1.0f);
 }
 
 void Player::setAccion(AccionJugador accion)
