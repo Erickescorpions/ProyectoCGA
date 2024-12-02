@@ -36,9 +36,6 @@ public:
 
   void update(float dt, glm::vec3 posicionObjetivo);
   void render();
-  void seguirObjetivo(glm::vec3 targetPosition, float speed, float dt);
-  bool objetivoEstaEnElArea(glm::vec3 targetPosition);
-  bool golpearObjetivo(glm::vec3 posicionObjetivo);
   void setTerrain(Terrain *terrain);
 
 private:
@@ -51,8 +48,12 @@ private:
   float angulo;
   glm::mat4 modelMatrixCollider;
   CollidersController* cc;
-
   float scaleFactor;
+
+  void seguirObjetivo(glm::vec3 posicionObjetivo, float speed, float dt);
+  bool objetivoEstaEnElArea(glm::vec3 posicionObjetivo);
+  bool golpearObjetivo(glm::vec3 posicionObjetivo);
+  void addOrUpdateColliders();
 };
 
 #endif // ENEMY_H

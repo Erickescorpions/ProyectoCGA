@@ -7,15 +7,15 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-// Include loader Model class
 #include "Headers/Model.h"
 #include "Headers/Shader.h"
 #include "Headers/Terrain.h"
+#include "Headers/AbstractModel.h"
+#include "CollidersController.h"
 
 #include <iostream>
 #include <map>
 #include <string>
-
 
 enum AccionJugador {
   CAMINANDO = 0,
@@ -38,12 +38,17 @@ class Player
 public:
   glm::vec3 posicion;
   glm::mat4 modelMatrix;
+  AbstractModel::OBB collider;
+  float anguloOrientacion;
 
-  Player(Shader* shader);
+  Player(Shader* shader, CollidersController* cc);
+  ~Player();
+  void update(float dt);
   void render();
   void setTerrain(Terrain *terrain);
   void setJugador(Personaje jugador);
   void setAccion(AccionJugador accion);
+  void moverJugador(AccionJugador accion, int direccion);
 
 private:
   Terrain* terrain;
@@ -55,6 +60,13 @@ private:
   Model* modelo;
   Personaje jugadorSeleccionado;
   AccionJugador accion;
+  float scaleFactor;
+
+  // Para colisiones
+  glm::mat4 modelMatrixCollider;
+  CollidersController* cc;
+
+  void addOrUpdateCollider();
 };
 
 #endif // PLAYER_H

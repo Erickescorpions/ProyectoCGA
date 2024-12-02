@@ -358,16 +358,16 @@ void init(int width, int height, std::string strTitle, bool bFullScreen)
 	// GenerarTextura(textureScreen, textureScreenID);
 	textureActivaID = textureInit1ID;
 
-	Texture textureCubo("../texture/cubo.png");
-	GLuint textureCuboID;
+	//Texture textureCubo("../texture/cubo.png");
+	//GLuint textureCuboID;
 	// Generar y cargar la textura
-	GenerarTextura(textureCubo, textureCuboID);
+	//GenerarTextura(textureCubo, textureCuboID);
 	// Enlazar la textura
-	glBindTexture(GL_TEXTURE_2D, textureCuboID);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);			// Ajustes de wrapping
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);			// Ajustes de wrapping
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); // Filtro de minimización
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // Filtro de maximización
+	// glBindTexture(GL_TEXTURE_2D, textureCuboID);
+	// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);			// Ajustes de wrapping
+	// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);			// Ajustes de wrapping
+	// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); // Filtro de minimización
+	// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // Filtro de maximización
 
 	// Se inicializa el model de render text
 	modelText = new FontTypeRendering::FontTypeRendering(screenWidth, screenHeight);
@@ -619,13 +619,15 @@ bool processInput(bool continueApplication, Player *jugador)
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 	{
 		angleTarget += 0.02f;
-		jugador->modelMatrix = glm::rotate(jugador->modelMatrix, 0.02f, glm::vec3(0, 1, 0));
+		jugador->anguloOrientacion += 0.02f;
+		//jugador->modelMatrix = glm::rotate(jugador->modelMatrix, 0.02f, glm::vec3(0, 1, 0));
 	}
 
 	else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 	{
 		angleTarget -= 0.02f;
-		jugador->modelMatrix = glm::rotate(jugador->modelMatrix, -0.02f, glm::vec3(0, 1, 0));
+		jugador->anguloOrientacion -= 0.02f;
+		//jugador->modelMatrix = glm::rotate(jugador->modelMatrix, -0.02f, glm::vec3(0, 1, 0));
 	}
 
 	// Controles para ir adelante y atras
@@ -634,18 +636,21 @@ bool processInput(bool continueApplication, Player *jugador)
 		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 		{
 			jugador->setAccion(AccionJugador::CORRIENDO);
-			jugador->modelMatrix = glm::translate(jugador->modelMatrix, glm::vec3(0.0, 0.0, 20.0));
+			jugador->moverJugador(AccionJugador::CORRIENDO, 1);
+			//jugador->modelMatrix = glm::translate(jugador->modelMatrix, glm::vec3(0.0, 0.0, 20.0));
 		}
 		else
 		{
 			jugador->setAccion(AccionJugador::CAMINANDO);
-			jugador->modelMatrix = glm::translate(jugador->modelMatrix, glm::vec3(0.0, 0.0, 5.0));
+			jugador->moverJugador(AccionJugador::CAMINANDO, 1);
+			//jugador->modelMatrix = glm::translate(jugador->modelMatrix, glm::vec3(0.0, 0.0, 5.0));
 		}
 	}
 	else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 	{
 		jugador->setAccion(AccionJugador::REVERSA);
-		jugador->modelMatrix = glm::translate(jugador->modelMatrix, glm::vec3(0.0, 0.0, -5.0));
+		jugador->moverJugador(AccionJugador::CAMINANDO, -1);
+		//jugador->modelMatrix = glm::translate(jugador->modelMatrix, glm::vec3(0.0, 0.0, -5.0));
 	}
 
 	glfwPollEvents();
@@ -709,7 +714,7 @@ void applicationLoop()
 
 	CollidersController* cc = new CollidersController(&shader);
 
-	Player jugador = Player(&shaderMulLighting);
+	Player jugador = Player(&shaderMulLighting, cc);
 	jugador.setTerrain(&island1);
 
 	Cube cube("../models/cubo/cubo.fbx", &shaderMulLighting, glm::vec3(0.0f, 0.0f, 0.0f));
@@ -973,6 +978,7 @@ void applicationLoop()
 		/*****************************************
 		 * Jugador
 		 * **************************************/
+		jugador.update(deltaTime);
 		// Renderizamos al jugador
 		jugador.render();
 

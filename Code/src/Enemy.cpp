@@ -12,6 +12,8 @@ Enemy::Enemy(std::string modelPath, Shader *shader, CollidersController *cc, glm
   this->modelMatrix = glm::mat4(1.0f);
   this->modelMatrix = glm::translate(this->modelMatrix, position);
   this->modelMatrix = glm::scale(this->modelMatrix, glm::vec3(this->scaleFactor));
+  
+  this->modelMatrixCollider = glm::mat4(1.0f);
 }
 
 Enemy::~Enemy() {}
@@ -63,19 +65,7 @@ void Enemy::update(float dt, glm::vec3 posicionObjetivo)
   this->modelMatrix = glm::rotate(this->modelMatrix, this->angulo, glm::vec3(0.0f, 1.0f, 0.0f));
   this->modelMatrix = glm::scale(this->modelMatrix, glm::vec3(this->scaleFactor));
 
-  this->modelMatrixCollider = glm::mat4(1.0f);
-  this->modelMatrixCollider = glm::rotate(this->modelMatrixCollider, this->angulo, glm::vec3(0, 1, 0));
-  this->collider.u = glm::quat_cast(this->modelMatrixCollider);
-  this->modelMatrixCollider = glm::scale(this->modelMatrixCollider, glm::vec3(5.0f));
-  this->modelMatrixCollider = glm::translate(this->modelMatrixCollider,
-                                             glm::vec3(this->modelo.getObb().c.x, this->modelo.getObb().c.y, this->modelo.getObb().c.z));
-
-  this->collider.e = this->modelo.getObb().e * glm::vec3(this->scaleFactor) * glm::vec3(0.787401574, 0.787401574, 0.787401574);
-  this->collider.c = glm::vec3(this->modelMatrix[3]);
-  this->collider.c.y += 3.0f;
-
-  // agregamos la colision al collider controller
-  this->cc->addOrUpdateCollidersOBB("enemigo", this->collider, this->modelMatrixCollider);
+  this->addOrUpdateColliders();
 }
 
 void Enemy::render()
@@ -84,12 +74,12 @@ void Enemy::render()
   // this->collider.render(this->modelMatrixCollider);
 }
 
-void Enemy::seguirObjetivo(glm::vec3 targetPosition, float speed, float dt)
+void Enemy::seguirObjetivo(glm::vec3 posicionObjetivo, float speed, float dt)
 {
   // Obtener la posición actual del enemigo
   glm::vec3 currentPosition = glm::vec3(modelMatrix[3].x, modelMatrix[3].y, modelMatrix[3].z);
   // Dirección hacia el objetivo
-  glm::vec3 direction = glm::normalize(targetPosition - currentPosition);
+  glm::vec3 direction = glm::normalize(posicionObjetivo - currentPosition);
   // Movimiento en esa dirección
   glm::vec3 movement = direction * speed * dt;
   // Actualizar la posición del enemigo
@@ -99,10 +89,27 @@ void Enemy::seguirObjetivo(glm::vec3 targetPosition, float speed, float dt)
   angulo = atan2(direction.x, direction.z);
 }
 
-bool Enemy::objetivoEstaEnElArea(glm::vec3 targetPosition)
+void Enemy::addOrUpdateColliders()
+{
+  this->modelMatrixCollider = glm::mat4(1.0f);
+  this->modelMatrixCollider = glm::rotate(this->modelMatrixCollider, this->angulo, glm::vec3(0, 1, 0));
+  this->collider.u = glm::quat_cast(this->modelMatrixCollider);
+  this->modelMatrixCollider = glm::scale(this->modelMatrixCollider, glm::vec3(this->scaleFactor));
+  this->modelMatrixCollider = glm::translate(this->modelMatrixCollider,
+                                             glm::vec3(this->modelo.getObb().c.x, this->modelo.getObb().c.y, this->modelo.getObb().c.z));
+
+  this->collider.e = this->modelo.getObb().e * glm::vec3(this->scaleFactor) * glm::vec3(0.787401574, 0.787401574, 0.787401574);
+  this->collider.c = glm::vec3(this->modelMatrix[3]);
+  this->collider.c.y += 2.5f;
+
+  // agregamos la colision al collider controller
+  this->cc->addOrUpdateCollidersOBB("enemigo", this->collider, this->modelMatrixCollider);
+}
+
+bool Enemy::objetivoEstaEnElArea(glm::vec3 posicionObjetivo)
 {
   // Distancia euclidiana entre el objetivo y la posición original
-  float distancia = glm::length(targetPosition - this->position);
+  float distancia = glm::length(posicionObjetivo - this->position);
 
   std::cout << "Distancia calculada: " << distancia << std::endl;
   return distancia <= this->radioDeteccion;
