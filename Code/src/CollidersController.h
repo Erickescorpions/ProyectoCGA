@@ -18,12 +18,16 @@ public:
   void addOrUpdateCollidersOBB(std::string colliderName, AbstractModel::OBB collider, glm::mat4 modelMatrix);
   void addOrUpdateCollidersSBB(std::string colliderName, AbstractModel::SBB collider, glm::mat4 modelMatrix);
 
+  void pruebaColisionesSBBvsSBB();
+  void pruebaColisionesOBBvsOBB();
+
 private:
   Box boxCollider;
   Sphere sphereCollider;
   Shader* shader;
   std::map<std::string, std::tuple<AbstractModel::OBB, glm::mat4, glm::mat4>> collidersOBB;
   std::map<std::string, std::tuple<AbstractModel::SBB, glm::mat4, glm::mat4>> collidersSBB;
+  std::map<std::string, bool> collisionDetection;
 };
 
 #endif // COLLIDERS_CONTROLLER_H
