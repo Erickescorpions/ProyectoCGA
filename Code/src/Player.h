@@ -33,7 +33,7 @@ enum Personaje
 	NARUTO = 2
 };
 
-extern std::map<Personaje, std::map<std::string, std::string>> modelosJugador;
+extern std::map<Personaje, std::string> modelosJugador;
 
 class Player
 {
@@ -58,11 +58,7 @@ public:
 private:
   Terrain* terrain;
   Shader* shader;
-  Model modeloCaminando;
-  Model modeloQuieto;
-  Model modeloCorriendo;
-  Model modeloReversa;
-  Model* modelo;
+  Model modelo;
   Personaje jugadorSeleccionado;
   AccionJugador accion;
   float scaleFactor;

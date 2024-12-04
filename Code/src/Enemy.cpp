@@ -66,6 +66,15 @@ void Enemy::update(float dt, glm::vec3 posicionObjetivo)
   this->modelMatrix = glm::scale(this->modelMatrix, glm::vec3(this->scaleFactor));
 
   this->addOrUpdateColliders();
+
+  // vemos si hay colision
+  bool hayColision = this->cc->verificarColision("enemigo");
+  if(hayColision)
+  {
+    // actualizamos la posicion del jugador con la del collider
+    this->modelMatrix[3].x = this->modelMatrixCollider[3].x;
+    this->modelMatrix[3].z = this->modelMatrixCollider[3].z;
+  }
 }
 
 void Enemy::render()
@@ -92,15 +101,16 @@ void Enemy::seguirObjetivo(glm::vec3 posicionObjetivo, float speed, float dt)
 void Enemy::addOrUpdateColliders()
 {
   this->modelMatrixCollider = glm::mat4(1.0f);
+  this->modelMatrixCollider = glm::translate(this->modelMatrixCollider, glm::vec3(this->modelMatrix[3]));
   this->modelMatrixCollider = glm::rotate(this->modelMatrixCollider, this->angulo, glm::vec3(0, 1, 0));
   this->collider.u = glm::quat_cast(this->modelMatrixCollider);
   this->modelMatrixCollider = glm::scale(this->modelMatrixCollider, glm::vec3(this->scaleFactor));
+
   this->modelMatrixCollider = glm::translate(this->modelMatrixCollider,
                                              glm::vec3(this->modelo.getObb().c.x, this->modelo.getObb().c.y, this->modelo.getObb().c.z));
 
   this->collider.e = this->modelo.getObb().e * glm::vec3(this->scaleFactor) * glm::vec3(0.787401574, 0.787401574, 0.787401574);
-  this->collider.c = glm::vec3(this->modelMatrix[3]);
-  this->collider.c.y += 2.5f;
+  this->collider.c = glm::vec3(this->modelMatrixCollider[3]);
 
   // agregamos la colision al collider controller
   this->cc->addOrUpdateCollidersOBB("enemigo", this->collider, this->modelMatrixCollider);
@@ -110,8 +120,6 @@ bool Enemy::objetivoEstaEnElArea(glm::vec3 posicionObjetivo)
 {
   // Distancia euclidiana entre el objetivo y la posición original
   float distancia = glm::length(posicionObjetivo - this->position);
-
-  std::cout << "Distancia calculada: " << distancia << std::endl;
   return distancia <= this->radioDeteccion;
 }
 

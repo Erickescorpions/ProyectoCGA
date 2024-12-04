@@ -53,48 +53,157 @@ void CollidersController::addOrUpdateCollidersSBB(std::string colliderName, Abst
 
 void CollidersController::pruebaColisionesSBBvsSBB()
 {
-  for (std::map<std::string, std::tuple<AbstractModel::SBB, glm::mat4, glm::mat4>>::iterator it =
-           collidersSBB.begin();
-       it != collidersSBB.end(); it++)
+  for (auto it = collidersSBB.begin(); it != collidersSBB.end(); ++it)
   {
     bool isCollision = false;
-    for (std::map<std::string,
-                  std::tuple<AbstractModel::SBB, glm::mat4, glm::mat4>>::iterator jt =
-             collidersSBB.begin();
-         jt != collidersSBB.end(); jt++)
+    for (auto jt = collidersSBB.begin(); jt != collidersSBB.end(); ++jt)
     {
-      if (it != jt && testSphereSphereIntersection(
-                          std::get<0>(it->second), std::get<0>(jt->second)))
+      if (it != jt)
       {
-        std::cout << "Hay collision entre " << it->first << " y el modelo " << jt->first << std::endl;
-        isCollision = true;
+        auto &sbb1 = std::get<0>(it->second);
+        auto &sbb2 = std::get<0>(jt->second);
+        if (testSphereSphereIntersection(sbb1, sbb2))
+        {
+          std::cout << "Hay colisión entre " << it->first << " y " << jt->first << std::endl;
+          checkAndResolveCollisions(sbb1, sbb2);
+          isCollision = true;
+        }
       }
     }
-
     addOrUpdateCollisionDetection(collisionDetection, it->first, isCollision);
   }
 }
 
 void CollidersController::pruebaColisionesOBBvsOBB()
 {
-  for (std::map<std::string,
-                std::tuple<AbstractModel::OBB, glm::mat4, glm::mat4>>::iterator it =
-           collidersOBB.begin();
-       it != collidersOBB.end(); it++)
+  for (auto it = collidersOBB.begin(); it != collidersOBB.end(); ++it)
   {
-    bool isColision = false;
-    for (std::map<std::string,
-                  std::tuple<AbstractModel::OBB, glm::mat4, glm::mat4>>::iterator jt =
-             collidersOBB.begin();
-         jt != collidersOBB.end(); jt++)
+    bool isCollision = false;
+    for (auto jt = collidersOBB.begin(); jt != collidersOBB.end(); ++jt)
     {
-      if (it != jt &&
-          testOBBOBB(std::get<0>(it->second), std::get<0>(jt->second)))
+      if (it != jt)
       {
-        std::cout << "Hay colision entre " << it->first << " y el modelo" << jt->first << std::endl;
-        isColision = true;
+        auto &obb1 = std::get<0>(it->second);
+        auto &obb2 = std::get<0>(jt->second);
+        if (testOBBOBB(obb1, obb2))
+        {
+          std::cout << "Hay colisión entre " << it->first << " y " << jt->first << std::endl;
+          checkAndResolveCollisions(obb1, obb2);
+          addOrUpdateCollisionDetection2(collisionDetection2, it->first, jt->first);
+          isCollision = true;
+        }
       }
     }
-    addOrUpdateCollisionDetection(collisionDetection, it->first, isColision);
+    addOrUpdateCollisionDetection(collisionDetection, it->first, isCollision);
   }
+}
+
+void CollidersController::checkAndResolveCollisions(AbstractModel::SBB &sbb1, AbstractModel::SBB &sbb2)
+{
+  if (testSphereSphereIntersection(sbb1, sbb2))
+  {
+    resolveSphereSphereCollision(sbb1, sbb2);
+  }
+}
+
+void CollidersController::checkAndResolveCollisions(AbstractModel::OBB &obb1, AbstractModel::OBB &obb2)
+{
+  if (testOBBOBB(obb1, obb2))
+  {
+    resolveOBBOBBCollision(obb1, obb2);
+  }
+}
+
+void CollidersController::resolveSphereSphereCollision(AbstractModel::SBB &sbb1, AbstractModel::SBB &sbb2)
+{
+  glm::vec3 collisionNormal = glm::normalize(sbb2.c - sbb1.c);
+  float distance = glm::distance(sbb1.c, sbb2.c);
+  float penetrationDepth = (sbb1.ratio + sbb2.ratio) - distance;
+
+  if (penetrationDepth > 0.0f)
+  {
+    glm::vec3 correction = collisionNormal * (penetrationDepth / 2.0f);
+
+    if (sbb1.c.x < sbb2.c.x)
+    {
+      sbb1.c -= glm::vec3(correction.x, 0.0f, 0.0f);
+      sbb2.c += glm::vec3(correction.x, 0.0f, 0.0f);
+    }
+    else
+    {
+      sbb1.c += glm::vec3(correction.x, 0.0f, 0.0f);
+      sbb2.c -= glm::vec3(correction.x, 0.0f, 0.0f);
+    }
+
+    if (sbb1.c.z < sbb2.c.z)
+    {
+      sbb1.c -= glm::vec3(0.0f, 0.0f, correction.z);
+      sbb2.c += glm::vec3(0.0f, 0.0f, correction.z);
+    }
+    else
+    {
+      sbb1.c += glm::vec3(0.0f, 0.0f, correction.z);
+      sbb2.c -= glm::vec3(0.0f, 0.0f, correction.z);
+    }
+  }
+}
+
+void CollidersController::resolveOBBOBBCollision(AbstractModel::OBB &obb1, AbstractModel::OBB &obb2)
+{
+  glm::vec3 collisionNormal = glm::normalize(obb2.c - obb1.c);
+  float distance = glm::distance(obb1.c, obb2.c);
+  float penetrationDepth = glm::length(obb1.e + obb2.e) - distance;
+
+  if (penetrationDepth > 0.0f)
+  {
+    glm::vec3 correction = collisionNormal * (penetrationDepth / 2.0f);
+
+    if (obb1.c.x < obb2.c.x)
+    {
+      obb1.c -= glm::vec3(correction.x, 0.0f, 0.0f);
+      obb2.c += glm::vec3(correction.x, 0.0f, 0.0f);
+    }
+    else
+    {
+      obb1.c += glm::vec3(correction.x, 0.0f, 0.0f);
+      obb2.c -= glm::vec3(correction.x, 0.0f, 0.0f);
+    }
+
+    if (obb1.c.z < obb2.c.z)
+    {
+      obb1.c -= glm::vec3(0.0f, 0.0f, correction.z);
+      obb2.c += glm::vec3(0.0f, 0.0f, correction.z);
+    }
+    else
+    {
+      obb1.c += glm::vec3(0.0f, 0.0f, correction.z);
+      obb2.c -= glm::vec3(0.0f, 0.0f, correction.z);
+    }
+  }
+}
+
+bool CollidersController::verificarColision(std::string colliderName)
+{
+  auto it = this->collisionDetection.find(colliderName);
+  if (it != this->collisionDetection.end())
+  {
+    return it->second;
+  }
+  else
+  {
+    std::cerr << "El colisionador '" << colliderName << "' no existe en el mapa." << std::endl;
+    return false;
+  }
+}
+
+bool CollidersController::verificarColision2(std::string collider1, std::string collider2)
+{
+  auto it = this->collisionDetection2.find(collider1);
+
+  if (it != this->collisionDetection2.end())
+  {
+    return it->second == collider2;
+  }
+
+  return false;
 }

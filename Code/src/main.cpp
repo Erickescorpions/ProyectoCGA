@@ -626,7 +626,6 @@ bool processInput(bool continueApplication, Player *jugador)
 
 	offsetX = 0;
 	offsetY = 0;
-	jugador->setAccion(AccionJugador::QUIETO);
 
 	// Controles para mover izquierda y a la derecha
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
@@ -659,6 +658,8 @@ bool processInput(bool continueApplication, Player *jugador)
 	{
 		jugador->setAccion(AccionJugador::REVERSA);
 		jugador->moverJugador(AccionJugador::CAMINANDO, -1);
+	} else {
+		jugador->setAccion(AccionJugador::QUIETO);
 	}
 
 	glfwPollEvents();
@@ -931,8 +932,7 @@ void applicationLoop()
 		}
 		std::string text = std::to_string(cuboContador) + "/5";
 		renderContador(textureCuboID, modelText, text); // Actualiza el contador en pantalla
-
-
+		
 		cc->pruebaColisionesOBBvsOBB();
 		// Para mostrar las colisiones
 		cc->render();

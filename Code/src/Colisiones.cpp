@@ -56,6 +56,16 @@ void addOrUpdateCollisionDetection(std::map<std::string, bool> &collisionDetecto
 		collisionDetector[name] = isCollision;
 }
 
+void addOrUpdateCollisionDetection2(std::map<std::string, std::string> &collisionDetector,
+		std::string collider1, std::string collider2) {
+	std::map<std::string, std::string>::iterator colIt = collisionDetector.find(collider1);
+	if(colIt != collisionDetector.end()){
+			colIt->second = collider2;
+	} else {
+		collisionDetector[collider1] = collider2;
+	}
+}
+
 bool raySphereIntersect(glm::vec3 orig, glm::vec3 dest, glm::vec3 dir, AbstractModel::SBB sbb, float &t) {
 	// Vector del Origen del rayo al centro de la esfera.
 	glm::vec3 vDirToSphere = sbb.c - orig;
