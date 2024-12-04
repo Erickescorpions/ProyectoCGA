@@ -6,7 +6,7 @@ std::map<Personaje, std::string> modelosJugador = {
     {Personaje::KAKASHI, "../models/kakashi/kakashi.fbx"}};
 
 Player::Player(Shader *shader, CollidersController *cc)
-    : scaleFactor(0.01f), vida(MAXIMA_VIDA)
+    : scaleFactor(0.01f), vida(MAXIMA_VIDA), tiempoRecuperacion(TIEMPO_RECUPERACION)
 {
   this->shader = shader;
   this->cc = cc;
@@ -16,6 +16,11 @@ Player::Player(Shader *shader, CollidersController *cc)
   this->modelMatrixCollider = glm::mat4(1.0f);
 
   this->posicion = glm::vec3(30.0f, 3.0f, 0.0f);
+  this->recibioDanio = false;
+  this->contadorTiempoRecuperacion = 0.0f;
+
+  shader->setVectorFloat3("damageColor", glm::value_ptr(glm::vec3(1.0, 0.2, 0.2)));
+  shader->setFloat("blinkIntensity", 0.0f);
 }
 
 Player::~Player()
@@ -36,24 +41,46 @@ void Player::update(float dt)
   bool hayColision = this->cc->verificarColision("jugador");
   if (hayColision)
   {
-    std::cout << "Jugador colisiono" << std::endl;
+    //std::cout << "Jugador colisiono" << std::endl;
     // actualizamos la posicion del jugador con la del collider
-    this->modelMatrix[3].x = this->modelMatrixCollider[3].x;
-    this->modelMatrix[3].z = this->modelMatrixCollider[3].z;
+    //this->modelMatrix[3].x = this->modelMatrixCollider[3].x;
+    //this->modelMatrix[3].z = this->modelMatrixCollider[3].z;
   }
 
-  bool hayColisionConEnemigo =  this->cc->verificarColision2("jugador", "enemigo");
-  if(hayColisionConEnemigo)
+  bool hayColisionConEnemigo = this->cc->verificarColision2("jugador", "enemigo");
+  if (hayColisionConEnemigo && this->recibioDanio == false)
   {
-    if(this->vida > 0) {
+    if (this->vida > 0)
+    {
       this->vida -= 1;
+      this->recibioDanio = true;
+      this->contadorTiempoRecuperacion = 0.0f;
     }
   }
+
+  this->updateBlinkEffect(dt);
 }
 
 void Player::render()
 {
   this->modelo.render(this->modelMatrix);
+}
+
+void Player::updateBlinkEffect(float deltaTime)
+{
+  float blinkIntensity = 0.0f;
+  if (this->recibioDanio)
+  {
+    this->contadorTiempoRecuperacion += deltaTime;
+    blinkIntensity = abs(sin(this->contadorTiempoRecuperacion * 10.0f)); // Oscila entre 0 y 1
+    if (this->contadorTiempoRecuperacion >= tiempoRecuperacion)
+    {
+      blinkIntensity = 0.0f;
+      this->recibioDanio = false;
+    }
+  }
+
+  shader->setFloat("blinkIntensity", blinkIntensity);
 }
 
 void Player::setTerrain(Terrain *terrain)
@@ -94,19 +121,22 @@ void Player::setAccion(AccionJugador accion)
   }
 }
 
-void printMat4(const glm::mat4& matrix) {
-    for (int i = 0; i < 4; ++i) {
-        for (int j = 0; j < 4; ++j) {
-            std::cout << matrix[i][j] << " ";
-        }
-        std::cout << std::endl;
+void printMat4(const glm::mat4 &matrix)
+{
+  for (int i = 0; i < 4; ++i)
+  {
+    for (int j = 0; j < 4; ++j)
+    {
+      std::cout << matrix[i][j] << " ";
     }
+    std::cout << std::endl;
+  }
 }
 
 void Player::addOrUpdateCollider()
 {
   this->modelMatrixCollider = glm::mat4(1.0f);
-  
+
   this->modelMatrixCollider = glm::translate(this->modelMatrixCollider, glm::vec3(this->modelMatrix[3]));
   this->modelMatrixCollider = glm::rotate(this->modelMatrixCollider, this->anguloOrientacion, glm::vec3(0, 1, 0));
   this->modelMatrixCollider = glm::rotate(this->modelMatrixCollider, glm::radians(90.0f), glm::vec3(1, 0, 0));

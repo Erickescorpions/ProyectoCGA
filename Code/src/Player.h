@@ -18,6 +18,7 @@
 #include <string>
 
 #define MAXIMA_VIDA 4
+#define TIEMPO_RECUPERACION 5
 
 enum AccionJugador {
   CAMINANDO = 0,
@@ -62,6 +63,9 @@ private:
   Personaje jugadorSeleccionado;
   AccionJugador accion;
   float scaleFactor;
+  float contadorTiempoRecuperacion;
+  int tiempoRecuperacion;
+  bool recibioDanio;
 
   // Para colisiones
   glm::mat4 modelMatrixCollider;
@@ -70,6 +74,7 @@ private:
   int vida;
 
   void addOrUpdateCollider();
+  void updateBlinkEffect(float deltaTime);
 };
 
 #endif // PLAYER_H

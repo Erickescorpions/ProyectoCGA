@@ -62,6 +62,8 @@ Shader shaderSkybox;
 Shader shaderMulLighting;
 // Shader para el terreno
 Shader shaderTerrain;
+// Shader para el jugador
+Shader shaderJugador;
 
 // Variables para la introducción
 bool iniciaPartida = false, presionarOpcion = false;
@@ -242,6 +244,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen)
 	shaderMulLighting.initialize("../Shaders/iluminacion_textura_animation.vs", "../Shaders/multipleLights.fs");
 	shaderTerrain.initialize("../Shaders/terrain.vs", "../Shaders/terrain.fs");
 	shaderTexture.initialize("../Shaders/texturizado.vs", "../Shaders/texturizado.fs");
+	shaderJugador.initialize("../Shaders/iluminacion_textura_animation.vs", "../Shaders/multipleLightsPlayer.fs");
 
 	// Inicializacion de los objetos.
 	skyboxSphere.init();
@@ -723,7 +726,7 @@ void applicationLoop()
 
 	CollidersController* cc = new CollidersController(&shader);
 
-	Player jugador = Player(&shaderMulLighting, cc);
+	Player jugador = Player(&shaderJugador, cc);
 	jugador.setTerrain(&island1);
 
 	Cube cube("../models/cubo/cubo.fbx", &shaderMulLighting, glm::vec3(0.0f, 0.0f, 0.0f));
@@ -743,7 +746,7 @@ void applicationLoop()
 			continue;
 		}
 		lastTime = currTime;
-		TimeManager::Instance().CalculateFrameRate(true);
+		TimeManager::Instance().CalculateFrameRate(false);
 		deltaTime = TimeManager::Instance().DeltaTime;
 		psi = processInput(true, &jugador);
 
@@ -830,6 +833,16 @@ void applicationLoop()
 		shaderMulLighting.setVectorFloat3("directionalLight.light.diffuse", glm::value_ptr(glm::vec3(0.7, 0.7, 0.7)));
 		shaderMulLighting.setVectorFloat3("directionalLight.light.specular", glm::value_ptr(glm::vec3(0.9, 0.9, 0.9)));
 		shaderMulLighting.setVectorFloat3("directionalLight.direction", glm::value_ptr(glm::vec3(-1.0, 0.0, 0.0)));
+
+		shaderJugador.setMatrix4("projection", 1, false,
+																 glm::value_ptr(projection));
+		shaderJugador.setMatrix4("view", 1, false,
+																 glm::value_ptr(view));
+		shaderJugador.setVectorFloat3("viewPos", glm::value_ptr(camera->getPosition()));
+		shaderJugador.setVectorFloat3("directionalLight.light.ambient", glm::value_ptr(glm::vec3(0.3, 0.3, 0.3)));
+		shaderJugador.setVectorFloat3("directionalLight.light.diffuse", glm::value_ptr(glm::vec3(0.7, 0.7, 0.7)));
+		shaderJugador.setVectorFloat3("directionalLight.light.specular", glm::value_ptr(glm::vec3(0.9, 0.9, 0.9)));
+		shaderJugador.setVectorFloat3("directionalLight.direction", glm::value_ptr(glm::vec3(-1.0, 0.0, 0.0)));
 
 		shaderTerrain.setVectorFloat3("viewPos", glm::value_ptr(camera->getPosition()));
 		shaderTerrain.setVectorFloat3("directionalLight.light.ambient", glm::value_ptr(glm::vec3(0.3, 0.3, 0.3)));
