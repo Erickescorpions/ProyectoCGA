@@ -918,6 +918,8 @@ void applicationLoop()
 			modelLampPost2.render();
 		}
 
+		// realizamos la prueba de colisiones
+		cc->pruebaColisionesOBBvsOBB();
 
 		/*****************************************
 		 * Jugador
@@ -946,7 +948,6 @@ void applicationLoop()
 		std::string text = std::to_string(cuboContador) + "/5";
 		renderContador(textureCuboID, modelText, text); // Actualiza el contador en pantalla
 		
-		cc->pruebaColisionesOBBvsOBB();
 		// Para mostrar las colisiones
 		cc->render();
 

@@ -39,6 +39,10 @@ void CollidersController::render()
     sphereCollider.enableWireMode();
     sphereCollider.render(matrixCollider);
   }
+
+  // limpiamos el collision detect
+  collisionDetection.clear();
+  collisionDetection2.clear();
 }
 
 void CollidersController::addOrUpdateCollidersOBB(std::string colliderName, AbstractModel::OBB collider, glm::mat4 modelMatrix)
