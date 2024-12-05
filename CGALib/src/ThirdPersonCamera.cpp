@@ -64,29 +64,15 @@ void ThirdPersonCamera::updateCamera(){
     float offsetz = horizontalDistance * cos(theta);
     position.x = cameraTarget.x - offsetx;
     position.z = cameraTarget.z - offsetz;
-    position.y = cameraTarget.y + verticalDistance;
+    //position.y = cameraTarget.y + verticalDistance;
+
+    // Obtén la altura del terreno
+    float terrainHeight = cameraTarget.y; // Ajusta esto si el terreno está en otro espacio
+    position.y = terrainHeight + verticalDistance;
 
     yaw = angleTarget - (180 + angleAroundTarget);
 
-    if (distanceFromTarget < 0)
-    	front = glm::normalize(position - cameraTarget);
-    else
-    	front = glm::normalize(cameraTarget - position);
-
+    front = glm::normalize(cameraTarget - position);
     this->right = glm::normalize(glm::cross(this->front, this->worldUp));
     this->up = glm::normalize(glm::cross(this->right, this->front));
-
-    // Calcula el vector "frente" de la cámara
-    if (distanceFromTarget < 0)
-        front = glm::normalize(position - cameraTarget);
-    else
-        front = glm::normalize(cameraTarget - position);
-
-    // Calcula los vectores "derecha" y "arriba"
-    this->right = glm::normalize(glm::cross(this->front, this->worldUp));
-    this->up = glm::normalize(glm::cross(this->right, this->front));
-
-    // **Desplaza la cámara ligeramente a la derecha**
-    float horizontalOffset = 1.0f; // Ajusta este valor según lo necesites
-    position += this->right * horizontalOffset;
 }

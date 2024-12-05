@@ -1,0 +1,42 @@
+# Blender 4.2.3 LTS MTL File: 'Isla2.blend'
+# www.blender.org
+
+newmtl Cap_03_Mat.001
+Ns 39.999996
+Ka 1.000000 1.000000 1.000000
+Ks 0.414000 0.414000 0.414000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd Cap_03.png
+
+newmtl EuropeanLindenBark_Mat.001
+Ns 35.000008
+Ka 1.000000 1.000000 1.000000
+Ks 0.373500 0.373500 0.373500
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd EuropeanLindenBark.png
+
+newmtl EuropeanLindenLeaf_Fall3_Mat.001
+Ns 50.000011
+Ka 1.000000 1.000000 1.000000
+Ks 0.495000 0.495000 0.495000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd EuropeanLindenLeaf_Fall3.png
+
+newmtl EuropeanLindenLeaf_Fall_Mat.001
+Ns 29.999998
+Ka 1.000000 1.000000 1.000000
+Ks 0.333000 0.333000 0.333000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd EuropeanLindenLeaf_Fall.png
