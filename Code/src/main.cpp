@@ -649,18 +649,15 @@ bool processInput(bool continueApplication, Player *jugador)
 		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 		{
 			jugador->setAccion(AccionJugador::CORRIENDO);
-			jugador->moverJugador(AccionJugador::CORRIENDO, 1);
 		}
 		else
 		{
 			jugador->setAccion(AccionJugador::CAMINANDO);
-			jugador->moverJugador(AccionJugador::CAMINANDO, 1);
 		}
 	}
 	else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 	{
 		jugador->setAccion(AccionJugador::REVERSA);
-		jugador->moverJugador(AccionJugador::CAMINANDO, -1);
 	} else {
 		jugador->setAccion(AccionJugador::QUIETO);
 	}
@@ -918,18 +915,15 @@ void applicationLoop()
 			modelLampPost2.render();
 		}
 
-		// realizamos la prueba de colisiones
-		cc->pruebaColisionesOBBvsOBB();
-
-		/*****************************************
-		 * Jugador
-		 * **************************************/
+		cc->update(deltaTime);
 		jugador.update(deltaTime);
+		enemigo.update(deltaTime, jugador.posicion);
+		
+		
 		// Renderizamos al jugador
 		jugador.render();
-
-		enemigo.update(deltaTime, jugador.posicion);
 		enemigo.render();
+
 		//=======================================================Contador para los fragmentos recogido===========================================================
 		// Actualiza la lógica del cubo (flotación, rotación)
 		cube.update(deltaTime, jugador.posicion);

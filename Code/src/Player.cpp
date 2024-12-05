@@ -21,6 +21,9 @@ Player::Player(Shader *shader, CollidersController *cc)
 
   shader->setVectorFloat3("damageColor", glm::value_ptr(glm::vec3(1.0, 0.2, 0.2)));
   shader->setFloat("blinkIntensity", 0.0f);
+
+  this->velocidadCaminando = 3.0f;
+  this->velocidadCorriendo = 10.0f;
 }
 
 Player::~Player()
@@ -30,21 +33,12 @@ Player::~Player()
 
 void Player::update(float dt)
 {
-  this->posicion.y = terrain->getHeightTerrain(this->posicion.x, this->posicion.z);
-  this->modelMatrix = glm::translate(glm::mat4(1.0f), this->posicion);
-  this->modelMatrix = glm::rotate(this->modelMatrix, this->anguloOrientacion, glm::vec3(0.0f, 1.0f, 0.0f));
-  this->modelMatrix = glm::scale(this->modelMatrix, glm::vec3(this->scaleFactor));
-
-  this->addOrUpdateCollider();
-
   // vemos si hay colision
   bool hayColision = this->cc->verificarColision("jugador");
   if (hayColision)
   {
-    //std::cout << "Jugador colisiono" << std::endl;
     // actualizamos la posicion del jugador con la del collider
-    //this->modelMatrix[3].x = this->modelMatrixCollider[3].x;
-    //this->modelMatrix[3].z = this->modelMatrixCollider[3].z;
+    this->posicion = this->modelMatrixCollider[3];
   }
 
   bool hayColisionConEnemigo = this->cc->verificarColision2("jugador", "enemigo");
@@ -58,6 +52,13 @@ void Player::update(float dt)
     }
   }
 
+  this->posicion.y = terrain->getHeightTerrain(this->posicion.x, this->posicion.z);
+  this->modelMatrix = glm::translate(glm::mat4(1.0f), this->posicion);
+  this->modelMatrix = glm::rotate(this->modelMatrix, this->anguloOrientacion, glm::vec3(0.0f, 1.0f, 0.0f));
+  this->modelMatrix = glm::scale(this->modelMatrix, glm::vec3(this->scaleFactor));
+
+  this->moverJugador(this->accion, dt);
+  this->addOrUpdateCollider();
   this->updateBlinkEffect(dt);
 }
 
@@ -121,18 +122,6 @@ void Player::setAccion(AccionJugador accion)
   }
 }
 
-void printMat4(const glm::mat4 &matrix)
-{
-  for (int i = 0; i < 4; ++i)
-  {
-    for (int j = 0; j < 4; ++j)
-    {
-      std::cout << matrix[i][j] << " ";
-    }
-    std::cout << std::endl;
-  }
-}
-
 void Player::addOrUpdateCollider()
 {
   this->modelMatrixCollider = glm::mat4(1.0f);
@@ -148,34 +137,32 @@ void Player::addOrUpdateCollider()
   this->collider.e = this->modelo.getObb().e * glm::vec3(this->scaleFactor) * glm::vec3(0.787401574, 0.787401574, 0.787401574);
   this->collider.c = glm::vec3(this->modelMatrixCollider[3]);
 
-  // std::cout << "Model matrix" << std::endl;
-  // printMat4(modelMatrix);
-
-  // std::cout << "Model matrix collider" << std::endl;
-  // printMat4(modelMatrixCollider);
-
   // agregamos la colision al collider controller
   this->cc->addOrUpdateCollidersOBB("jugador", this->collider, this->modelMatrixCollider);
 }
 
-void Player::moverJugador(AccionJugador accion, int direccion)
+void Player::moverJugador(AccionJugador accion, float dt)
 {
-  if (accion == AccionJugador::CAMINANDO)
+
+  switch (accion)
   {
-    if (direccion == 1)
-    {
-      posicion.x += sin(this->anguloOrientacion) * 0.1f;
-      posicion.z += cos(this->anguloOrientacion) * 0.1f;
-    }
-    else
-    {
-      posicion.x -= sin(this->anguloOrientacion) * 0.1f;
-      posicion.z -= cos(this->anguloOrientacion) * 0.1f;
-    }
-  }
-  else if (accion == AccionJugador::CORRIENDO)
-  {
-    posicion.x += sin(this->anguloOrientacion) * 0.3f;
-    posicion.z += cos(this->anguloOrientacion) * 0.3f;
+  case AccionJugador::CAMINANDO:
+    posicion.x += sin(this->anguloOrientacion) * dt * this->velocidadCaminando;
+    posicion.z += cos(this->anguloOrientacion) * dt * this->velocidadCaminando;
+
+    break;
+  
+  case AccionJugador::REVERSA:
+    posicion.x -= sin(this->anguloOrientacion) * dt * this->velocidadCaminando;
+    posicion.z -= cos(this->anguloOrientacion) * dt * this->velocidadCaminando;
+    break;
+
+  case AccionJugador::CORRIENDO:
+    posicion.x += sin(this->anguloOrientacion) * dt * this->velocidadCorriendo;
+    posicion.z += cos(this->anguloOrientacion) * dt * this->velocidadCorriendo;
+    break;
+
+  default:
+    break;
   }
 }

@@ -12,16 +12,15 @@ Enemy::Enemy(std::string modelPath, Shader *shader, CollidersController *cc, glm
   this->modelMatrix = glm::mat4(1.0f);
   this->modelMatrix = glm::translate(this->modelMatrix, position);
   this->modelMatrix = glm::scale(this->modelMatrix, glm::vec3(this->scaleFactor));
-  
+
   this->modelMatrixCollider = glm::mat4(1.0f);
+  this->velocidad = 9.0f;
 }
 
 Enemy::~Enemy() {}
 
 void Enemy::update(float dt, glm::vec3 posicionObjetivo)
 {
-  float speed = 10.0f;
-
   if (!objetivoEstaEnElArea(posicionObjetivo))
   {
     // animacion acostado
@@ -44,7 +43,6 @@ void Enemy::update(float dt, glm::vec3 posicionObjetivo)
 
     if (tiempoTranscurrido >= 3)
     {
-
       if (this->golpearObjetivo(posicionObjetivo))
       {
         // animacion de golpe
@@ -56,8 +54,16 @@ void Enemy::update(float dt, glm::vec3 posicionObjetivo)
         this->modelo.setAnimationIndex(2);
       }
 
-      this->seguirObjetivo(posicionObjetivo, speed, dt);
+      this->seguirObjetivo(posicionObjetivo, this->velocidad, dt);
     }
+  }
+
+  // vemos si hay colision
+  bool hayColision = this->cc->verificarColision("enemigo");
+  if (hayColision)
+  {
+    // actualizamos la posicion del jugador con la del collider
+    this->position = this->modelMatrixCollider[3];
   }
 
   this->position.y = terrain->getHeightTerrain(this->position.x, this->position.z);
@@ -66,15 +72,6 @@ void Enemy::update(float dt, glm::vec3 posicionObjetivo)
   this->modelMatrix = glm::scale(this->modelMatrix, glm::vec3(this->scaleFactor));
 
   this->addOrUpdateColliders();
-
-  // vemos si hay colision
-  bool hayColision = this->cc->verificarColision("enemigo");
-  if(hayColision)
-  {
-    // actualizamos la posicion del jugador con la del collider
-    this->modelMatrix[3].x = this->modelMatrixCollider[3].x;
-    this->modelMatrix[3].z = this->modelMatrixCollider[3].z;
-  }
 }
 
 void Enemy::render()
@@ -126,7 +123,7 @@ bool Enemy::objetivoEstaEnElArea(glm::vec3 posicionObjetivo)
 bool Enemy::golpearObjetivo(glm::vec3 posicionObjetivo)
 {
   float distancia = glm::length(posicionObjetivo - this->position);
-  return distancia <= this->radioGolpe;
+  return distancia <= this->radioGolpe / 2;
 }
 
 void Enemy::setTerrain(Terrain *terrain)

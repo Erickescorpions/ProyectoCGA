@@ -19,6 +19,7 @@ class CollidersController
 {
 public:
   CollidersController(Shader *shader);
+  void update(float dt);
   void render();
   
   void addOrUpdateCollidersOBB(std::string colliderName, AbstractModel::OBB collider, glm::mat4 modelMatrix);

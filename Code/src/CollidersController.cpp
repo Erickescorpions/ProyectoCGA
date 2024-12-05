@@ -39,10 +39,16 @@ void CollidersController::render()
     sphereCollider.enableWireMode();
     sphereCollider.render(matrixCollider);
   }
+}
 
-  // limpiamos el collision detect
-  collisionDetection.clear();
-  collisionDetection2.clear();
+void CollidersController::update(float dt)
+{
+  // limpiamos las colisiones detectadas anteriormente
+  this->collisionDetection.clear();
+  this->collisionDetection2.clear();
+
+  this->pruebaColisionesSBBvsSBB();
+  this->pruebaColisionesOBBvsOBB();
 }
 
 void CollidersController::addOrUpdateCollidersOBB(std::string colliderName, AbstractModel::OBB collider, glm::mat4 modelMatrix)
@@ -69,8 +75,8 @@ void CollidersController::pruebaColisionesSBBvsSBB()
         if (testSphereSphereIntersection(sbb1, sbb2))
         {
           std::cout << "Hay colisión entre " << it->first << " y " << jt->first << std::endl;
-          checkAndResolveCollisions(sbb1, sbb2);
           isCollision = true;
+          checkAndResolveCollisions(sbb1, sbb2);
         }
       }
     }
@@ -92,9 +98,11 @@ void CollidersController::pruebaColisionesOBBvsOBB()
         if (testOBBOBB(obb1, obb2))
         {
           std::cout << "Hay colisión entre " << it->first << " y " << jt->first << std::endl;
-          checkAndResolveCollisions(obb1, obb2);
           addOrUpdateCollisionDetection2(collisionDetection2, it->first, jt->first);
+          addOrUpdateCollisionDetection2(collisionDetection2, jt->first, it->first);
+
           isCollision = true;
+          checkAndResolveCollisions(obb1, obb2);
         }
       }
     }
@@ -204,9 +212,16 @@ bool CollidersController::verificarColision2(std::string collider1, std::string 
 {
   auto it = this->collisionDetection2.find(collider1);
 
-  if (it != this->collisionDetection2.end())
+  if (it == this->collisionDetection2.end())
   {
-    return it->second == collider2;
+    std::cout << "No se encontró un collider llamado " << collider1 << ".\n";
+    return false;
+  }
+
+  // Verificamos si colisiono con algun objeto que coincida con collider2
+  if (it->second.find(collider2) != std::string::npos)
+  {
+    return true;
   }
 
   return false;

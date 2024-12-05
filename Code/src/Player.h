@@ -51,7 +51,7 @@ public:
   void setTerrain(Terrain *terrain);
   void setJugador(Personaje jugador);
   void setAccion(AccionJugador accion);
-  void moverJugador(AccionJugador accion, int direccion);
+  void moverJugador(AccionJugador accion, float dt);
   int getVida() {
     return this->vida;
   }
@@ -72,6 +72,8 @@ private:
   CollidersController* cc;
 
   int vida;
+  float velocidadCaminando;
+  float velocidadCorriendo;
 
   void addOrUpdateCollider();
   void updateBlinkEffect(float deltaTime);

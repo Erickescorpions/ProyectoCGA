@@ -49,6 +49,7 @@ private:
   glm::mat4 modelMatrixCollider;
   CollidersController* cc;
   float scaleFactor;
+  float velocidad;
 
   void seguirObjetivo(glm::vec3 posicionObjetivo, float speed, float dt);
   bool objetivoEstaEnElArea(glm::vec3 posicionObjetivo);
