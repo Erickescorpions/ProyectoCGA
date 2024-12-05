@@ -37,6 +37,7 @@ add_executable(proyecto
     ./src/Player.cpp
     ./src/CollidersController.cpp
     ./src/Colisiones.cpp
+    ./src/AudioManager.cpp
 )
 
 set_target_properties(proyecto

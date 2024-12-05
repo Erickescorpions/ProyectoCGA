@@ -115,8 +115,8 @@ float Terrain::getHeightTerrain(float worldX, float worldZ){
 	float gridSquareSize = size / ((float) this->imageHeight - 1);
 	int gridX = floor(terrainX / gridSquareSize);
 	int gridZ = floor(terrainZ / gridSquareSize);
-	if(gridX < 0 || gridX > this->imageHeight - 1 || gridZ < 0 || gridZ > this->imageHeight - 1)
-		return position.y;
+	if (gridX < 0 || gridX >= this->imageHeight - 1 || gridZ < 0 || gridZ >= this->imageHeight - 1)
+    return position.y;
 	float xCoord = fmod(terrainX, gridSquareSize) / gridSquareSize;
 	float zCoord = fmod(terrainZ, gridSquareSize) / gridSquareSize;
 	float answer;
