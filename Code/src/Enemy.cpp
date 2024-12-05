@@ -88,7 +88,7 @@ bool Enemy::objetivoEstaEnElArea(glm::vec3 targetPosition)
   // Distancia euclidiana entre el objetivo y la posición original
   float distancia = glm::length(targetPosition - this->position);
 
-  std::cout << "Distancia calculada: " << distancia << std::endl;
+  //std::cout << "Distancia calculada: " << distancia << std::endl;
   return distancia <= this->radioDeteccion;
 }
 

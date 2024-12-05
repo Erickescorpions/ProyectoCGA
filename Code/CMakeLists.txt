@@ -35,6 +35,7 @@ add_executable(proyecto
     ./src/Enemy.cpp 
     ./src/Cube.cpp
     ./src/Player.cpp
+    ./src/AudioManager.cpp
 )
 
 set_target_properties(proyecto

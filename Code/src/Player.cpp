@@ -10,7 +10,7 @@ Player::Player(Shader *shader)
   this->shader = shader;
 
   this->modelMatrix = glm::mat4(1.0f);
-  this->modelMatrix = glm::translate(this->modelMatrix, glm::vec3(30.0f, 0.05f, 0.0f));
+  this->modelMatrix = glm::translate(this->modelMatrix, glm::vec3(10.0f, 0.0f, 0.0f));
   this->modelMatrix = glm::scale(this->modelMatrix, glm::vec3(0.01f));
   this->modelMatrix = glm::rotate(this->modelMatrix, glm::radians(0.0f), glm::vec3(0, 1, 0));
 }
@@ -59,7 +59,7 @@ void Player::setAccion(AccionJugador accion)
     this->modelo = &this->modeloCorriendo;
     break;
   case AccionJugador::REVERSA:
-    this->modelo = &this->modeloQuieto;
+    this->modelo = &this->modeloReversa;
     break;
   }
 }
