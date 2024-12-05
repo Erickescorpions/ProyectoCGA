@@ -14,27 +14,32 @@
 #include <string>
 #include <iostream>
 #include <chrono>
+#include "Headers/AbstractModel.h"
+#include "CollidersController.h"
 
 class Enemy
 {
+private:
+  static int numeroEnemigos;
+  std::string colliderName;
+
 public:
   Model modelo;
   glm::mat4 modelMatrix;
   glm::vec3 position;
   Shader *shader;
   std::string modelPath;
+  int ataque = 1;
+  AbstractModel::OBB collider;
 
   // Constructor
-  Enemy(std::string modelPath, Shader *shader, glm::vec3 position, float radius);
+  Enemy(std::string modelPath, Shader *shader, CollidersController* cc, glm::vec3 position, float radius);
 
   // Destructor
   ~Enemy();
 
   void update(float dt, glm::vec3 posicionObjetivo);
   void render();
-  void seguirObjetivo(glm::vec3 targetPosition, float speed, float dt);
-  bool objetivoEstaEnElArea(glm::vec3 targetPosition);
-  bool golpearObjetivo(glm::vec3 posicionObjetivo);
   void setTerrain(Terrain *terrain);
 
 private:
@@ -45,6 +50,15 @@ private:
   std::chrono::steady_clock::time_point inicioPersecucion;
   Terrain *terrain;
   float angulo;
+  glm::mat4 modelMatrixCollider;
+  CollidersController* cc;
+  float scaleFactor;
+  float velocidad;
+
+  void seguirObjetivo(glm::vec3 posicionObjetivo, float speed, float dt);
+  bool objetivoEstaEnElArea(glm::vec3 posicionObjetivo);
+  bool golpearObjetivo(glm::vec3 posicionObjetivo);
+  void addOrUpdateColliders();
 };
 
 #endif // ENEMY_H
