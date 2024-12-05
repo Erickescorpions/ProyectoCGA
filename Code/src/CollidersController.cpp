@@ -76,7 +76,7 @@ void CollidersController::pruebaColisionesSBBvsSBB()
         {
           std::cout << "Hay colisión entre " << it->first << " y " << jt->first << std::endl;
           isCollision = true;
-          checkAndResolveCollisions(sbb1, sbb2);
+          resolveSphereSphereCollision(sbb1, sbb2);
         }
       }
     }
@@ -102,7 +102,7 @@ void CollidersController::pruebaColisionesOBBvsOBB()
           addOrUpdateCollisionDetection2(collisionDetection2, jt->first, it->first);
 
           isCollision = true;
-          checkAndResolveCollisions(obb1, obb2);
+          resolveOBBOBBCollision(obb1, obb2);
         }
       }
     }

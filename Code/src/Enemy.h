@@ -19,6 +19,10 @@
 
 class Enemy
 {
+private:
+  static int numeroEnemigos;
+  std::string colliderName;
+
 public:
   Model modelo;
   glm::mat4 modelMatrix;

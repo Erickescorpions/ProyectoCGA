@@ -734,6 +734,9 @@ void applicationLoop()
 	Enemy enemigo = Enemy("../models/enemy/zombie.fbx", &shaderMulLighting, cc, posicionEnemigo, 15.0f);
 	enemigo.setTerrain(&island1);
 
+	Enemy enemigo1 = Enemy("../models/enemy/zombie.fbx", &shaderMulLighting, cc, glm::vec3(10.0f, 10.0f, 20.0f), 15.0f);
+	enemigo.setTerrain(&island1);
+
 	while (psi)
 	{
 		currTime = TimeManager::Instance().GetTime();
@@ -918,11 +921,12 @@ void applicationLoop()
 		cc->update(deltaTime);
 		jugador.update(deltaTime);
 		enemigo.update(deltaTime, jugador.posicion);
-		
+		enemigo1.update(deltaTime, jugador.posicion);
 		
 		// Renderizamos al jugador
 		jugador.render();
 		enemigo.render();
+		enemigo1.render();
 
 		//=======================================================Contador para los fragmentos recogido===========================================================
 		// Actualiza la lógica del cubo (flotación, rotación)
@@ -986,6 +990,8 @@ void applicationLoop()
 
 		glfwSwapBuffers(window);
 	}
+
+	delete cc;
 }
 
 int main(int argc, char **argv)

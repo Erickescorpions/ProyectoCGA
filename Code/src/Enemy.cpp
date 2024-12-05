@@ -1,5 +1,7 @@
 #include "Enemy.h"
 
+int Enemy::numeroEnemigos = 0;
+
 Enemy::Enemy(std::string modelPath, Shader *shader, CollidersController *cc, glm::vec3 position, float radius)
     : posicionInicial(position), radioDeteccion(radius), angulo(0.0f), scaleFactor(0.035f)
 {
@@ -15,6 +17,9 @@ Enemy::Enemy(std::string modelPath, Shader *shader, CollidersController *cc, glm
 
   this->modelMatrixCollider = glm::mat4(1.0f);
   this->velocidad = 9.0f;
+
+  colliderName = "enemigo" + std::to_string(numeroEnemigos);
+  numeroEnemigos++;
 }
 
 Enemy::~Enemy() {}
@@ -59,7 +64,7 @@ void Enemy::update(float dt, glm::vec3 posicionObjetivo)
   }
 
   // vemos si hay colision
-  bool hayColision = this->cc->verificarColision("enemigo");
+  bool hayColision = this->cc->verificarColision(this->colliderName);
   if (hayColision)
   {
     // actualizamos la posicion del jugador con la del collider
@@ -110,7 +115,7 @@ void Enemy::addOrUpdateColliders()
   this->collider.c = glm::vec3(this->modelMatrixCollider[3]);
 
   // agregamos la colision al collider controller
-  this->cc->addOrUpdateCollidersOBB("enemigo", this->collider, this->modelMatrixCollider);
+  this->cc->addOrUpdateCollidersOBB(this->colliderName, this->collider, this->modelMatrixCollider);
 }
 
 bool Enemy::objetivoEstaEnElArea(glm::vec3 posicionObjetivo)
