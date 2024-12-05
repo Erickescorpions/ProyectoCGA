@@ -112,8 +112,9 @@ void main() {
                     calculatePointLights() +
                     calculateSpotLights();
 
+    float scaledBlinkIntensity = blinkIntensity * 0.6;
     // Mezcla con el color del daño
-    vec3 finalColor = mix(lighting, damageColor, blinkIntensity);
+    vec3 finalColor = mix(lighting, damageColor, scaledBlinkIntensity);
 
     color = vec4(finalColor, colorText.a);
 }
