@@ -9,12 +9,6 @@
 #include <map>
 #include <string>
 
-enum TipoColision 
-{
-  SBB = 1,
-  OBB
-};
-
 class CollidersController
 {
 public:
@@ -29,9 +23,10 @@ public:
 
   void pruebaColisionesSBBvsSBB();
   void pruebaColisionesOBBvsOBB();
-  bool modeloColisiono(std::string colliderName, TipoColision type);
+  
   void checkAndResolveCollisions(AbstractModel::SBB &sbb1, AbstractModel::SBB &sbb2);
   void checkAndResolveCollisions(AbstractModel::OBB &obb1, AbstractModel::OBB &obb2);
+
   void resolveSphereSphereCollision(AbstractModel::SBB &sbb1, AbstractModel::SBB &sbb2);
   void resolveOBBOBBCollision(AbstractModel::OBB &obb1, AbstractModel::OBB &obb2);
   bool verificarColision(std::string colliderName);

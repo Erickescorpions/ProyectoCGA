@@ -36,7 +36,7 @@ void Player::update(float dt)
 {
     // Verificamos si hay colisión con el terreno
     bool hayColision = this->cc->verificarColision("jugador");
-    if (hayColision)
+    if (hayColision && !this->recibioDanio)
     {
         this->posicion = this->modelMatrixCollider[3];
     }

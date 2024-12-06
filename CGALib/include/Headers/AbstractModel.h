@@ -47,10 +47,8 @@ Fecha: 08/02/2018
 
 class DLL_PUBLIC AbstractModel
 {
-public:
-float velocity;
 
-public:
+public: 
 	class SBB {
 	public:
 		SBB() {

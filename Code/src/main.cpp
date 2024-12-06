@@ -991,8 +991,9 @@ void applicationLoop()
 				 * Render de Circulos de Transporte
 				 *******************************************/
 				matrixModelCirculo1 = glm::mat4(1.0f);
-				matrixModelCirculo1 = glm::translate(matrixModelCirculo1, glm::vec3(0.0, 0.0, 0.0));
+				matrixModelCirculo1 = glm::translate(matrixModelCirculo1, glm::vec3(40.0, 0.0, 30.0));
 				matrixModelCirculo1[3][1] = island1.getHeightTerrain(matrixModelCirculo1[3][0], matrixModelCirculo1[3][2]);
+				matrixModelCirculo1[3][1] += 1.0f;
 				modelCirculoMagico.render(matrixModelCirculo1);
 
 				AbstractModel::SBB circle1Collider;
