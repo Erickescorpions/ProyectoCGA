@@ -929,7 +929,20 @@ void applicationLoop()
 		jugador.render();
 		enemigo.render();
 		enemigo1.render();
-		cubo.render();
+
+		glm::vec3 posicionCubo = cubo.getPosition(); 
+		float distancia = glm::distance(jugador.posicion, posicionCubo);
+		if (distancia < proximidadUmbral && !cuboAgarrado)
+		{
+			cuboAgarrado = true;
+			cuboContador++;
+		}
+		if (!cuboAgarrado)
+		{
+			cubo.render();
+		}
+		std::string text = std::to_string(cuboContador) + "/5";
+		renderContador(textureCuboID, modelText, text); 
 		
 		// Para mostrar las colisiones
 		cc->render();

@@ -33,6 +33,8 @@ public:
     bool update(float dt, glm::vec3 targetPosition, float proximidadUmbral); 
     void render();                     
     void addOrUpdateColliders();       
+    glm::mat4 getModelMatrix() const { return modelMatrix; }
+    glm::vec3 getPosition() const { return glm::vec3(modelMatrix[3][0], modelMatrix[3][1], modelMatrix[3][2]); }
 };
 
 #endif // CUBE_H
