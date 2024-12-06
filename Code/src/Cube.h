@@ -8,27 +8,33 @@
 #include "Headers/Model.h"
 #include "Headers/Shader.h"
 #include "Headers/Terrain.h"
+#include "CollidersController.h"
+#include "Headers/FontTypeRendering.h"
+#include "Player.h" 
 
 class Cube {
+private:
+    Model modelo;                      
+    Shader* shader;                    
+    glm::mat4 modelMatrix;             
+    glm::mat4 modelMatrixCollider;    
+    Terrain* terrain;                 
+    CollidersController* cc;           
+    AbstractModel::OBB collider;       
+    std::string colliderName;          
+    bool cuboAgarrado;             
+    Player* jugador;                   
+
 public:
-    Model modelo;
-    glm::mat4 modelMatrix;
-    Shader* shader;
-    Terrain* terrain;  // Puntero al terreno
-    bool cuboAgarrado = false;
-
-    // Constructor
-    Cube(const std::string& modelPath, Shader* shader, glm::vec3 posicionInicial);
-
-    // Destructor
+    Cube(const std::string& modelPath, Shader* shader, CollidersController* cc, glm::vec3 posicionInicial, Player* jugador); 
     ~Cube();
 
-    // Método para establecer el terreno
-    void setTerrain(Terrain* terrain);
-
-    // Métodos para actualizar y renderizar
-    void update(float dt, glm::vec3 targetPosition);
-    void render();
+    void setTerrain(Terrain* terrain); 
+    bool update(float dt, glm::vec3 targetPosition, float proximidadUmbral); 
+    void render();                     
+    void addOrUpdateColliders();       
+    glm::mat4 getModelMatrix() const { return modelMatrix; }
+    glm::vec3 getPosition() const { return glm::vec3(modelMatrix[3][0], modelMatrix[3][1], modelMatrix[3][2]); }
 };
 
 #endif // CUBE_H
