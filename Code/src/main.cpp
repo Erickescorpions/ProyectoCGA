@@ -79,6 +79,7 @@ std::map<std::string, std::tuple<AbstractModel::SBB, glm::mat4, glm::mat4>> coll
 int cuboContador = 0;
 bool cuboAgarrado = false;		 // Bandera que indica si el cubo ha sido agarrado
 float proximidadUmbral = 3.0f; // Umbral de proximidad para que el personaje agarre el cubo
+glm::vec3 posicionInicialCubo = glm::vec3(10.0f, 0.0f, 10.0f);
 
 // Modelo para renderizar la pantalla de introducción
 Box boxIntro;
@@ -726,8 +727,8 @@ void applicationLoop()
 	Player jugador = Player(&shaderJugador, cc);
 	jugador.setTerrain(&island1);
 
-	Cube cube("../models/cubo/cubo.fbx", &shaderMulLighting, glm::vec3(0.0f, 0.0f, 0.0f));
-	cube.setTerrain(&island1);
+	Cube cubo = Cube("../models/cubo/cubo.fbx", &shaderMulLighting, cc, posicionInicialCubo, jugador);
+	cubo.setTerrain(&island1);
 
 	glm::vec3 posicionEnemigo = glm::vec3(0.0f, 3.0f, 0.0f);
 	// Creamos un enemigo
@@ -922,29 +923,13 @@ void applicationLoop()
 		jugador.update(deltaTime);
 		enemigo.update(deltaTime, jugador.posicion);
 		enemigo1.update(deltaTime, jugador.posicion);
+		cubo.update(deltaTime, jugador.posicion, 2.0f);
 		
 		// Renderizamos al jugador
 		jugador.render();
 		enemigo.render();
 		enemigo1.render();
-
-		//=======================================================Contador para los fragmentos recogido===========================================================
-		// Actualiza la lógica del cubo (flotación, rotación)
-		cube.update(deltaTime, jugador.posicion);
-		// Obtener la posición del cubo
-		glm::vec3 posicionCubo = glm::vec3(cube.modelMatrix[3]); // O usar otro método si modelMatrix no tiene la posición directamente
-		float distancia = glm::distance(jugador.posicion, posicionCubo);
-		if (distancia < proximidadUmbral && !cuboAgarrado)
-		{
-			cuboAgarrado = true;
-			cuboContador++;
-		}
-		if (!cuboAgarrado)
-		{
-			cube.render();
-		}
-		std::string text = std::to_string(cuboContador) + "/5";
-		renderContador(textureCuboID, modelText, text); // Actualiza el contador en pantalla
+		cubo.render();
 		
 		// Para mostrar las colisiones
 		cc->render();
