@@ -60,7 +60,6 @@ public:
         return this->vida;
     }
 
-    // **Nuevo método: recoger un cubo y aumentar vida**
     void recogerCubo();
 
 private:

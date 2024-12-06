@@ -53,7 +53,6 @@ void Player::update(float dt)
         }
     }
 
-    // Colisión con un cubo
     bool hayColisionConCubo = this->cc->verificarColision2("jugador", "cubo");
     if (hayColisionConCubo)
     {
@@ -97,6 +96,12 @@ void Player::recogerCubo()
     if (this->vida < MAXIMA_VIDA)
     {
         this->vida += 1;
+
+        if (this->vida > MAXIMA_VIDA)
+        {
+            this->vida = MAXIMA_VIDA;
+        }
+
         std::cout << "Cubo recogido. Vida actual: " << this->vida << std::endl;
     }
 }

@@ -727,7 +727,7 @@ void applicationLoop()
 	Player jugador = Player(&shaderJugador, cc);
 	jugador.setTerrain(&island1);
 
-	Cube cubo = Cube("../models/cubo/cubo.fbx", &shaderMulLighting, cc, posicionInicialCubo, jugador);
+	Cube cubo = Cube("../models/cubo/cubo.fbx", &shaderMulLighting, cc, posicionInicialCubo, &jugador);
 	cubo.setTerrain(&island1);
 
 	glm::vec3 posicionEnemigo = glm::vec3(0.0f, 3.0f, 0.0f);
