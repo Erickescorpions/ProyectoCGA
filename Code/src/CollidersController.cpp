@@ -226,3 +226,21 @@ bool CollidersController::verificarColision2(std::string collider1, std::string 
 
   return false;
 }
+
+void CollidersController::removeCollidersOBB(std::string colliderName)
+{
+  auto it = this->collidersOBB.find(colliderName);
+  if (it != this->collidersOBB.end())
+  {
+    this->collidersOBB.erase(it);
+  }
+}
+
+void CollidersController::removeCollidersSBB(std::string colliderName)
+{
+  auto it = this->collidersSBB.find(colliderName);
+  if (it != this->collidersSBB.end())
+  {
+    this->collidersSBB.erase(it);
+  }
+}
