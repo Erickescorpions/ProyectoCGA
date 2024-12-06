@@ -22,8 +22,6 @@ void Cube::setTerrain(Terrain* terrain) {
 }
 
 bool Cube::update(float dt, glm::vec3 targetPosition, float proximidadUmbral) {
-    if (cuboAgarrado) return false;
-
     // Animación flotante
     static float timeCounter = 0.0f;
     timeCounter += dt;
@@ -71,11 +69,14 @@ void Cube::render() {
     if (!cuboAgarrado) {
         modelo.render(modelMatrix);
     }
-
-    // cc->renderCollider(colliderName, modelMatrixCollider);
 }
 
 void Cube::addOrUpdateColliders() {
+    if(cuboAgarrado) {
+        cc->removeCollidersOBB(colliderName);
+        return;
+    }
+
     modelMatrixCollider = glm::mat4(1.0f);
     modelMatrixCollider = glm::translate(modelMatrixCollider, glm::vec3(modelMatrix[3]));
     modelMatrixCollider = glm::scale(modelMatrixCollider, glm::vec3(0.5f));

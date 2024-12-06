@@ -24,6 +24,8 @@ public:
   
   void addOrUpdateCollidersOBB(std::string colliderName, AbstractModel::OBB collider, glm::mat4 modelMatrix);
   void addOrUpdateCollidersSBB(std::string colliderName, AbstractModel::SBB collider, glm::mat4 modelMatrix);
+  void removeCollidersOBB(std::string colliderName);
+  void removeCollidersSBB(std::string colliderName);
 
   void pruebaColisionesSBBvsSBB();
   void pruebaColisionesOBBvsOBB();
