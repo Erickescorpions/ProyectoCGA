@@ -41,7 +41,7 @@ void Cube::update(float dt, glm::vec3 targetPosition) {
     addOrUpdateColliders();
 
     // Verificar colisiones
-    if (cc->verificarColision(colliderName) && !cuboAgarrado) {
+    if (cc->verificarColision2(colliderName, "jugador") && !cuboAgarrado) {
         cuboAgarrado = true;
         this->contador->incrementarContador();
     }

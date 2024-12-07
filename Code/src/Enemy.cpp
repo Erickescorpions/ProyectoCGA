@@ -64,7 +64,7 @@ void Enemy::update(float dt, glm::vec3 posicionObjetivo)
   }
 
   // vemos si hay colision
-  bool hayColision = this->cc->verificarColision(this->colliderName);
+  bool hayColision = this->cc->verificarColision2(this->colliderName, "jugador");
   if (hayColision)
   {
     // actualizamos la posicion del jugador con la del collider

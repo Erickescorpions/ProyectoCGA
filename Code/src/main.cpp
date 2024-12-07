@@ -1,5 +1,5 @@
 #define _USE_MATH_DEFINES
-#define TIEMPO_CARGA_INTRO 0.1
+#define TIEMPO_CARGA_INTRO 7
 
 #include <cmath>
 // glew include
@@ -865,7 +865,7 @@ void applicationLoop()
 
 	// Creamos un enemigo
 	glm::vec3 posicionEnemigo = glm::vec3(0.0f, 3.0f, 0.0f);
-	Enemy enemigo = Enemy("../models/enemy/zombie.fbx", &shaderMulLighting, cc, posicionEnemigo, 15.0f);
+	Enemy enemigo = Enemy("../models/enemy/zombie.fbx", &shaderMulLighting, cc, posicionEnemigo, 30.0f);
 	enemigo.setTerrain(&island1);
 
 	countdownStartTime = TimeManager::Instance().GetTime();

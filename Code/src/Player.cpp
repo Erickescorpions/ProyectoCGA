@@ -96,12 +96,6 @@ void Player::recogerCubo()
     if (this->vida < MAXIMA_VIDA)
     {
         this->vida += 1;
-
-        if (this->vida > MAXIMA_VIDA)
-        {
-            this->vida = MAXIMA_VIDA;
-        }
-
         std::cout << "Cubo recogido. Vida actual: " << this->vida << std::endl;
     }
 }
