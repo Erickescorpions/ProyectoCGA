@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "Constants.h"
 #include <iostream>
 
 std::map<Personaje, std::string> modelosJugador = {
@@ -114,6 +115,7 @@ void Player::setJugador(Personaje jugador)
     this->modelo.setAnimationIndex(2);
 
     this->modelMatrix = glm::mat4(1.0f);
+    //this->modelMatrix = glm::rotate(this->modelMatrix, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 }
 
 void Player::setAccion(AccionJugador accion)
@@ -160,6 +162,8 @@ void Player::addOrUpdateCollider()
 
 void Player::moverJugador(AccionJugador accion, float dt)
 {
+    this->posicion.x = glm::clamp(this->posicion.x, MAP_MIN_X, MAP_MAX_X);
+    this->posicion.z = glm::clamp(this->posicion.z, MAP_MIN_Z, MAP_MAX_Z);
     switch (accion)
     {
     case AccionJugador::CAMINANDO:

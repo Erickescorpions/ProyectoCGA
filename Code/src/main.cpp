@@ -57,6 +57,7 @@
 #include "Player.h"
 #include "AudioManager.h"
 #include "Contador.h"
+#include "Constants.h"
 
 #include "CollidersController.h"
 
@@ -79,7 +80,7 @@ Shader shaderAgua;
 
 // Variables para la introducción
 bool iniciaPartida = false, presionarOpcion = false;
-GLuint textureActivaID, textureInit1ID, textureInit2ID, textureInit3ID, textureScreenID;
+GLuint textureActivaID, textureInit1ID, textureInit2ID, textureInit3ID, textureLoseID, textureWinID;
 GLuint texturaBarraVidaID;
 
 //=========================Variables para el conteno de cubos=====================================
@@ -114,13 +115,14 @@ Model modelCirculoMagico;
 
 // Modelos Isla2
 Model modelCasa1, modelCasa2, modelCasa3, modelCasa4, modelCasa5, modelCasa6, modelCasa7, modelCasa8, modelCasa9, modelCasa10;
+Model modelArbol1I1, modelArbol2I1, modelArbol3I1, modelArbol4I1, modelArbol5I1;
 Model modelArbol1I2, modelArbol2I2, modelArbol3I2, modelArbol4I2, modelArbol5I2, modelArbol6I2;
 Model modelPuente;
 
 // Terrain model instance
-Terrain island1(-1, -1, 200, 15, "../textures/islas/heightmap1.png");
+Terrain island1(-1, -1, 200, 5, "../textures/islas/heightmap1.png");
 Terrain island2(-1, -1, 200, 100, "../textures/islas/heightmap2.png");
-Terrain island3(-1, -1, 200, 15, "../textures/islas/heightmap3.png");
+Terrain island3(-1, -1, 200, 10, "../textures/islas/heightmap3.png");
 
 // Definir texturas de islas
 GLuint textureCespedID1, textureCespedID2, textureCespedID3;
@@ -164,7 +166,40 @@ std::vector<glm::vec3> lamp1Position = {
 std::vector<float> lamp1Orientation = {
 		-17.0, -82.67, 23.70};
 
-// Posición de árboles
+// Posición de árboles ISLA 1
+#include <random>
+
+// Generar bosque en isla 1
+std::vector<glm::vec3> generarBosque(int cantidadArboles, float minX, float maxX, float minZ, float maxZ) {
+    std::vector<glm::vec3> posiciones;
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> distX(minX, maxX);
+    std::uniform_real_distribution<float> distZ(minZ, maxZ);
+
+    for (int i = 0; i < cantidadArboles; ++i) {
+        float x = distX(gen);
+        float z = distZ(gen);
+        // Asignar la altura del terreno
+        float y = island1.getHeightTerrain(x, z);
+        posiciones.push_back(glm::vec3(x, y, z));
+    }
+    return posiciones;
+}
+
+// Generar bosque para los árboles de la isla 1
+std::vector<glm::vec3> arbol1_Isla1_Position = generarBosque(10, -90.0f, 90.0f, -90.0f, 90.0f);
+std::vector<float> arbol1_Isla1_Orientation = {15.0, 25.0, 35.0, 45.0, 55.0, 65.0};
+std::vector<glm::vec3> arbol2_Isla1_Position = generarBosque(10, -90.0f, 90.0f, -90.0f, 90.0f);
+std::vector<float> arbol2_Isla1_Orientation = {15.0, 25.0, 35.0, 45.0, 55.0, 65.0};
+std::vector<glm::vec3> arbol3_Isla1_Position = generarBosque(10, -90.0f, 90.0f, -90.0f, 90.0f);
+std::vector<float> arbol3_Isla1_Orientation = {15.0, 25.0, 35.0, 45.0, 55.0, 65.0};
+std::vector<glm::vec3> arbol4_Isla1_Position = generarBosque(10, -90.0f, 90.0f, -90.0f, 90.0f);
+std::vector<float> arbol4_Isla1_Orientation = {15.0, 25.0, 35.0, 45.0, 55.0, 65.0};
+std::vector<glm::vec3> arbol5_Isla1_Position = generarBosque(10, -90.0f, 90.0f, -90.0f, 90.0f);
+std::vector<float> arbol5_Isla1_Orientation = {15.0, 25.0, 35.0, 45.0, 55.0, 65.0};
+
+// Posición de árboles ISLA 2
 std::vector<glm::vec3> arbol1_Isla2_Position = {
 		glm::vec3(15.0, 0.0, -25.0),
 		glm::vec3(85.0, 0.0, -30.0),
@@ -261,7 +296,13 @@ bool showIntro = true;
 bool seleccionPersonaje = false;
 
 double countdownStartTime = 0.0;
-double countdownDuration = 300.0f; // 5 minutos
+double countdownDuration = 600.0f; // 5 minutos
+
+bool gameOver = false;
+bool gameOverMusicPlayed = false;                // Para saber si el juego terminó
+float gameOverDuration = 8.0f;       // Duración de la pantalla final en segundos
+float gameOverTimer = 0.0f;          // Temporizador para la pantalla final
+bool gameWon = false; 
 
 // float teleportCooldown = 0.0f;
 // float teleportCooldownTime = 2.0f; // 2 segundos de enfriamiento después de teletransportarse
@@ -374,7 +415,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen)
 	GenerarTextura(texture1R, textureIsland1RID);
 	Texture texture1G("../textures/islas/flores1.png");
 	GenerarTextura(texture1G, textureIsland1GID);
-	Texture texture1B("../textures/islas/camino1.png");
+	Texture texture1B("../textures/islas/pasto1.png");
 	GenerarTextura(texture1B, textureIsland1BID);
 	Texture texture1BlendMap("../textures/islas/blendMap1.png");
 	GenerarTextura(texture1BlendMap, textureIsland1BlendMapID);
@@ -426,6 +467,12 @@ void init(int width, int height, std::string strTitle, bool bFullScreen)
 	GenerarTextura(intro4, introTextures[3]);
 	Texture intro5("../textures/intro5.png");
 	GenerarTextura(intro5, introTextures[4]);
+
+	Texture lose("../textures/moriste.png");
+	GenerarTextura(lose, textureLoseID);
+
+	Texture win("../textures/ganaste.png");
+	GenerarTextura(win, textureWinID);
 
 	// Enlazar la textura
 	glBindTexture(GL_TEXTURE_2D, textureCuboID);
@@ -489,6 +536,11 @@ void destroy()
 	modelCasa8.destroy();
 	modelCasa9.destroy();
 	modelCasa10.destroy();
+	modelArbol1I1.destroy();
+	modelArbol2I1.destroy();
+	modelArbol3I1.destroy();
+	modelArbol4I1.destroy();
+	modelArbol5I1.destroy();
 	modelArbol1I2.destroy();
 	modelArbol2I2.destroy();
 	modelArbol3I2.destroy();
@@ -531,7 +583,8 @@ void destroy()
 	glDeleteTextures(1, &textureInit1ID);
 	glDeleteTextures(1, &textureInit2ID);
 	glDeleteTextures(1, &textureInit3ID);
-	glDeleteTextures(1, &textureScreenID);
+	glDeleteTextures(1, &textureLoseID);
+	glDeleteTextures(1, &textureWinID);
 }
 
 void reshapeCallback(GLFWwindow *Window, int widthRes, int heightRes)
@@ -1013,11 +1066,77 @@ void applicationLoop()
 				(minutes < 10 ? "0" : "") + std::to_string(minutes) + ":" +
 				(seconds < 10 ? "0" : "") + std::to_string(seconds);
 
+		if ((timeRemaining <= 0 || jugador.getVida() <= 0) && !gameOver) {
+				gameOver = true;
+
+				// Configurar proyección y vista para pantalla completa
+				shaderTexture.setMatrix4("projection", 1, false, glm::value_ptr(glm::mat4(1.0)));
+				shaderTexture.setMatrix4("view", 1, false, glm::value_ptr(glm::mat4(1.0)));
+
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D, textureLoseID);
+				shaderTexture.setInt("outTexture", 0);
+		}
+
+		if (contador->contador >= 10 && !gameWon) {
+				gameWon = true;
+				gameOver = true; // Reutilizamos la mecánica de gameOver
+
+				// Configurar proyección y vista para pantalla completa
+				shaderTexture.setMatrix4("projection", 1, false, glm::value_ptr(glm::mat4(1.0)));
+				shaderTexture.setMatrix4("view", 1, false, glm::value_ptr(glm::mat4(1.0)));
+
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D, textureWinID);
+				shaderTexture.setInt("outTexture", 0);
+		}
+
+		if (gameOver) {
+				// Renderizar la pantalla de fin de juego
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+				// Cambiar textura dependiendo del estado del juego
+				if (gameWon) {
+						glBindTexture(GL_TEXTURE_2D, textureWinID);
+				} else {
+						glBindTexture(GL_TEXTURE_2D, textureLoseID);
+				}
+				boxIntro.render();
+
+				// Reproducir música correspondiente
+				if (!gameOverMusicPlayed) {
+					gameOverMusicPlayed = true;
+					if (gameWon) {
+							gameOverDuration = 58;
+							AudioManager::playBackgroundMusic("../sounds/ganaste.wav");
+							AudioManager::playBackgroundMusic("../sounds/ganaste.wav");
+					} else {
+							AudioManager::playBackgroundMusic("../sounds/moriste.wav");
+							AudioManager::playBackgroundMusic("../sounds/moriste.wav");
+					}
+				}
+
+				// Incrementar el temporizador de la pantalla final
+				gameOverTimer += deltaTime;
+
+				// Salir del bucle principal después de mostrar la pantalla final durante cierto tiempo
+				if (gameOverTimer >= gameOverDuration || glfwWindowShouldClose(window)) {
+						break; // Salir del programa
+				}
+
+				// Procesar eventos de la ventana
+				glfwSwapBuffers(window);
+				glfwPollEvents();
+
+				// Continuar sin procesar lógica del juego
+				continue;
+		}
+
+
 		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)screenWidth / (float)screenHeight, 0.01f, 1000.0f);
 
 		positionTarget = jugador.modelMatrix[3];
-		{
-		}
+		
 		if (isIsland1Active)
 			positionTarget.y = island1.getHeightTerrain(positionTarget.x, positionTarget.z) + 3.0f; // Ajuste de altura
 		else if (isIsland2Active)
@@ -1101,6 +1220,15 @@ void applicationLoop()
 				std::cout << "Colisión con el círculo 1 detectada." << std::endl;
 				changeIsland(2, jugador, enemigo); // Cambiar a isla 2
 			}
+
+			/*******************************************
+			 * Render de Arboles
+			 *******************************************/
+			renderArboles(modelArbol1I1, arbol1_Isla1_Position, arbol1_Isla1_Orientation, island1);
+			renderArboles(modelArbol2I1, arbol2_Isla1_Position, arbol2_Isla1_Orientation, island1);
+			renderArboles(modelArbol3I1, arbol3_Isla1_Position, arbol3_Isla1_Orientation, island1);
+			renderArboles(modelArbol4I1, arbol4_Isla1_Position, arbol4_Isla1_Orientation, island1);
+			renderArboles(modelArbol5I1, arbol5_Isla1_Position, arbol5_Isla1_Orientation, island1);
 		}
 
 		if (isIsland2Active)
@@ -1437,6 +1565,16 @@ void loadModels()
 	modelCasa9.setShader(&shaderMulLighting);
 	modelCasa10.loadModel("../models/isla2/casas/casa_japonesa.obj");
 	modelCasa10.setShader(&shaderMulLighting);
+	modelArbol1I1.loadModel("../models/isla1/arboles/arbol1.obj");
+	modelArbol1I1.setShader(&shaderMulLighting);
+	modelArbol2I1.loadModel("../models/isla1/arboles/arbol2.obj");
+	modelArbol2I1.setShader(&shaderMulLighting);
+	modelArbol3I1.loadModel("../models/isla1/arboles/arbol3.obj");
+	modelArbol3I1.setShader(&shaderMulLighting);
+	modelArbol4I1.loadModel("../models/isla1/arboles/arbol4.obj");
+	modelArbol4I1.setShader(&shaderMulLighting);
+	modelArbol5I1.loadModel("../models/isla1/arboles/arbol5.obj");
+	modelArbol5I1.setShader(&shaderMulLighting);
 	modelArbol1I2.loadModel("../models/isla2/arboles/arbol1.obj");
 	modelArbol1I2.setShader(&shaderMulLighting);
 	modelArbol2I2.loadModel("../models/isla2/arboles/arbol2.obj");
