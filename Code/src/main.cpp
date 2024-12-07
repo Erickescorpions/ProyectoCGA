@@ -261,7 +261,7 @@ bool showIntro = true;
 bool seleccionPersonaje = false;
 
 double countdownStartTime = 0.0;
-double countdownDuration = 600.0; // 10 minutos en segundos
+double countdownDuration = 300.0f; // 5 minutos
 
 //float teleportCooldown = 0.0f;
 //float teleportCooldownTime = 2.0f; // 2 segundos de enfriamiento después de teletransportarse
@@ -807,7 +807,7 @@ void applicationLoop()
 	Player jugador = Player(&shaderJugador, cc);
 	jugador.setTerrain(&island1);
 
-	Cube cubo = Cube("../models/cubo/cubo.fbx", &shaderMulLighting, cc, posicionInicialCubo, &jugador);
+	Cube cubo = Cube("../models/cubo/cubo.fbx", &shaderMulLighting, cc, posicionInicialCubo);
 	cubo.setTerrain(&island1);
 
 	glm::vec3 posicionEnemigo = glm::vec3(0.0f, 3.0f, 0.0f);
@@ -856,7 +856,7 @@ void applicationLoop()
       boxIntro.render();
 
       // Cambiar de imagen cada 7 segundos
-      if (currentTime - introStartTime > 1.0)
+      if (currentTime - introStartTime > 0.1)
       {
         currentIntroImage++;
         introStartTime = currentTime;
@@ -896,6 +896,8 @@ void applicationLoop()
 								jugador.setJugador(Personaje::KRATOS);
 						else if (textureActivaID == textureInit3ID)
 								jugador.setJugador(Personaje::NARUTO);
+
+						countdownStartTime = TimeManager::Instance().GetTime();
 				}
 
 				glfwSwapBuffers(window);
@@ -918,10 +920,6 @@ void applicationLoop()
 		std::string countdownText = 
 				(minutes < 10 ? "0" : "") + std::to_string(minutes) + ":" + 
 				(seconds < 10 ? "0" : "") + std::to_string(seconds);
-
-		// Renderizar el texto con estilo más grande
-		modelText->render("TIEMPO RESTANTE", 0.0f, 0.90f, 1.5f); // Título
-		modelText->render(countdownText, 0.0f, 0.8f, 1.5f); // Cuenta regresiva
 
 		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)screenWidth / (float)screenHeight, 0.01f, 1000.0f);
 
@@ -1119,37 +1117,6 @@ void applicationLoop()
 		//if (teleportCooldown <= 0.0f) {
 		//}
 
-		// Enlaza el skybox activo
-		// Seleccionar el skybox activo antes de renderizar
-		GLuint currentSkyboxTextureID;
-		if (activeSkybox == 1) {
-				currentSkyboxTextureID = skyboxTextureID1;
-		} else if (activeSkybox == 2) {
-				currentSkyboxTextureID = skyboxTextureID2;
-		} else if (activeSkybox == 3) {
-				currentSkyboxTextureID = skyboxTextureID3;
-		}
-
-		// Enlaza el skybox activo
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, currentSkyboxTextureID);
-		shaderSkybox.setInt("skybox", 0);
-
-		// Renderiza el skybox
-		skyboxSphere.render();
-
-		/********************************************
-		 * Render de Lamparas
-		 *******************************************/
-		/* for (int i = 0; i < lamp1Position.size(); i++)
-		{
-			lamp1Position[i].y = island2.getHeightTerrain(lamp1Position[i].x, lamp1Position[i].z);
-			modelLamp1.setPosition(lamp1Position[i]);
-			modelLamp1.setScale(glm::vec3(0.5));
-			modelLamp1.setOrientation(glm::vec3(0, lamp1Orientation[i], 0));
-			modelLamp1.render();
-		} */
-
 		/*****************************************
 		 * Render Jugador
 		 * **************************************/
@@ -1206,6 +1173,21 @@ void applicationLoop()
 
 		glDisable(GL_BLEND);
 
+		// Renderizar el texto con estilo más grande
+	  modelText->render("TIEMPO RESTANTE", 0.0f, 0.90f, 1.5f); // Título
+	  modelText->render(countdownText, 0.0f, 0.8f, 1.5f); // Cuenta regresiva
+
+    // Enlaza el skybox activo
+		// Seleccionar el skybox activo antes de renderizar
+		GLuint currentSkyboxTextureID;
+		if (activeSkybox == 1) {
+				currentSkyboxTextureID = skyboxTextureID1;
+		} else if (activeSkybox == 2) {
+				currentSkyboxTextureID = skyboxTextureID2;
+		} else if (activeSkybox == 3) {
+				currentSkyboxTextureID = skyboxTextureID3;
+		}
+
 		/*******************************************
 		 * Skybox
 		 *******************************************/
@@ -1214,7 +1196,12 @@ void applicationLoop()
 		// deshabilita el modo del recorte de caras ocultas para ver las esfera desde adentro
 		glGetIntegerv(GL_CULL_FACE_MODE, &oldCullFaceMode);
 		glGetIntegerv(GL_DEPTH_FUNC, &oldDepthFuncMode);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, currentSkyboxTextureID);
 		shaderSkybox.setInt("skybox", 0);
+
+
 		glCullFace(GL_FRONT);
 		glDepthFunc(GL_LEQUAL);
 		glActiveTexture(GL_TEXTURE0);

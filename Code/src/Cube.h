@@ -22,11 +22,10 @@ private:
     CollidersController* cc;           
     AbstractModel::OBB collider;       
     std::string colliderName;          
-    bool cuboAgarrado;             
-    Player* jugador;                   
+    bool cuboAgarrado;
 
 public:
-    Cube(const std::string& modelPath, Shader* shader, CollidersController* cc, glm::vec3 posicionInicial, Player* jugador); 
+    Cube(const std::string& modelPath, Shader* shader, CollidersController* cc, glm::vec3 posicionInicial); 
     ~Cube();
 
     void setTerrain(Terrain* terrain); 

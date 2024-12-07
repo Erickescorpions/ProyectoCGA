@@ -2,8 +2,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <cmath>
 
-Cube::Cube(const std::string& modelPath, Shader* shader, CollidersController* cc, glm::vec3 posicionInicial, Player* jugador)
-    : shader(shader), cc(cc), cuboAgarrado(false), jugador(jugador) { 
+Cube::Cube(const std::string& modelPath, Shader* shader, CollidersController* cc, glm::vec3 posicionInicial)
+    : shader(shader), cc(cc), cuboAgarrado(false) { 
     this->modelo.loadModel(modelPath);
     this->modelo.setShader(shader);
     this->modelMatrix = glm::mat4(1.0f);
@@ -31,17 +31,6 @@ bool Cube::update(float dt, glm::vec3 targetPosition, float proximidadUmbral) {
     float posZ = modelMatrix[3][2];
     glm::vec3 position(posX, terrain->getHeightTerrain(posX, posZ) + floatingOffset, posZ);
 
-    // Verificar proximidad con el jugador
-    if (glm::distance(targetPosition, position) < proximidadUmbral) {
-        cuboAgarrado = true;
-
-        if (jugador) {
-            jugador->recogerCubo();
-        }
-
-        return true; 
-    }
-
     // Actualizar posición del modelo
     modelMatrix = glm::mat4(1.0f);
     modelMatrix = glm::translate(modelMatrix, position);
@@ -53,12 +42,6 @@ bool Cube::update(float dt, glm::vec3 targetPosition, float proximidadUmbral) {
     // Verificar colisiones
     if (cc->verificarColision(colliderName)) {
         cuboAgarrado = true;
-
-        // Notificar al jugador que recogió el cubo
-        if (jugador) {
-            jugador->recogerCubo();
-        }
-
         return true; // El cubo fue recogido debido a colisión
     }
 
