@@ -231,6 +231,7 @@ void scrollCallback(GLFWwindow *window, double xoffset, double yoffset);
 void init(int width, int height, std::string strTitle, bool bFullScreen);
 void destroy();
 bool processInput(bool continueApplication = true, Player *jugador = nullptr);
+bool processInputController(bool continueApplication, Player *jugador = nullptr);
 void GenerarTextura(Texture texture, GLuint &textureID);
 void RenderTextura(GLuint Cesped, GLuint R, GLuint G, GLuint B, GLuint BlendMap);
 bool checkCollision(const AbstractModel::OBB &box1, const AbstractModel::OBB &box2);
@@ -745,37 +746,57 @@ bool processInput(bool continueApplication, Player *jugador)
 	return continueApplication;
 }
 
-void processControllerInput(int joystickId)
+bool processInputController(bool continueApplication, Player *jugador)
 {
-	// Verificar si el joystick está conectado
-	if (glfwJoystickPresent(joystickId))
+	if (exitApp || glfwWindowShouldClose(window) != 0)
 	{
-		// Obtener el nombre del joystick
-		const char *joystickName = glfwGetJoystickName(joystickId);
-		std::cout << "Controlador conectado: " << joystickName << std::endl;
-
-		// Obtener los estados de los botones
-		int buttonCount;
-		const unsigned char *buttons = glfwGetJoystickButtons(joystickId, &buttonCount);
-
-		for (int i = 0; i < buttonCount; i++)
-		{
-			std::cout << "Botón " << i << (buttons[i] == GLFW_PRESS ? " PRESIONADO" : " LIBRE") << std::endl;
-		}
-
-		// Obtener los estados de los ejes (sticks y gatillos)
-		int axesCount;
-		const float *axes = glfwGetJoystickAxes(joystickId, &axesCount);
-
-		for (int i = 0; i < axesCount; i++)
-		{
-			std::cout << "Eje " << i << ": " << axes[i] << std::endl;
-		}
+		return false;
 	}
-	else
+
+	int count;
+	const unsigned char *buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
+
+	if (!buttons)
 	{
-		std::cout << "No se detectó ningún controlador en el ID " << joystickId << "." << std::endl;
+		std::cout << "No se detectó un control conectado.\n";
+		return continueApplication;
 	}
+
+	const int DPAD_UP = 11;		 // Flecha arriba
+	const int DPAD_DOWN = 13;	 // Flecha abajo
+	const int DPAD_LEFT = 14;	 // Flecha izquierda
+	const int DPAD_RIGHT = 12; // Flecha derecha
+
+	if (buttons[DPAD_LEFT] == GLFW_PRESS)
+	{
+		angleTarget += 0.02f; // Girar a la izquierda
+		jugador->anguloOrientacion += 0.02f;
+	}
+	if (buttons[DPAD_RIGHT] == GLFW_PRESS)
+	{
+		angleTarget -= 0.02f; // Girar a la derecha
+		jugador->anguloOrientacion -= 0.02f;
+	}
+	if (buttons[DPAD_UP] == GLFW_PRESS)
+	{
+		jugador->setAccion(AccionJugador::CAMINANDO); // Avanzar
+	}
+	if (buttons[DPAD_DOWN] == GLFW_PRESS)
+	{
+		jugador->setAccion(AccionJugador::REVERSA); // Retroceder
+	}
+
+	if (!(buttons[DPAD_UP] == GLFW_PRESS ||
+				buttons[DPAD_DOWN] == GLFW_PRESS))
+	{
+		jugador->setAccion(AccionJugador::QUIETO);
+	}
+
+	// Asegurarse de que el jugador no salga de los límites
+	enforceMapLimits(jugador->modelMatrix);
+
+	glfwPollEvents();
+	return continueApplication;
 }
 
 void renderContador(GLuint textureCuboID, FontTypeRendering::FontTypeRendering *modelText, const std::string &text)
@@ -797,6 +818,7 @@ void renderContador(GLuint textureCuboID, FontTypeRendering::FontTypeRendering *
 void applicationLoop()
 {
 	bool psi = true;
+	bool psic = true;
 
 	int state = 0;
 	float advanceCount = 0.0;
@@ -830,7 +852,7 @@ void applicationLoop()
 
 	countdownStartTime = TimeManager::Instance().GetTime();
 
-	while (psi)
+	while (psi && psic)
 	{
 		currTime = TimeManager::Instance().GetTime();
 		if (currTime - lastTime < 0.016666667)
@@ -842,6 +864,7 @@ void applicationLoop()
 		TimeManager::Instance().CalculateFrameRate(false);
 		deltaTime = TimeManager::Instance().DeltaTime;
 		psi = processInput(true, &jugador);
+		psic = processInputController(true, &jugador);
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
