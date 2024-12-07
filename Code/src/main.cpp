@@ -868,7 +868,7 @@ void applicationLoop()
 
 	// Creamos un enemigo
 	glm::vec3 posicionEnemigo = glm::vec3(0.0f, 3.0f, 0.0f);
-	Enemy enemigo = Enemy("../models/enemy/zombie.fbx", &shaderMulLighting, cc, posicionEnemigo, 30.0f);
+	Enemy enemigo = Enemy("../models/enemy/zombie.fbx", &shaderMulLighting, cc, posicionEnemigo, 15.0f);
 	enemigo.setTerrain(&island1);
 
 	posicionEnemigo = glm::vec3(dist(gen), 3.0f, dist(gen));
@@ -1303,7 +1303,7 @@ void applicationLoop()
 		}
 
 		// Para mostrar las colisiones
-		cc->render();
+		//cc->render();
 
 		luces(jugador, projection, view);
 
