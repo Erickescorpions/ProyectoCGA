@@ -91,9 +91,9 @@ glm::vec3 posicionInicialCubo = glm::vec3(10.0f, 0.0f, 10.0f);
 // Modelo para renderizar la pantalla de introducción
 Box boxIntro;
 Box boxBarraVida;
+Box boxImagenCubo;
 Box Conteo;
 Shader shaderTexture;
-Box boxCollider;
 
 std::shared_ptr<ThirdPersonCamera> camera(new ThirdPersonCamera());
 float distanceFromPlayer = 6.5f;
@@ -167,48 +167,48 @@ std::vector<float> lamp1Orientation = {
 
 // Posición de árboles
 std::vector<glm::vec3> arbol1_Isla2_Position = {
-    glm::vec3(15.0, 0.0, -25.0),
-    glm::vec3(85.0, 0.0, -30.0),
-    glm::vec3(34.0, 0.0, -35.0),
-    glm::vec3(71.0, 0.0, -50.0),
-    glm::vec3(62.0, 0.0, -45.0),
-    glm::vec3(43.0, 0.0, -60.0)};
+		glm::vec3(15.0, 0.0, -25.0),
+		glm::vec3(85.0, 0.0, -30.0),
+		glm::vec3(34.0, 0.0, -35.0),
+		glm::vec3(71.0, 0.0, -50.0),
+		glm::vec3(62.0, 0.0, -45.0),
+		glm::vec3(43.0, 0.0, -60.0)};
 std::vector<float> arbol1_Isla2_Orientation = {15.0, 25.0, 35.0, 45.0, 55.0, 65.0};
 
 std::vector<glm::vec3> arbol2_Isla2_Position = {
-    glm::vec3(21.0, 0.0, -28.0),
-    glm::vec3(80.0, 0.0, -35.0),
-    glm::vec3(30.0, 0.0, -42.0),
-    glm::vec3(40.0, 0.0, -48.0),
-    glm::vec3(35.0, 0.0, -65.0),
-    glm::vec3(45.0, 0.0, -75.0)};
+		glm::vec3(21.0, 0.0, -28.0),
+		glm::vec3(80.0, 0.0, -35.0),
+		glm::vec3(30.0, 0.0, -42.0),
+		glm::vec3(40.0, 0.0, -48.0),
+		glm::vec3(35.0, 0.0, -65.0),
+		glm::vec3(45.0, 0.0, -75.0)};
 std::vector<float> arbol2_Isla2_Orientation = {20.0, 30.0, 40.0, 50.0, 60.0, 70.0};
 
 std::vector<glm::vec3> arbol3_Isla2_Position = {
-    glm::vec3(50.0, 0.0, -25.0),
-    glm::vec3(60.0, 0.0, -40.0),
-    glm::vec3(70.0, 0.0, -55.0),
-    glm::vec3(66.0, 0.0, -47.0),
-    glm::vec3(75.0, 0.0, -63.0),
-    glm::vec3(80.0, 0.0, -70.0)};
+		glm::vec3(50.0, 0.0, -25.0),
+		glm::vec3(60.0, 0.0, -40.0),
+		glm::vec3(70.0, 0.0, -55.0),
+		glm::vec3(66.0, 0.0, -47.0),
+		glm::vec3(75.0, 0.0, -63.0),
+		glm::vec3(80.0, 0.0, -70.0)};
 std::vector<float> arbol3_Isla2_Orientation = {10.0, 20.0, 30.0, 40.0, 50.0, 60.0};
 
 std::vector<glm::vec3> arbol4_Isla2_Position = {
-    glm::vec3(31.0, 0.0, -65.0),
-    glm::vec3(42.0, 0.0, -69.0),
-    glm::vec3(53.0, 0.0, -74.0),
-    glm::vec3(64.0, 0.0, -23.0),
-    glm::vec3(75.0, 0.0, -37.0),
-    glm::vec3(86.0, 0.0, -84.0)};
+		glm::vec3(31.0, 0.0, -65.0),
+		glm::vec3(42.0, 0.0, -69.0),
+		glm::vec3(53.0, 0.0, -74.0),
+		glm::vec3(64.0, 0.0, -23.0),
+		glm::vec3(75.0, 0.0, -37.0),
+		glm::vec3(86.0, 0.0, -84.0)};
 std::vector<float> arbol4_Isla2_Orientation = {0.0, 15.0, 30.0, 45.0, 60.0, 75.0};
 
 std::vector<glm::vec3> arbol5_Isla2_Position = {
-    glm::vec3(28.0, 0.0, -24.0),
-    glm::vec3(47.0, 0.0, -38.0),
-    glm::vec3(50.0, 0.0, -20.0),
-    glm::vec3(60.0, 0.0, -55.0),
-    glm::vec3(20.0, 0.0, -35.0),
-    glm::vec3(31.0, 0.0, -80.0)};
+		glm::vec3(28.0, 0.0, -24.0),
+		glm::vec3(47.0, 0.0, -38.0),
+		glm::vec3(50.0, 0.0, -20.0),
+		glm::vec3(60.0, 0.0, -55.0),
+		glm::vec3(20.0, 0.0, -35.0),
+		glm::vec3(31.0, 0.0, -80.0)};
 std::vector<float> arbol5_Isla2_Orientation = {12.0, 24.0, 36.0, 48.0, 60.0, 72.0};
 
 std::vector<glm::vec3> arbol6_Isla2_Position = {glm::vec3(-7.03, 0.0, -19.14)};
@@ -234,10 +234,10 @@ bool processInput(bool continueApplication = true, Player *jugador = nullptr);
 void GenerarTextura(Texture texture, GLuint &textureID);
 void RenderTextura(GLuint Cesped, GLuint R, GLuint G, GLuint B, GLuint BlendMap);
 bool checkCollision(const AbstractModel::OBB &box1, const AbstractModel::OBB &box2);
-void luces (const Player& jugador, glm::mat4 projection, glm::mat4 view);
-void changeIsland(int targetIsland, Player& jugador, Enemy& enemigo);
+void luces(const Player &jugador, glm::mat4 projection, glm::mat4 view);
+void changeIsland(int targetIsland, Player &jugador, Enemy &enemigo);
 void loadModels();
-void renderModel(Model& model, const glm::vec3& position, const glm::vec3& scale, float rotation, Terrain* terrain = nullptr);
+void renderModel(Model &model, const glm::vec3 &position, const glm::vec3 &scale, float rotation, Terrain *terrain = nullptr);
 void renderArboles(Model &model, std::vector<glm::vec3> &positions, const std::vector<float> &orientations, Terrain &terrain);
 GLuint loadCubemapTextures(std::string fileNames[6]);
 void enforceMapLimits(glm::mat4 &modelMatrix);
@@ -250,9 +250,9 @@ bool isIsland3Active = false;
 int activeSkybox = 1; // 1 para isla1, 2 para isla2, 3 para isla3
 
 const float MAP_MIN_X = -95.0f; // Límite mínimo en X
-const float MAP_MAX_X = 95.0f;  // Límite máximo en X
+const float MAP_MAX_X = 95.0f;	// Límite máximo en X
 const float MAP_MIN_Z = -95.0f; // Límite mínimo en Z
-const float MAP_MAX_Z = 95.0f;  // Límite máximo en Z
+const float MAP_MAX_Z = 95.0f;	// Límite máximo en Z
 
 GLuint introTextures[5];
 int currentIntroImage = 0;
@@ -263,8 +263,8 @@ bool seleccionPersonaje = false;
 double countdownStartTime = 0.0;
 double countdownDuration = 300.0f; // 5 minutos
 
-//float teleportCooldown = 0.0f;
-//float teleportCooldownTime = 2.0f; // 2 segundos de enfriamiento después de teletransportarse
+// float teleportCooldown = 0.0f;
+// float teleportCooldownTime = 2.0f; // 2 segundos de enfriamiento después de teletransportarse
 
 // Implementacion de todas las funciones.
 void init(int width, int height, std::string strTitle, bool bFullScreen)
@@ -338,37 +338,34 @@ void init(int width, int height, std::string strTitle, bool bFullScreen)
 	firstPersonCamera->setPosition(glm::vec3(0.0f, 6.0f, 8.0f));
 
 	// Cargar skybox para isla 1
-  std::string fileNames1[6] = {
-    "../skybox_proyecto/isla1/front.png",
-    "../skybox_proyecto/isla1/back.png",
-    "../skybox_proyecto/isla1/top.png",
-    "../skybox_proyecto/isla1/bottom.png",
-    "../skybox_proyecto/isla1/right.png",
-    "../skybox_proyecto/isla1/left.png"
-  };
-  skyboxTextureID1 = loadCubemapTextures(fileNames1);
+	std::string fileNames1[6] = {
+			"../skybox_proyecto/isla1/front.png",
+			"../skybox_proyecto/isla1/back.png",
+			"../skybox_proyecto/isla1/top.png",
+			"../skybox_proyecto/isla1/bottom.png",
+			"../skybox_proyecto/isla1/right.png",
+			"../skybox_proyecto/isla1/left.png"};
+	skyboxTextureID1 = loadCubemapTextures(fileNames1);
 
-  // Cargar skybox para isla 2
-  std::string fileNames2[6] = {
-    "../skybox_proyecto/isla2/front.png",
-    "../skybox_proyecto/isla2/back.png",
-    "../skybox_proyecto/isla2/up.png",
-    "../skybox_proyecto/isla2/down.png",
-    "../skybox_proyecto/isla2/right.png",
-    "../skybox_proyecto/isla2/left.png"
-  };
-  skyboxTextureID2 = loadCubemapTextures(fileNames2);
+	// Cargar skybox para isla 2
+	std::string fileNames2[6] = {
+			"../skybox_proyecto/isla2/front.png",
+			"../skybox_proyecto/isla2/back.png",
+			"../skybox_proyecto/isla2/up.png",
+			"../skybox_proyecto/isla2/down.png",
+			"../skybox_proyecto/isla2/right.png",
+			"../skybox_proyecto/isla2/left.png"};
+	skyboxTextureID2 = loadCubemapTextures(fileNames2);
 
-  // Cargar skybox para isla 3
-  std::string fileNames3[6] = {
-    "../skybox_proyecto/isla3/front.png",
-    "../skybox_proyecto/isla3/back.png",
-    "../skybox_proyecto/isla3/up.png",
-    "../skybox_proyecto/isla3/down.png",
-    "../skybox_proyecto/isla3/right.png",
-    "../skybox_proyecto/isla3/left.png"
-  };
-  skyboxTextureID3 = loadCubemapTextures(fileNames3);
+	// Cargar skybox para isla 3
+	std::string fileNames3[6] = {
+			"../skybox_proyecto/isla3/front.png",
+			"../skybox_proyecto/isla3/back.png",
+			"../skybox_proyecto/isla3/up.png",
+			"../skybox_proyecto/isla3/down.png",
+			"../skybox_proyecto/isla3/right.png",
+			"../skybox_proyecto/isla3/left.png"};
+	skyboxTextureID3 = loadCubemapTextures(fileNames3);
 
 	// Island1
 	Texture textureCesped1("../textures/islas/pasto1.png");
@@ -415,7 +412,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen)
 	GenerarTextura(textureIntro3, textureInit3ID);
 	textureActivaID = textureInit1ID;
 
-	Texture textureCubo("../texture/cubo.png");
+	Texture textureCubo("../textures/cubo.png");
 	GenerarTextura(textureCubo, textureCuboID);
 
 	// Texturas para fotos de intro
@@ -475,6 +472,7 @@ void destroy()
 	shaderTexture.destroy();
 	boxIntro.destroy();
 	boxBarraVida.destroy();
+	boxImagenCubo.destroy();
 
 	// Basic objects Delete
 	skyboxSphere.destroy();
@@ -539,18 +537,19 @@ void destroy()
 
 void reshapeCallback(GLFWwindow *Window, int widthRes, int heightRes)
 {
-		float aspectRatio = 16.0f / 9.0f;
-    int newWidth = widthRes;
-    int newHeight = static_cast<int>(widthRes / aspectRatio);
+	float aspectRatio = 16.0f / 9.0f;
+	int newWidth = widthRes;
+	int newHeight = static_cast<int>(widthRes / aspectRatio);
 
-    if (newHeight > heightRes) {
-        newHeight = heightRes;
-        newWidth = static_cast<int>(heightRes * aspectRatio);
-    }
+	if (newHeight > heightRes)
+	{
+		newHeight = heightRes;
+		newWidth = static_cast<int>(heightRes * aspectRatio);
+	}
 
-    glViewport((widthRes - newWidth) / 2, (heightRes - newHeight) / 2, newWidth, newHeight);
-    screenWidth = newWidth;
-    screenHeight = newHeight;
+	glViewport((widthRes - newWidth) / 2, (heightRes - newHeight) / 2, newWidth, newHeight);
+	screenWidth = newWidth;
+	screenHeight = newHeight;
 }
 
 void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mode)
@@ -631,9 +630,6 @@ bool processInput(bool continueApplication, Player *jugador)
 		if (presionarEnter)
 		{
 			iniciaPartida = true;
-			// Audio para cuando inicie la partida
-			AudioManager::playBackgroundMusic("../sounds/isla1.wav");
-			AudioManager::playBackgroundMusic("../sounds/isla1.wav");
 			if (textureActivaID == textureInit1ID)
 			{
 				jugador->setJugador(Personaje::KAKASHI);
@@ -737,7 +733,9 @@ bool processInput(bool continueApplication, Player *jugador)
 	else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 	{
 		jugador->setAccion(AccionJugador::REVERSA);
-	} else {
+	}
+	else
+	{
 		jugador->setAccion(AccionJugador::QUIETO);
 	}
 
@@ -747,43 +745,53 @@ bool processInput(bool continueApplication, Player *jugador)
 	return continueApplication;
 }
 
+void processControllerInput(int joystickId)
+{
+	// Verificar si el joystick está conectado
+	if (glfwJoystickPresent(joystickId))
+	{
+		// Obtener el nombre del joystick
+		const char *joystickName = glfwGetJoystickName(joystickId);
+		std::cout << "Controlador conectado: " << joystickName << std::endl;
+
+		// Obtener los estados de los botones
+		int buttonCount;
+		const unsigned char *buttons = glfwGetJoystickButtons(joystickId, &buttonCount);
+
+		for (int i = 0; i < buttonCount; i++)
+		{
+			std::cout << "Botón " << i << (buttons[i] == GLFW_PRESS ? " PRESIONADO" : " LIBRE") << std::endl;
+		}
+
+		// Obtener los estados de los ejes (sticks y gatillos)
+		int axesCount;
+		const float *axes = glfwGetJoystickAxes(joystickId, &axesCount);
+
+		for (int i = 0; i < axesCount; i++)
+		{
+			std::cout << "Eje " << i << ": " << axes[i] << std::endl;
+		}
+	}
+	else
+	{
+		std::cout << "No se detectó ningún controlador en el ID " << joystickId << "." << std::endl;
+	}
+}
+
 void renderContador(GLuint textureCuboID, FontTypeRendering::FontTypeRendering *modelText, const std::string &text)
 {
-	// 1. Renderiza la textura (el cubo)
+	shaderTexture.setFloat("scaleUV", 0.0f);
+	shaderTexture.setMatrix4("projection", 1, false, glm::value_ptr(glm::mat4(1.0)));
+	shaderTexture.setMatrix4("view", 1, false, glm::value_ptr(glm::mat4(1.0)));
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, textureCuboID);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	shaderTexture.setInt("outTexture", 0);
+	glm::mat4 boxMatrixModel = glm::mat4(1.0f);
+	boxMatrixModel = glm::translate(boxMatrixModel, glm::vec3(0.7f, 0.9f, 0.0f));
+	boxImagenCubo.render(boxMatrixModel);
 
-	// Define el Quad con la textura
-	float quadVertices[] = {
-			1.0f, 1.0f, 0.0f, 1.0f, 1.0f,		// Arriba derecha
-			-1.0f, 1.0f, 0.0f, 0.0f, 1.0f,	// Arriba izquierda
-			-1.0f, -1.0f, 0.0f, 0.0f, 0.0f, // Abajo izquierda
-			1.0f, -1.0f, 0.0f, 1.0f, 0.0f		// Abajo derecha
-	};
-
-	GLuint VBO, VAO;
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
-
-	// Configuración de atributos
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)0);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-
-	// Renderiza la textura
-	glBindTexture(GL_TEXTURE_2D, textureCuboID);
-	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-
-	// 2. Renderiza el texto
-	// Aquí es donde se utiliza el modelo de texto para renderizar el texto.
-	modelText->render(text, 0.9f, 0.9f); // Posiciona el texto en la parte superior derecha
+	// Renderiza el texto
+	modelText->render(text, 0.8f, 0.9f, 1.1f);
 }
 
 void applicationLoop()
@@ -802,7 +810,7 @@ void applicationLoop()
 	camera->setSensitivity(1.2f);
 	camera->setDistanceFromTarget(distanceFromPlayer);
 
-	CollidersController* cc = new CollidersController(&shader);
+	CollidersController *cc = new CollidersController(&shader);
 
 	Player jugador = Player(&shaderJugador, cc);
 	jugador.setTerrain(&island1);
@@ -817,7 +825,7 @@ void applicationLoop()
 
 	// Enemy enemigo1 = Enemy("../models/enemy/zombie.fbx", &shaderMulLighting, cc, glm::vec3(10.0f, 10.0f, 20.0f), 15.0f);
 	// enemigo.setTerrain(&island1);
-	
+
 	AudioManager::playBackgroundMusic("../sounds/intro.wav");
 
 	countdownStartTime = TimeManager::Instance().GetTime();
@@ -838,71 +846,74 @@ void applicationLoop()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Mostrar la introducción
-    if (showIntro)
-    {
-      double currentTime = glfwGetTime();
-      if (introStartTime == 0.0)
-      {
-        introStartTime = currentTime;
-      }
+		if (showIntro)
+		{
+			double currentTime = glfwGetTime();
+			if (introStartTime == 0.0)
+			{
+				introStartTime = currentTime;
+			}
 
 			shaderTexture.setMatrix4("projection", 1, false, glm::value_ptr(glm::mat4(1.0)));
 			shaderTexture.setMatrix4("view", 1, false, glm::value_ptr(glm::mat4(1.0)));
 
-      // Renderiza la textura de introducción actual
-      glActiveTexture(GL_TEXTURE0);
-      glBindTexture(GL_TEXTURE_2D, introTextures[currentIntroImage]);
-      shaderTexture.setInt("outTexture", 0);
-      boxIntro.render();
+			// Renderiza la textura de introducción actual
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, introTextures[currentIntroImage]);
+			shaderTexture.setInt("outTexture", 0);
+			boxIntro.render();
 
-      // Cambiar de imagen cada 7 segundos
-      if (currentTime - introStartTime > 0.1)
-      {
-        currentIntroImage++;
-        introStartTime = currentTime;
-      }
+			// Cambiar de imagen cada 7 segundos
+			if (currentTime - introStartTime > 0.1)
+			{
+				currentIntroImage++;
+				introStartTime = currentTime;
+			}
 
-      // Terminar la introducción después de la última imagen
-    	if (currentIntroImage >= 5)
-      {
-        showIntro = false;
-        seleccionPersonaje = true; // Pasar a selección de personaje
-      }
+			// Terminar la introducción después de la última imagen
+			if (currentIntroImage >= 5)
+			{
+				showIntro = false;
+				seleccionPersonaje = true; // Pasar a selección de personaje
+			}
 
-      glfwSwapBuffers(window);
-      glfwPollEvents();
-      continue;
-    }
+			glfwSwapBuffers(window);
+			glfwPollEvents();
+			continue;
+		}
 
 		// Mostrar la selección de personaje
 		if (seleccionPersonaje)
 		{
-				shaderTexture.setMatrix4("projection", 1, false, glm::value_ptr(glm::mat4(1.0)));
-				shaderTexture.setMatrix4("view", 1, false, glm::value_ptr(glm::mat4(1.0)));
+			shaderTexture.setMatrix4("projection", 1, false, glm::value_ptr(glm::mat4(1.0)));
+			shaderTexture.setMatrix4("view", 1, false, glm::value_ptr(glm::mat4(1.0)));
 
-				glActiveTexture(GL_TEXTURE0);
-				glBindTexture(GL_TEXTURE_2D, textureActivaID);
-				shaderTexture.setInt("outTexture", 0);
-				boxIntro.render();
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, textureActivaID);
+			shaderTexture.setInt("outTexture", 0);
+			boxIntro.render();
 
-				if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
-				{
-						seleccionPersonaje = false;
-						iniciaPartida = true;
+			if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
+			{
+				seleccionPersonaje = false;
+				iniciaPartida = true;
 
-						if (textureActivaID == textureInit1ID)
-								jugador.setJugador(Personaje::KAKASHI);
-						else if (textureActivaID == textureInit2ID)
-								jugador.setJugador(Personaje::KRATOS);
-						else if (textureActivaID == textureInit3ID)
-								jugador.setJugador(Personaje::NARUTO);
+				if (textureActivaID == textureInit1ID)
+					jugador.setJugador(Personaje::KAKASHI);
+				else if (textureActivaID == textureInit2ID)
+					jugador.setJugador(Personaje::KRATOS);
+				else if (textureActivaID == textureInit3ID)
+					jugador.setJugador(Personaje::NARUTO);
 
-						countdownStartTime = TimeManager::Instance().GetTime();
-				}
+				countdownStartTime = TimeManager::Instance().GetTime();
+				// Audio para cuando inicie la partida
+				AudioManager::playBackgroundMusic("../sounds/isla1.wav");
+				AudioManager::playBackgroundMusic("../sounds/isla1.wav");
+			}
 
-				glfwSwapBuffers(window);
-				glfwPollEvents();
-				continue;
+			glfwSwapBuffers(window);
+			glfwPollEvents();
+			continue;
 		}
 
 		// Calcular tiempo restante
@@ -910,20 +921,23 @@ void applicationLoop()
 		double timeElapsed = currentTime - countdownStartTime;
 		double timeRemaining = countdownDuration - timeElapsed;
 
-		if (timeRemaining < 0) timeRemaining = 0;
+		if (timeRemaining < 0)
+			timeRemaining = 0;
 
 		// Convertir a días, horas, minutos y segundos
 		int minutes = static_cast<int>(timeRemaining) / 60;
 		int seconds = static_cast<int>(timeRemaining) % 60;
 
 		// Crear texto de la cuenta regresiva
-		std::string countdownText = 
-				(minutes < 10 ? "0" : "") + std::to_string(minutes) + ":" + 
+		std::string countdownText =
+				(minutes < 10 ? "0" : "") + std::to_string(minutes) + ":" +
 				(seconds < 10 ? "0" : "") + std::to_string(seconds);
 
 		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)screenWidth / (float)screenHeight, 0.01f, 1000.0f);
 
-		positionTarget = jugador.modelMatrix[3];{}
+		positionTarget = jugador.modelMatrix[3];
+		{
+		}
 		if (isIsland1Active)
 			positionTarget.y = island1.getHeightTerrain(positionTarget.x, positionTarget.z) + 3.0f; // Ajuste de altura
 		else if (isIsland2Active)
@@ -980,127 +994,133 @@ void applicationLoop()
 		 *******************************************/
 		glDisable(GL_CULL_FACE);
 
-		if (isIsland1Active) {
-				island1.setPosition(glm::vec3(100, 0, 100));
-    		RenderTextura(textureCespedID1, textureIsland1RID, textureIsland1GID, textureIsland1BID, textureIsland1BlendMapID);
-    		island1.render();
+		if (isIsland1Active)
+		{
+			island1.setPosition(glm::vec3(100, 0, 100));
+			RenderTextura(textureCespedID1, textureIsland1RID, textureIsland1GID, textureIsland1BID, textureIsland1BlendMapID);
+			island1.render();
 
-				/*******************************************
-				 * Render de Circulos de Transporte
-				 *******************************************/
-				matrixModelCirculo1 = glm::mat4(1.0f);
-				matrixModelCirculo1 = glm::translate(matrixModelCirculo1, glm::vec3(40.0, 0.0, 30.0));
-				matrixModelCirculo1[3][1] = island1.getHeightTerrain(matrixModelCirculo1[3][0], matrixModelCirculo1[3][2]);
-				matrixModelCirculo1[3][1] += 1.0f;
-				modelCirculoMagico.render(matrixModelCirculo1);
+			/*******************************************
+			 * Render de Circulos de Transporte
+			 *******************************************/
+			matrixModelCirculo1 = glm::mat4(1.0f);
+			matrixModelCirculo1 = glm::translate(matrixModelCirculo1, glm::vec3(40.0, 0.0, 30.0));
+			matrixModelCirculo1[3][1] = island1.getHeightTerrain(matrixModelCirculo1[3][0], matrixModelCirculo1[3][2]);
+			matrixModelCirculo1[3][1] += 1.0f;
+			modelCirculoMagico.render(matrixModelCirculo1);
 
-				AbstractModel::SBB circle1Collider;
-				circle1Collider.c = glm::vec3(matrixModelCirculo1[3]);
-				circle1Collider.ratio = 2.5f; // Ajusta el radio según el tamaño del círculo
-				AbstractModel::SBB playerCollider;
-				playerCollider.c = glm::vec3(jugador.modelMatrix[3]);
-				playerCollider.ratio = 1.0f; // Ajusta el radio según el tamaño del personaje
+			AbstractModel::SBB circle1Collider;
+			circle1Collider.c = glm::vec3(matrixModelCirculo1[3]);
+			circle1Collider.ratio = 2.5f; // Ajusta el radio según el tamaño del círculo
+			AbstractModel::SBB playerCollider;
+			playerCollider.c = glm::vec3(jugador.modelMatrix[3]);
+			playerCollider.ratio = 1.0f; // Ajusta el radio según el tamaño del personaje
 
-				if (testSphereSphereIntersection(playerCollider, circle1Collider)) {
-					std::cout << "Colisión con el círculo 1 detectada." << std::endl;
-					changeIsland(2, jugador, enemigo); // Cambiar a isla 2
-				}
+			if (testSphereSphereIntersection(playerCollider, circle1Collider))
+			{
+				std::cout << "Colisión con el círculo 1 detectada." << std::endl;
+				changeIsland(2, jugador, enemigo); // Cambiar a isla 2
+			}
 		}
 
-		if (isIsland2Active) {
-				island2.setPosition(glm::vec3(100, 0, 100));
-				RenderTextura(textureCespedID2, textureIsland2RID, textureIsland2GID, textureIsland2BID, textureIsland2BlendMapID);
-				island2.render();
+		if (isIsland2Active)
+		{
+			island2.setPosition(glm::vec3(100, 0, 100));
+			RenderTextura(textureCespedID2, textureIsland2RID, textureIsland2GID, textureIsland2BID, textureIsland2BlendMapID);
+			island2.render();
 
-				/*******************************************
-			 	* Render de Circulos de Transporte
-			 	*******************************************/
-			 	matrixModelCirculo2 = glm::mat4(1.0f);
-			 	matrixModelCirculo2 = glm::translate(matrixModelCirculo2, glm::vec3(10.0, 0.0, 0.0));
-				matrixModelCirculo2[3][1] = island2.getHeightTerrain(matrixModelCirculo2[3][0], matrixModelCirculo2[3][2]);
-				modelCirculoMagico.render(matrixModelCirculo2);
+			/*******************************************
+			 * Render de Circulos de Transporte
+			 *******************************************/
+			matrixModelCirculo2 = glm::mat4(1.0f);
+			matrixModelCirculo2 = glm::translate(matrixModelCirculo2, glm::vec3(10.0, 0.0, 0.0));
+			matrixModelCirculo2[3][1] = island2.getHeightTerrain(matrixModelCirculo2[3][0], matrixModelCirculo2[3][2]);
+			modelCirculoMagico.render(matrixModelCirculo2);
 
-				AbstractModel::SBB circle2Collider;
-				circle2Collider.c = glm::vec3(matrixModelCirculo2[3]);
-				circle2Collider.ratio = 2.5f;
-				AbstractModel::SBB playerCollider;
-				playerCollider.c = glm::vec3(jugador.modelMatrix[3]);
-				playerCollider.ratio = 1.0f; // Ajusta el radio según el tamaño del personaje
+			AbstractModel::SBB circle2Collider;
+			circle2Collider.c = glm::vec3(matrixModelCirculo2[3]);
+			circle2Collider.ratio = 2.5f;
+			AbstractModel::SBB playerCollider;
+			playerCollider.c = glm::vec3(jugador.modelMatrix[3]);
+			playerCollider.ratio = 1.0f; // Ajusta el radio según el tamaño del personaje
 
-				if (testSphereSphereIntersection(playerCollider, circle2Collider)) {
-					std::cout << "Colisión con el círculo 2 detectada." << std::endl;
-					changeIsland(3, jugador, enemigo); // Cambiar a isla 3
-				}
+			if (testSphereSphereIntersection(playerCollider, circle2Collider))
+			{
+				std::cout << "Colisión con el círculo 2 detectada." << std::endl;
+				changeIsland(3, jugador, enemigo); // Cambiar a isla 3
+			}
 
-				/*******************************************
-			 	* Render de Objetos
-			 	*******************************************/
-				renderModel(modelCasa1, glm::vec3(85.0f, 0.0f, 70.0f),  glm::vec3(1.0f), 180.0f, &island2);
-				renderModel(modelCasa2, glm::vec3(68.0f, 0.0f, 80.0f),  glm::vec3(1.0f), 10.0f,  &island2);
-				renderModel(modelCasa3, glm::vec3(60.0f, 0.0f, 82.0f),  glm::vec3(1.0f), 10.0f,  &island2);
-				renderModel(modelCasa4, glm::vec3(0.0f, 0.0f, 85.0f),   glm::vec3(1.0f), -2.5f,  &island2);
-				renderModel(modelCasa5, glm::vec3(-65.0f, 0.0f, 80.0f), glm::vec3(1.0f), 0.0f,   &island2);
-				renderModel(modelCasa6, glm::vec3(-72.0f, 0.0f, 55.0f), glm::vec3(1.0f), 0.0f,   &island2);
-				renderModel(modelCasa7, glm::vec3(-25.0f, 0.0f, 50.0f), glm::vec3(1.0f), -180.0f,&island2);
-				renderModel(modelCasa8, glm::vec3(30.0f, 0.0f, 55.0f),  glm::vec3(1.0f), 180.0f, &island2);
-				renderModel(modelCasa9, glm::vec3(63.0f, 0.0f, 25.0f),  glm::vec3(1.0f), 10.0f,  &island2);
-				renderModel(modelCasa10,glm::vec3(-50.0f, 0.0f, -60.0f),glm::vec3(1.0f), 0.0f,   &island2);
-				renderModel(modelCasa5, glm::vec3(30.0f, 0.0f, 30.0f),  glm::vec3(1.0f), 270.0f, &island2);
-				renderModel(modelCasa6, glm::vec3(30.0f, 0.0f, 85.0f),  glm::vec3(1.0f), -270.0f,&island2);
-				renderModel(modelCasa7, glm::vec3(90.0f, 0.0f, 45.0f),  glm::vec3(1.0f), 180.0f, &island2);
-				renderModel(modelCasa8, glm::vec3(-40.0f, 0.0f, 30.0f), glm::vec3(1.0f), 100.0f, &island2);
-				renderModel(modelCasa9, glm::vec3(-50.0f, 0.0f, 80.0f), glm::vec3(1.0f), 225.0f, &island2);
-				renderModel(modelPuente,glm::vec3(0.0f, 0.0f, -10.0f),  glm::vec3(1.0f), 0.0f,   &island2);
-				
-				/*******************************************
-				 * Render de Arboles
-				 *******************************************/
-				renderArboles(modelArbol1I2, arbol1_Isla2_Position, arbol1_Isla2_Orientation, island2);
-				renderArboles(modelArbol2I2, arbol2_Isla2_Position, arbol2_Isla2_Orientation, island2);
-				renderArboles(modelArbol3I2, arbol3_Isla2_Position, arbol3_Isla2_Orientation, island2);
-				renderArboles(modelArbol4I2, arbol4_Isla2_Position, arbol4_Isla2_Orientation, island2);
-				renderArboles(modelArbol5I2, arbol5_Isla2_Position, arbol5_Isla2_Orientation, island2);
+			/*******************************************
+			 * Render de Objetos
+			 *******************************************/
+			renderModel(modelCasa1, glm::vec3(85.0f, 0.0f, 70.0f), glm::vec3(1.0f), 180.0f, &island2);
+			renderModel(modelCasa2, glm::vec3(68.0f, 0.0f, 80.0f), glm::vec3(1.0f), 10.0f, &island2);
+			renderModel(modelCasa3, glm::vec3(60.0f, 0.0f, 82.0f), glm::vec3(1.0f), 10.0f, &island2);
+			renderModel(modelCasa4, glm::vec3(0.0f, 0.0f, 85.0f), glm::vec3(1.0f), -2.5f, &island2);
+			renderModel(modelCasa5, glm::vec3(-65.0f, 0.0f, 80.0f), glm::vec3(1.0f), 0.0f, &island2);
+			renderModel(modelCasa6, glm::vec3(-72.0f, 0.0f, 55.0f), glm::vec3(1.0f), 0.0f, &island2);
+			renderModel(modelCasa7, glm::vec3(-25.0f, 0.0f, 50.0f), glm::vec3(1.0f), -180.0f, &island2);
+			renderModel(modelCasa8, glm::vec3(30.0f, 0.0f, 55.0f), glm::vec3(1.0f), 180.0f, &island2);
+			renderModel(modelCasa9, glm::vec3(63.0f, 0.0f, 25.0f), glm::vec3(1.0f), 10.0f, &island2);
+			renderModel(modelCasa10, glm::vec3(-50.0f, 0.0f, -60.0f), glm::vec3(1.0f), 0.0f, &island2);
+			renderModel(modelCasa5, glm::vec3(30.0f, 0.0f, 30.0f), glm::vec3(1.0f), 270.0f, &island2);
+			renderModel(modelCasa6, glm::vec3(30.0f, 0.0f, 85.0f), glm::vec3(1.0f), -270.0f, &island2);
+			renderModel(modelCasa7, glm::vec3(90.0f, 0.0f, 45.0f), glm::vec3(1.0f), 180.0f, &island2);
+			renderModel(modelCasa8, glm::vec3(-40.0f, 0.0f, 30.0f), glm::vec3(1.0f), 100.0f, &island2);
+			renderModel(modelCasa9, glm::vec3(-50.0f, 0.0f, 80.0f), glm::vec3(1.0f), 225.0f, &island2);
+			renderModel(modelPuente, glm::vec3(0.0f, 0.0f, -10.0f), glm::vec3(1.0f), 0.0f, &island2);
 
-				/*******************************************
-				* Render de Lamparas
-				*******************************************/
-				for (int i = 0; i < lamp1Position.size(); i++)
-				{
-					lamp1Position[i].y = island2.getHeightTerrain(lamp1Position[i].x, lamp1Position[i].z);
-					modelLamp1.setPosition(lamp1Position[i]);
-					modelLamp1.setScale(glm::vec3(0.5));
-					modelLamp1.setOrientation(glm::vec3(0, lamp1Orientation[i], 0));
-					modelLamp1.render();
-				}
+			/*******************************************
+			 * Render de Arboles
+			 *******************************************/
+			renderArboles(modelArbol1I2, arbol1_Isla2_Position, arbol1_Isla2_Orientation, island2);
+			renderArboles(modelArbol2I2, arbol2_Isla2_Position, arbol2_Isla2_Orientation, island2);
+			renderArboles(modelArbol3I2, arbol3_Isla2_Position, arbol3_Isla2_Orientation, island2);
+			renderArboles(modelArbol4I2, arbol4_Isla2_Position, arbol4_Isla2_Orientation, island2);
+			renderArboles(modelArbol5I2, arbol5_Isla2_Position, arbol5_Isla2_Orientation, island2);
+
+			/*******************************************
+			 * Render de Lamparas
+			 *******************************************/
+			for (int i = 0; i < lamp1Position.size(); i++)
+			{
+				lamp1Position[i].y = island2.getHeightTerrain(lamp1Position[i].x, lamp1Position[i].z);
+				modelLamp1.setPosition(lamp1Position[i]);
+				modelLamp1.setScale(glm::vec3(0.5));
+				modelLamp1.setOrientation(glm::vec3(0, lamp1Orientation[i], 0));
+				modelLamp1.render();
+			}
 		}
-		
-		if (isIsland3Active) {
-				island3.setPosition(glm::vec3(100, 0, 100));
-				RenderTextura(textureCespedID3, textureIsland3RID, textureIsland3GID, textureIsland3BID, textureIsland3BlendMapID);
-				island3.render();
 
-				/*******************************************
-				 * Render de Circulos de Transporte
-				 *******************************************/
-				matrixModelCirculo3 = glm::mat4(1.0f);
-				matrixModelCirculo3 = glm::translate(matrixModelCirculo3, glm::vec3(15.0, 0.0, -30.0));
-				matrixModelCirculo3[3][1] = island3.getHeightTerrain(matrixModelCirculo3[3][0], matrixModelCirculo3[3][2]);
-				modelCirculoMagico.render(matrixModelCirculo3);
+		if (isIsland3Active)
+		{
+			island3.setPosition(glm::vec3(100, 0, 100));
+			RenderTextura(textureCespedID3, textureIsland3RID, textureIsland3GID, textureIsland3BID, textureIsland3BlendMapID);
+			island3.render();
 
-				AbstractModel::SBB circle3Collider;
-				circle3Collider.c = glm::vec3(matrixModelCirculo3[3]);
-				circle3Collider.ratio = 2.5f;
-				AbstractModel::SBB playerCollider;
-				playerCollider.c = glm::vec3(jugador.modelMatrix[3]);
-				playerCollider.ratio = 1.0f; // Ajusta el radio según el tamaño del personaje
+			/*******************************************
+			 * Render de Circulos de Transporte
+			 *******************************************/
+			matrixModelCirculo3 = glm::mat4(1.0f);
+			matrixModelCirculo3 = glm::translate(matrixModelCirculo3, glm::vec3(15.0, 0.0, -30.0));
+			matrixModelCirculo3[3][1] = island3.getHeightTerrain(matrixModelCirculo3[3][0], matrixModelCirculo3[3][2]);
+			modelCirculoMagico.render(matrixModelCirculo3);
 
-				if (testSphereSphereIntersection(playerCollider, circle3Collider)) {
-					std::cout << "Colisión con el círculo 3 detectada." << std::endl;
-					changeIsland(1, jugador, enemigo); // Cambiar a isla 1
-				}
+			AbstractModel::SBB circle3Collider;
+			circle3Collider.c = glm::vec3(matrixModelCirculo3[3]);
+			circle3Collider.ratio = 2.5f;
+			AbstractModel::SBB playerCollider;
+			playerCollider.c = glm::vec3(jugador.modelMatrix[3]);
+			playerCollider.ratio = 1.0f; // Ajusta el radio según el tamaño del personaje
+
+			if (testSphereSphereIntersection(playerCollider, circle3Collider))
+			{
+				std::cout << "Colisión con el círculo 3 detectada." << std::endl;
+				changeIsland(1, jugador, enemigo); // Cambiar a isla 1
+			}
 		}
 		glEnable(GL_CULL_FACE);
-		
+
 		shaderTerrain.setVectorFloat2("scaleUV", glm::value_ptr(glm::vec2(0, 0)));
 		glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -1114,7 +1134,7 @@ void applicationLoop()
 				teleportCooldown -= deltaTime;
 		} */
 		// Detectar colisiones
-		//if (teleportCooldown <= 0.0f) {
+		// if (teleportCooldown <= 0.0f) {
 		//}
 
 		/*****************************************
@@ -1123,15 +1143,15 @@ void applicationLoop()
 		cc->update(deltaTime);
 		jugador.update(deltaTime);
 		enemigo.update(deltaTime, jugador.posicion);
-		//enemigo1.update(deltaTime, jugador.posicion);
+		// enemigo1.update(deltaTime, jugador.posicion);
 		cubo.update(deltaTime, jugador.posicion, 2.0f);
-		
+
 		// Renderizamos al jugador
 		jugador.render();
 		enemigo.render();
-		//enemigo1.render();
+		// enemigo1.render();
 
-		glm::vec3 posicionCubo = cubo.getPosition(); 
+		glm::vec3 posicionCubo = cubo.getPosition();
 		float distancia = glm::distance(jugador.posicion, posicionCubo);
 		if (distancia < proximidadUmbral && !cuboAgarrado)
 		{
@@ -1142,50 +1162,27 @@ void applicationLoop()
 		{
 			cubo.render();
 		}
-		std::string text = std::to_string(cuboContador) + "/5";
-		renderContador(textureCuboID, modelText, text); 
-		
+		std::string text = std::to_string(cuboContador) + " - 10";
+
 		// Para mostrar las colisiones
 		cc->render();
 
 		luces(jugador, projection, view);
 
-		// objetos transparentes
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glEnable(GL_CULL_FACE);
-		
-		//scaleUV = 1.0f / numEstados;
-		float scaleUV = 1.0f / (MAXIMA_VIDA + 1);
-    //offsetY = estadoActual * scaleUV;
-		float offsetY = jugador.getVida() * scaleUV;
-
-		shaderTexture.setFloat("scaleUV", scaleUV);
-		shaderTexture.setFloat("offsetY", offsetY);
-		shaderTexture.setMatrix4("projection", 1, false, glm::value_ptr(glm::mat4(1.0)));
-		shaderTexture.setMatrix4("view", 1, false, glm::value_ptr(glm::mat4(1.0)));
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texturaBarraVidaID);;
-		shaderTexture.setInt("outTexture", 0);
-		glm::mat4 boxMatrixModel = glm::mat4(1.0f);
-		boxMatrixModel = glm::translate(boxMatrixModel, glm::vec3(-0.7f, -0.85f, 0.0f));
-		boxBarraVida.render(boxMatrixModel);
-
-		glDisable(GL_BLEND);
-
-		// Renderizar el texto con estilo más grande
-	  modelText->render("TIEMPO RESTANTE", 0.0f, 0.90f, 1.5f); // Título
-	  modelText->render(countdownText, 0.0f, 0.8f, 1.5f); // Cuenta regresiva
-
-    // Enlaza el skybox activo
+		// Enlaza el skybox activo
 		// Seleccionar el skybox activo antes de renderizar
 		GLuint currentSkyboxTextureID;
-		if (activeSkybox == 1) {
-				currentSkyboxTextureID = skyboxTextureID1;
-		} else if (activeSkybox == 2) {
-				currentSkyboxTextureID = skyboxTextureID2;
-		} else if (activeSkybox == 3) {
-				currentSkyboxTextureID = skyboxTextureID3;
+		if (activeSkybox == 1)
+		{
+			currentSkyboxTextureID = skyboxTextureID1;
+		}
+		else if (activeSkybox == 2)
+		{
+			currentSkyboxTextureID = skyboxTextureID2;
+		}
+		else if (activeSkybox == 3)
+		{
+			currentSkyboxTextureID = skyboxTextureID3;
 		}
 
 		/*******************************************
@@ -1201,13 +1198,43 @@ void applicationLoop()
 		glBindTexture(GL_TEXTURE_CUBE_MAP, currentSkyboxTextureID);
 		shaderSkybox.setInt("skybox", 0);
 
-
 		glCullFace(GL_FRONT);
 		glDepthFunc(GL_LEQUAL);
 		glActiveTexture(GL_TEXTURE0);
 		skyboxSphere.render();
 		glCullFace(oldCullFaceMode);
 		glDepthFunc(oldDepthFuncMode);
+
+		// =======================================
+		// ======== OBJETOS TRANSPARENTES ========
+		// =======================================
+
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_CULL_FACE);
+
+		// scaleUV = 1.0f / numEstados;
+		float scaleUV = 1.0f / (MAXIMA_VIDA + 1);
+		// offsetY = estadoActual * scaleUV;
+		float offsetY = jugador.getVida() * scaleUV;
+
+		shaderTexture.setFloat("scaleUV", scaleUV);
+		shaderTexture.setFloat("offsetY", offsetY);
+		shaderTexture.setMatrix4("projection", 1, false, glm::value_ptr(glm::mat4(1.0)));
+		shaderTexture.setMatrix4("view", 1, false, glm::value_ptr(glm::mat4(1.0)));
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texturaBarraVidaID);
+		shaderTexture.setInt("outTexture", 0);
+		glm::mat4 boxMatrixModel = glm::mat4(1.0f);
+		boxMatrixModel = glm::translate(boxMatrixModel, glm::vec3(-0.7f, -0.85f, 0.0f));
+		boxBarraVida.render(boxMatrixModel);
+
+		renderContador(textureCuboID, modelText, text);
+		// Renderizar el texto con estilo más grande
+		modelText->render("tiempo", 0.0f, 0.9f, 1.5f);			// Título
+		modelText->render(countdownText, 0.0f, 0.8f, 1.5f); // Cuenta regresiva
+
+		glDisable(GL_BLEND);
 
 		glfwSwapBuffers(window);
 	}
@@ -1217,28 +1244,28 @@ void applicationLoop()
 
 int main(int argc, char **argv)
 {
-	try 
+	try
 	{
-				// Establece la relación de aspecto 16:9
-        int width = 1200; // Ejemplo de ancho
-        int height = width * 9 / 16; // Calcula el alto basado en 16:9
-        init(width, height, "Window GLFW", false);
-				AudioManager::init();
-        applicationLoop();
-        destroy();
-				AudioManager::cleanup();
-	} 
-	catch (const std::exception &e) 
+		// Establece la relación de aspecto 16:9
+		int width = 1200;						 // Ejemplo de ancho
+		int height = width * 9 / 16; // Calcula el alto basado en 16:9
+		init(width, height, "Window GLFW", false);
+		AudioManager::init();
+		applicationLoop();
+		destroy();
+		AudioManager::cleanup();
+	}
+	catch (const std::exception &e)
 	{
-        std::cerr << "Excepción capturada: " << e.what() << std::endl;
-        return -1;
-  }
-  return 1;
+		std::cerr << "Excepción capturada: " << e.what() << std::endl;
+		return -1;
+	}
+	return 1;
 }
 
-
-void loadModels() {
-    // Inicializacion de los objetos.
+void loadModels()
+{
+	// Inicializacion de los objetos.
 	skyboxSphere.init();
 	skyboxSphere.setShader(&shaderSkybox);
 	skyboxSphere.setScale(glm::vec3(20.0f, 20.0f, 20.0f));
@@ -1304,58 +1331,66 @@ void loadModels() {
 	boxBarraVida.init();
 	boxBarraVida.setShader(&shaderTexture);
 	boxBarraVida.setScale(glm::vec3(0.5f, 0.15f, 0.00001f));
+
+	boxImagenCubo.init();
+	boxImagenCubo.setShader(&shaderTexture);
+	boxImagenCubo.setScale(glm::vec3(0.08f, 0.1f, 0.00001f));
 }
 
-
-void renderModel(Model &model, const glm::vec3 &position, const glm::vec3 &scale, float rotation, Terrain *terrain) {
-    glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), position);
-    modelMatrix = glm::rotate(modelMatrix, glm::radians(rotation), glm::vec3(0, 1, 0));
-    modelMatrix = glm::scale(modelMatrix, scale);
-    if (terrain) {
-        // Ajusta la posición en función del terreno
-        modelMatrix[3][1] = terrain->getHeightTerrain(modelMatrix[3][0], modelMatrix[3][2]);
-    }
-    model.render(modelMatrix);
+void renderModel(Model &model, const glm::vec3 &position, const glm::vec3 &scale, float rotation, Terrain *terrain)
+{
+	glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), position);
+	modelMatrix = glm::rotate(modelMatrix, glm::radians(rotation), glm::vec3(0, 1, 0));
+	modelMatrix = glm::scale(modelMatrix, scale);
+	if (terrain)
+	{
+		// Ajusta la posición en función del terreno
+		modelMatrix[3][1] = terrain->getHeightTerrain(modelMatrix[3][0], modelMatrix[3][2]);
+	}
+	model.render(modelMatrix);
 }
 
+GLuint loadCubemapTextures(std::string fileNames[6])
+{
+	GLuint textureID;
+	glGenTextures(1, &textureID);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
-GLuint loadCubemapTextures(std::string fileNames[6]) {
-    GLuint textureID;
-    glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+	GLenum types[6] = {
+			GL_TEXTURE_CUBE_MAP_POSITIVE_X, // Right
+			GL_TEXTURE_CUBE_MAP_NEGATIVE_X, // Left
+			GL_TEXTURE_CUBE_MAP_POSITIVE_Y, // Top
+			GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, // Bottom
+			GL_TEXTURE_CUBE_MAP_POSITIVE_Z, // Front
+			GL_TEXTURE_CUBE_MAP_NEGATIVE_Z	// Back
+	};
 
-    GLenum types[6] = {
-        GL_TEXTURE_CUBE_MAP_POSITIVE_X, // Right
-        GL_TEXTURE_CUBE_MAP_NEGATIVE_X, // Left
-        GL_TEXTURE_CUBE_MAP_POSITIVE_Y, // Top
-        GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, // Bottom
-        GL_TEXTURE_CUBE_MAP_POSITIVE_Z, // Front
-        GL_TEXTURE_CUBE_MAP_NEGATIVE_Z  // Back
-    };
+	for (int i = 0; i < 6; i++)
+	{
+		Texture skyboxTexture(fileNames[i]);
+		skyboxTexture.loadImage(true);
+		if (skyboxTexture.getData())
+		{
+			glTexImage2D(types[i], 0, skyboxTexture.getChannels() == 3 ? GL_RGB : GL_RGBA,
+									 skyboxTexture.getWidth(), skyboxTexture.getHeight(), 0,
+									 skyboxTexture.getChannels() == 3 ? GL_RGB : GL_RGBA, GL_UNSIGNED_BYTE, skyboxTexture.getData());
+		}
+		else
+		{
+			std::cout << "Failed to load skybox texture: " << fileNames[i] << std::endl;
+		}
+		skyboxTexture.freeImage();
+	}
 
-    for (int i = 0; i < 6; i++) {
-        Texture skyboxTexture(fileNames[i]);
-        skyboxTexture.loadImage(true);
-        if (skyboxTexture.getData()) {
-            glTexImage2D(types[i], 0, skyboxTexture.getChannels() == 3 ? GL_RGB : GL_RGBA,
-                         skyboxTexture.getWidth(), skyboxTexture.getHeight(), 0,
-                         skyboxTexture.getChannels() == 3 ? GL_RGB : GL_RGBA, GL_UNSIGNED_BYTE, skyboxTexture.getData());
-        } else {
-            std::cout << "Failed to load skybox texture: " << fileNames[i] << std::endl;
-        }
-        skyboxTexture.freeImage();
-    }
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); 
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); 
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR); 
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    return textureID;
+	return textureID;
 }
-
 
 void GenerarTextura(Texture texture, GLuint &textureID)
 {
@@ -1379,7 +1414,6 @@ void GenerarTextura(Texture texture, GLuint &textureID)
 	texture.freeImage(); // Liberamos memoria
 }
 
-
 void RenderTextura(GLuint Cesped, GLuint R, GLuint G, GLuint B, GLuint BlendMap)
 {
 	glActiveTexture(GL_TEXTURE0);
@@ -1400,199 +1434,206 @@ void RenderTextura(GLuint Cesped, GLuint R, GLuint G, GLuint B, GLuint BlendMap)
 	shaderTerrain.setVectorFloat2("scaleUV", glm::value_ptr(glm::vec2(80, 80)));
 }
 
+void luces(const Player &jugador, glm::mat4 projection, glm::mat4 view)
+{
+	/*******************************************
+	 * Propiedades Luz direccional
+	 *******************************************/
+	shaderMulLighting.setVectorFloat3("viewPos", glm::value_ptr(camera->getPosition()));
+	shaderMulLighting.setVectorFloat3("directionalLight.light.ambient", glm::value_ptr(glm::vec3(0.3, 0.3, 0.3)));
+	shaderMulLighting.setVectorFloat3("directionalLight.light.diffuse", glm::value_ptr(glm::vec3(0.7, 0.7, 0.7)));
+	shaderMulLighting.setVectorFloat3("directionalLight.light.specular", glm::value_ptr(glm::vec3(0.9, 0.9, 0.9)));
+	shaderMulLighting.setVectorFloat3("directionalLight.direction", glm::value_ptr(glm::vec3(-1.0, 0.0, 0.0)));
 
-void luces (const Player& jugador, glm::mat4 projection, glm::mat4 view){
-		/*******************************************
-		 * Propiedades Luz direccional
-		 *******************************************/
-		shaderMulLighting.setVectorFloat3("viewPos", glm::value_ptr(camera->getPosition()));
-		shaderMulLighting.setVectorFloat3("directionalLight.light.ambient", glm::value_ptr(glm::vec3(0.3, 0.3, 0.3)));
-		shaderMulLighting.setVectorFloat3("directionalLight.light.diffuse", glm::value_ptr(glm::vec3(0.7, 0.7, 0.7)));
-		shaderMulLighting.setVectorFloat3("directionalLight.light.specular", glm::value_ptr(glm::vec3(0.9, 0.9, 0.9)));
-		shaderMulLighting.setVectorFloat3("directionalLight.direction", glm::value_ptr(glm::vec3(-1.0, 0.0, 0.0)));
+	shaderJugador.setVectorFloat3("viewPos", glm::value_ptr(camera->getPosition()));
+	shaderJugador.setVectorFloat3("directionalLight.light.ambient", glm::value_ptr(glm::vec3(0.3, 0.3, 0.3)));
+	shaderJugador.setVectorFloat3("directionalLight.light.diffuse", glm::value_ptr(glm::vec3(0.7, 0.7, 0.7)));
+	shaderJugador.setVectorFloat3("directionalLight.light.specular", glm::value_ptr(glm::vec3(0.9, 0.9, 0.9)));
+	shaderJugador.setVectorFloat3("directionalLight.direction", glm::value_ptr(glm::vec3(-1.0, 0.0, 0.0)));
 
-		shaderJugador.setVectorFloat3("viewPos", glm::value_ptr(camera->getPosition()));
-		shaderJugador.setVectorFloat3("directionalLight.light.ambient", glm::value_ptr(glm::vec3(0.3, 0.3, 0.3)));
-		shaderJugador.setVectorFloat3("directionalLight.light.diffuse", glm::value_ptr(glm::vec3(0.7, 0.7, 0.7)));
-		shaderJugador.setVectorFloat3("directionalLight.light.specular", glm::value_ptr(glm::vec3(0.9, 0.9, 0.9)));
-		shaderJugador.setVectorFloat3("directionalLight.direction", glm::value_ptr(glm::vec3(-1.0, 0.0, 0.0)));
+	shaderTerrain.setVectorFloat3("viewPos", glm::value_ptr(camera->getPosition()));
+	shaderTerrain.setVectorFloat3("directionalLight.light.ambient", glm::value_ptr(glm::vec3(0.3, 0.3, 0.3)));
+	shaderTerrain.setVectorFloat3("directionalLight.light.diffuse", glm::value_ptr(glm::vec3(0.7, 0.7, 0.7)));
+	shaderTerrain.setVectorFloat3("directionalLight.light.specular", glm::value_ptr(glm::vec3(0.9, 0.9, 0.9)));
+	shaderTerrain.setVectorFloat3("directionalLight.direction", glm::value_ptr(glm::vec3(-1.0, 0.0, 0.0)));
 
-		shaderTerrain.setVectorFloat3("viewPos", glm::value_ptr(camera->getPosition()));
-		shaderTerrain.setVectorFloat3("directionalLight.light.ambient", glm::value_ptr(glm::vec3(0.3, 0.3, 0.3)));
-		shaderTerrain.setVectorFloat3("directionalLight.light.diffuse", glm::value_ptr(glm::vec3(0.7, 0.7, 0.7)));
-		shaderTerrain.setVectorFloat3("directionalLight.light.specular", glm::value_ptr(glm::vec3(0.9, 0.9, 0.9)));
-		shaderTerrain.setVectorFloat3("directionalLight.direction", glm::value_ptr(glm::vec3(-1.0, 0.0, 0.0)));
+	/*******************************************
+	 * Propiedades SpotLights
+	 *******************************************/
+	shaderMulLighting.setInt("spotLightCount", 1);
+	shaderTerrain.setInt("spotLightCount", 1);
+	glm::vec3 spotPosition = glm::vec3(jugador.modelMatrix * glm::vec4(0.0, 0.2, 1.75, 1.0));
+	shaderMulLighting.setVectorFloat3("spotLights[0].light.ambient", glm::value_ptr(glm::vec3(0.0, 0.0, 0.0)));
+	shaderMulLighting.setVectorFloat3("spotLights[0].light.diffuse", glm::value_ptr(glm::vec3(0.2, 0.2, 0.2)));
+	shaderMulLighting.setVectorFloat3("spotLights[0].light.specular", glm::value_ptr(glm::vec3(0.3, 0.3, 0.3)));
+	shaderMulLighting.setVectorFloat3("spotLights[0].position", glm::value_ptr(spotPosition));
+	shaderMulLighting.setVectorFloat3("spotLights[0].direction", glm::value_ptr(glm::vec3(0, -1, 0)));
+	shaderMulLighting.setFloat("spotLights[0].constant", 1.0);
+	shaderMulLighting.setFloat("spotLights[0].linear", 0.07);
+	shaderMulLighting.setFloat("spotLights[0].quadratic", 0.03);
+	shaderMulLighting.setFloat("spotLights[0].cutOff", cos(glm::radians(12.5f)));
+	shaderMulLighting.setFloat("spotLights[0].outerCutOff", cos(glm::radians(15.0f)));
+	shaderTerrain.setVectorFloat3("spotLights[0].light.ambient", glm::value_ptr(glm::vec3(0.0, 0.0, 0.0)));
+	shaderTerrain.setVectorFloat3("spotLights[0].light.diffuse", glm::value_ptr(glm::vec3(0.2, 0.2, 0.2)));
+	shaderTerrain.setVectorFloat3("spotLights[0].light.specular", glm::value_ptr(glm::vec3(0.3, 0.3, 0.3)));
+	shaderTerrain.setVectorFloat3("spotLights[0].position", glm::value_ptr(spotPosition));
+	shaderTerrain.setVectorFloat3("spotLights[0].direction", glm::value_ptr(glm::vec3(0, -1, 0)));
+	shaderTerrain.setFloat("spotLights[0].constant", 1.0);
+	shaderTerrain.setFloat("spotLights[0].linear", 0.07);
+	shaderTerrain.setFloat("spotLights[0].quadratic", 0.03);
+	shaderTerrain.setFloat("spotLights[0].cutOff", cos(glm::radians(12.5f)));
+	shaderTerrain.setFloat("spotLights[0].outerCutOff", cos(glm::radians(15.0f)));
 
-		/*******************************************
-		 * Propiedades SpotLights
-		 *******************************************/
-		shaderMulLighting.setInt("spotLightCount", 1);
-		shaderTerrain.setInt("spotLightCount", 1);
-		glm::vec3 spotPosition = glm::vec3(jugador.modelMatrix * glm::vec4(0.0, 0.2, 1.75, 1.0));
-		shaderMulLighting.setVectorFloat3("spotLights[0].light.ambient", glm::value_ptr(glm::vec3(0.0, 0.0, 0.0)));
-		shaderMulLighting.setVectorFloat3("spotLights[0].light.diffuse", glm::value_ptr(glm::vec3(0.2, 0.2, 0.2)));
-		shaderMulLighting.setVectorFloat3("spotLights[0].light.specular", glm::value_ptr(glm::vec3(0.3, 0.3, 0.3)));
-		shaderMulLighting.setVectorFloat3("spotLights[0].position", glm::value_ptr(spotPosition));
-		shaderMulLighting.setVectorFloat3("spotLights[0].direction", glm::value_ptr(glm::vec3(0, -1, 0)));
-		shaderMulLighting.setFloat("spotLights[0].constant", 1.0);
-		shaderMulLighting.setFloat("spotLights[0].linear", 0.07);
-		shaderMulLighting.setFloat("spotLights[0].quadratic", 0.03);
-		shaderMulLighting.setFloat("spotLights[0].cutOff", cos(glm::radians(12.5f)));
-		shaderMulLighting.setFloat("spotLights[0].outerCutOff", cos(glm::radians(15.0f)));
-		shaderTerrain.setVectorFloat3("spotLights[0].light.ambient", glm::value_ptr(glm::vec3(0.0, 0.0, 0.0)));
-		shaderTerrain.setVectorFloat3("spotLights[0].light.diffuse", glm::value_ptr(glm::vec3(0.2, 0.2, 0.2)));
-		shaderTerrain.setVectorFloat3("spotLights[0].light.specular", glm::value_ptr(glm::vec3(0.3, 0.3, 0.3)));
-		shaderTerrain.setVectorFloat3("spotLights[0].position", glm::value_ptr(spotPosition));
-		shaderTerrain.setVectorFloat3("spotLights[0].direction", glm::value_ptr(glm::vec3(0, -1, 0)));
-		shaderTerrain.setFloat("spotLights[0].constant", 1.0);
-		shaderTerrain.setFloat("spotLights[0].linear", 0.07);
-		shaderTerrain.setFloat("spotLights[0].quadratic", 0.03);
-		shaderTerrain.setFloat("spotLights[0].cutOff", cos(glm::radians(12.5f)));
-		shaderTerrain.setFloat("spotLights[0].outerCutOff", cos(glm::radians(15.0f)));
-
-		/*******************************************
-		 * Propiedades PointLights
-		 *******************************************/
-		shaderMulLighting.setInt("pointLightCount", lamp1Position.size());// + lamp2Position.size());
-		shaderTerrain.setInt("pointLightCount", lamp1Position.size());// + lamp2Position.size());
-		for (int i = 0; i < lamp1Position.size(); i++)
-		{
-			glm::mat4 matrixAdjustLamp = glm::mat4(1.0);
-			matrixAdjustLamp = glm::translate(matrixAdjustLamp, lamp1Position[i]);
-			matrixAdjustLamp = glm::rotate(matrixAdjustLamp, glm::radians(lamp1Orientation[i]), glm::vec3(0, 1, 0));
-			matrixAdjustLamp = glm::scale(matrixAdjustLamp, glm::vec3(0.5));
-			matrixAdjustLamp = glm::translate(matrixAdjustLamp, glm::vec3(0.0, 10.35, 0));
-			glm::vec3 lampPosition = glm::vec3(matrixAdjustLamp[3]);
-			shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(i) + "].light.ambient", glm::value_ptr(glm::vec3(0.2, 0.16, 0.01)));
-			shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(i) + "].light.diffuse", glm::value_ptr(glm::vec3(0.4, 0.32, 0.02)));
-			shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(i) + "].light.specular", glm::value_ptr(glm::vec3(0.6, 0.58, 0.03)));
-			shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(i) + "].position", glm::value_ptr(lampPosition));
-			shaderMulLighting.setFloat("pointLights[" + std::to_string(i) + "].constant", 1.0);
-			shaderMulLighting.setFloat("pointLights[" + std::to_string(i) + "].linear", 0.09);
-			shaderMulLighting.setFloat("pointLights[" + std::to_string(i) + "].quadratic", 0.02);
-			shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(i) + "].light.ambient", glm::value_ptr(glm::vec3(0.2, 0.16, 0.01)));
-			shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(i) + "].light.diffuse", glm::value_ptr(glm::vec3(0.4, 0.32, 0.02)));
-			shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(i) + "].light.specular", glm::value_ptr(glm::vec3(0.6, 0.58, 0.03)));
-			shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(i) + "].position", glm::value_ptr(lampPosition));
-			shaderTerrain.setFloat("pointLights[" + std::to_string(i) + "].constant", 1.0);
-			shaderTerrain.setFloat("pointLights[" + std::to_string(i) + "].linear", 0.09);
-			shaderTerrain.setFloat("pointLights[" + std::to_string(i) + "].quadratic", 0.02);
-		}
-		/* for (int i = 0; i < lamp2Position.size(); i++)
-		{
-			glm::mat4 matrixAdjustLamp = glm::mat4(1.0);
-			matrixAdjustLamp = glm::translate(matrixAdjustLamp, lamp2Position[i]);
-			matrixAdjustLamp = glm::rotate(matrixAdjustLamp, glm::radians(lamp2Orientation[i]), glm::vec3(0, 1, 0));
-			matrixAdjustLamp = glm::scale(matrixAdjustLamp, glm::vec3(1.0));
-			matrixAdjustLamp = glm::translate(matrixAdjustLamp, glm::vec3(0.75, 5.0, 0));
-			glm::vec3 lampPosition = glm::vec3(matrixAdjustLamp[3]);
-			shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(lamp1Position.size() + i) + "].light.ambient", glm::value_ptr(glm::vec3(0.2, 0.16, 0.01)));
-			shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(lamp1Position.size() + i) + "].light.diffuse", glm::value_ptr(glm::vec3(0.4, 0.32, 0.02)));
-			shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(lamp1Position.size() + i) + "].light.specular", glm::value_ptr(glm::vec3(0.6, 0.58, 0.03)));
-			shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(lamp1Position.size() + i) + "].position", glm::value_ptr(lampPosition));
-			shaderMulLighting.setFloat("pointLights[" + std::to_string(lamp1Position.size() + i) + "].constant", 1.0);
-			shaderMulLighting.setFloat("pointLights[" + std::to_string(lamp1Position.size() + i) + "].linear", 0.09);
-			shaderMulLighting.setFloat("pointLights[" + std::to_string(lamp1Position.size() + i) + "].quadratic", 0.02);
-			shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(lamp1Position.size() + i) + "].light.ambient", glm::value_ptr(glm::vec3(0.2, 0.16, 0.01)));
-			shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(lamp1Position.size() + i) + "].light.diffuse", glm::value_ptr(glm::vec3(0.4, 0.32, 0.02)));
-			shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(lamp1Position.size() + i) + "].light.specular", glm::value_ptr(glm::vec3(0.6, 0.58, 0.03)));
-			shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(lamp1Position.size() + i) + "].position", glm::value_ptr(lampPosition));
-			shaderTerrain.setFloat("pointLights[" + std::to_string(lamp1Position.size() + i) + "].constant", 1.0);
-			shaderTerrain.setFloat("pointLights[" + std::to_string(lamp1Position.size() + i) + "].linear", 0.09);
-			shaderTerrain.setFloat("pointLights[" + std::to_string(lamp1Position.size() + i) + "].quadratic", 0.02);
-		} */
+	/*******************************************
+	 * Propiedades PointLights
+	 *******************************************/
+	shaderMulLighting.setInt("pointLightCount", lamp1Position.size()); // + lamp2Position.size());
+	shaderTerrain.setInt("pointLightCount", lamp1Position.size());		 // + lamp2Position.size());
+	for (int i = 0; i < lamp1Position.size(); i++)
+	{
+		glm::mat4 matrixAdjustLamp = glm::mat4(1.0);
+		matrixAdjustLamp = glm::translate(matrixAdjustLamp, lamp1Position[i]);
+		matrixAdjustLamp = glm::rotate(matrixAdjustLamp, glm::radians(lamp1Orientation[i]), glm::vec3(0, 1, 0));
+		matrixAdjustLamp = glm::scale(matrixAdjustLamp, glm::vec3(0.5));
+		matrixAdjustLamp = glm::translate(matrixAdjustLamp, glm::vec3(0.0, 10.35, 0));
+		glm::vec3 lampPosition = glm::vec3(matrixAdjustLamp[3]);
+		shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(i) + "].light.ambient", glm::value_ptr(glm::vec3(0.2, 0.16, 0.01)));
+		shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(i) + "].light.diffuse", glm::value_ptr(glm::vec3(0.4, 0.32, 0.02)));
+		shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(i) + "].light.specular", glm::value_ptr(glm::vec3(0.6, 0.58, 0.03)));
+		shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(i) + "].position", glm::value_ptr(lampPosition));
+		shaderMulLighting.setFloat("pointLights[" + std::to_string(i) + "].constant", 1.0);
+		shaderMulLighting.setFloat("pointLights[" + std::to_string(i) + "].linear", 0.09);
+		shaderMulLighting.setFloat("pointLights[" + std::to_string(i) + "].quadratic", 0.02);
+		shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(i) + "].light.ambient", glm::value_ptr(glm::vec3(0.2, 0.16, 0.01)));
+		shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(i) + "].light.diffuse", glm::value_ptr(glm::vec3(0.4, 0.32, 0.02)));
+		shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(i) + "].light.specular", glm::value_ptr(glm::vec3(0.6, 0.58, 0.03)));
+		shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(i) + "].position", glm::value_ptr(lampPosition));
+		shaderTerrain.setFloat("pointLights[" + std::to_string(i) + "].constant", 1.0);
+		shaderTerrain.setFloat("pointLights[" + std::to_string(i) + "].linear", 0.09);
+		shaderTerrain.setFloat("pointLights[" + std::to_string(i) + "].quadratic", 0.02);
+	}
+	/* for (int i = 0; i < lamp2Position.size(); i++)
+	{
+		glm::mat4 matrixAdjustLamp = glm::mat4(1.0);
+		matrixAdjustLamp = glm::translate(matrixAdjustLamp, lamp2Position[i]);
+		matrixAdjustLamp = glm::rotate(matrixAdjustLamp, glm::radians(lamp2Orientation[i]), glm::vec3(0, 1, 0));
+		matrixAdjustLamp = glm::scale(matrixAdjustLamp, glm::vec3(1.0));
+		matrixAdjustLamp = glm::translate(matrixAdjustLamp, glm::vec3(0.75, 5.0, 0));
+		glm::vec3 lampPosition = glm::vec3(matrixAdjustLamp[3]);
+		shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(lamp1Position.size() + i) + "].light.ambient", glm::value_ptr(glm::vec3(0.2, 0.16, 0.01)));
+		shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(lamp1Position.size() + i) + "].light.diffuse", glm::value_ptr(glm::vec3(0.4, 0.32, 0.02)));
+		shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(lamp1Position.size() + i) + "].light.specular", glm::value_ptr(glm::vec3(0.6, 0.58, 0.03)));
+		shaderMulLighting.setVectorFloat3("pointLights[" + std::to_string(lamp1Position.size() + i) + "].position", glm::value_ptr(lampPosition));
+		shaderMulLighting.setFloat("pointLights[" + std::to_string(lamp1Position.size() + i) + "].constant", 1.0);
+		shaderMulLighting.setFloat("pointLights[" + std::to_string(lamp1Position.size() + i) + "].linear", 0.09);
+		shaderMulLighting.setFloat("pointLights[" + std::to_string(lamp1Position.size() + i) + "].quadratic", 0.02);
+		shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(lamp1Position.size() + i) + "].light.ambient", glm::value_ptr(glm::vec3(0.2, 0.16, 0.01)));
+		shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(lamp1Position.size() + i) + "].light.diffuse", glm::value_ptr(glm::vec3(0.4, 0.32, 0.02)));
+		shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(lamp1Position.size() + i) + "].light.specular", glm::value_ptr(glm::vec3(0.6, 0.58, 0.03)));
+		shaderTerrain.setVectorFloat3("pointLights[" + std::to_string(lamp1Position.size() + i) + "].position", glm::value_ptr(lampPosition));
+		shaderTerrain.setFloat("pointLights[" + std::to_string(lamp1Position.size() + i) + "].constant", 1.0);
+		shaderTerrain.setFloat("pointLights[" + std::to_string(lamp1Position.size() + i) + "].linear", 0.09);
+		shaderTerrain.setFloat("pointLights[" + std::to_string(lamp1Position.size() + i) + "].quadratic", 0.02);
+	} */
 }
 
+void changeIsland(int targetIsland, Player &jugador, Enemy &enemigo)
+{
+	// Desactivar todas las islas
+	isIsland1Active = false;
+	isIsland2Active = false;
+	isIsland3Active = false;
 
-void changeIsland(int targetIsland, Player& jugador, Enemy& enemigo) {
-    // Desactivar todas las islas
-    isIsland1Active = false;
-    isIsland2Active = false;
-    isIsland3Active = false;
+	// Variables para almacenar el terreno actual y la nueva posición del jugador
+	Terrain *currentTerrain = nullptr;
+	glm::vec3 newPosition;
 
-    // Variables para almacenar el terreno actual y la nueva posición del jugador
-    Terrain* currentTerrain = nullptr;
-		glm::vec3 newPosition;
+	// Activar la isla y definir su terreno y posición inicial
+	if (targetIsland == 1)
+	{
+		AudioManager::playBackgroundMusic("../sounds/isla1.wav");
+		AudioManager::playBackgroundMusic("../sounds/isla1.wav");
+		isIsland1Active = true;
+		activeSkybox = 1;
+		currentTerrain = &island1;
+		newPosition = glm::vec3(5.0f, 0.0f, 0.0f); // Posición específica en isla 1
+	}
+	else if (targetIsland == 2)
+	{
+		AudioManager::playBackgroundMusic("../sounds/isla2.wav");
+		AudioManager::playBackgroundMusic("../sounds/isla2.wav");
+		isIsland2Active = true;
+		activeSkybox = 2;
+		currentTerrain = &island2;
+		newPosition = glm::vec3(15.0f, 0.0f, 0.0f); // Posición específica en isla 2
+	}
+	else if (targetIsland == 3)
+	{
+		AudioManager::playBackgroundMusic("../sounds/isla3.wav");
+		AudioManager::playBackgroundMusic("../sounds/isla3.wav");
+		isIsland3Active = true;
+		activeSkybox = 3;
+		currentTerrain = &island3;
+		newPosition = glm::vec3(20.0f, 0.0f, 0.0f); // Posición específica en isla 3
+	}
 
-    // Activar la isla y definir su terreno y posición inicial
-    if (targetIsland == 1) {
-				AudioManager::playBackgroundMusic("../sounds/isla1.wav");
-				AudioManager::playBackgroundMusic("../sounds/isla1.wav");
-        isIsland1Active = true;
-        activeSkybox = 1;
-        currentTerrain = &island1;
-        newPosition = glm::vec3(5.0f, 0.0f, 0.0f); // Posición específica en isla 1
-    } else if (targetIsland == 2) {
-				AudioManager::playBackgroundMusic("../sounds/isla2.wav");
-				AudioManager::playBackgroundMusic("../sounds/isla2.wav");
-        isIsland2Active = true;
-        activeSkybox = 2;
-        currentTerrain = &island2;
-        newPosition = glm::vec3(15.0f, 0.0f, 0.0f); // Posición específica en isla 2
-    } else if (targetIsland == 3) {
-				AudioManager::playBackgroundMusic("../sounds/isla3.wav");
-				AudioManager::playBackgroundMusic("../sounds/isla3.wav");
-        isIsland3Active = true;
-        activeSkybox = 3;
-        currentTerrain = &island3;
-        newPosition = glm::vec3(20.0f, 0.0f, 0.0f); // Posición específica en isla 3
-    }
+	jugador.modelMatrix = glm::mat4(1.0f);
 
-		jugador.modelMatrix = glm::mat4(1.0f);
+	jugador.setTerrain(currentTerrain);
+	enemigo.setTerrain(currentTerrain);
 
-		jugador.setTerrain(currentTerrain);
-    enemigo.setTerrain(currentTerrain);
+	jugador.modelMatrix = glm::translate(glm::mat4(1.0f), newPosition);
+	jugador.modelMatrix = glm::scale(jugador.modelMatrix, glm::vec3(0.01f));
 
-		jugador.modelMatrix = glm::translate(glm::mat4(1.0f), newPosition);
-		jugador.modelMatrix = glm::scale(jugador.modelMatrix, glm::vec3(0.01f));
+	// Ajustar la altura del jugador para que esté sobre el terreno
+	float terrainHeight = currentTerrain->getHeightTerrain(newPosition.x, newPosition.z);
+	jugador.modelMatrix[3][1] = terrainHeight;
 
-    // Ajustar la altura del jugador para que esté sobre el terreno
-    float terrainHeight = currentTerrain->getHeightTerrain(newPosition.x, newPosition.z);
-    jugador.modelMatrix[3][1] = terrainHeight;
+	// Reiniciar angleTarget
+	angleTarget = 0.0f;
 
-		// Reiniciar angleTarget
-    angleTarget = 0.0f;
-
-    // Actualizar la posición y objetivo de la cámara
-    if (!isFirstPersonActive) {
-        positionTarget = jugador.modelMatrix[3];
-        positionTarget.y += 1.5f;
-        camera->setCameraTarget(positionTarget);
-        camera->setDistanceFromTarget(distanceFromPlayer);
-        camera->updateCamera();
-    }
+	// Actualizar la posición y objetivo de la cámara
+	if (!isFirstPersonActive)
+	{
+		positionTarget = jugador.modelMatrix[3];
+		positionTarget.y += 1.5f;
+		camera->setCameraTarget(positionTarget);
+		camera->setDistanceFromTarget(distanceFromPlayer);
+		camera->updateCamera();
+	}
 }
 
+void renderArboles(Model &model, std::vector<glm::vec3> &positions, const std::vector<float> &orientations, Terrain &terrain)
+{
+	for (size_t i = 0; i < positions.size(); i++)
+	{
+		// Ajusta la altura de cada posición según el terreno
+		positions[i].y = terrain.getHeightTerrain(positions[i].x, positions[i].z);
 
-void renderArboles(Model &model, std::vector<glm::vec3> &positions, const std::vector<float> &orientations, Terrain &terrain) {
-    for (size_t i = 0; i < positions.size(); i++) {
-        // Ajusta la altura de cada posición según el terreno
-        positions[i].y = terrain.getHeightTerrain(positions[i].x, positions[i].z);
+		// Configura el modelo del árbol
+		model.setPosition(positions[i]);
+		model.setScale(glm::vec3(1.0f)); // Escala fija, puedes hacerlo un parámetro si deseas flexibilidad
+		model.setOrientation(glm::vec3(0, orientations[i], 0));
 
-        // Configura el modelo del árbol
-        model.setPosition(positions[i]);
-        model.setScale(glm::vec3(1.0f)); // Escala fija, puedes hacerlo un parámetro si deseas flexibilidad
-        model.setOrientation(glm::vec3(0, orientations[i], 0));
-
-        // Renderiza el árbol
-        model.render();
-    }
+		// Renderiza el árbol
+		model.render();
+	}
 }
 
+void enforceMapLimits(glm::mat4 &modelMatrix)
+{
+	glm::vec3 position = modelMatrix[3]; // Obtener la posición actual del jugador
 
-void enforceMapLimits(glm::mat4 &modelMatrix) {
-    glm::vec3 position = modelMatrix[3]; // Obtener la posición actual del jugador
+	// Verificar límites y ajustar posición
+	if (position.x < MAP_MIN_X)
+		position.x = MAP_MIN_X;
+	if (position.x > MAP_MAX_X)
+		position.x = MAP_MAX_X;
+	if (position.z < MAP_MIN_Z)
+		position.z = MAP_MIN_Z;
+	if (position.z > MAP_MAX_Z)
+		position.z = MAP_MAX_Z;
 
-    // Verificar límites y ajustar posición
-    if (position.x < MAP_MIN_X)
-        position.x = MAP_MIN_X;
-    if (position.x > MAP_MAX_X)
-        position.x = MAP_MAX_X;
-    if (position.z < MAP_MIN_Z)
-        position.z = MAP_MIN_Z;
-    if (position.z > MAP_MAX_Z)
-        position.z = MAP_MAX_Z;
-
-    // Actualizar la matriz del modelo con la nueva posición
-    modelMatrix[3] = glm::vec4(position, 1.0f);
+	// Actualizar la matriz del modelo con la nueva posición
+	modelMatrix[3] = glm::vec4(position, 1.0f);
 }

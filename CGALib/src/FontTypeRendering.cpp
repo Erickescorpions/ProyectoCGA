@@ -72,8 +72,8 @@ void FontTypeRendering::Initialize() {
 		return exit(-1);
 	}
 	// Se le indica a dicha cara el archivo ttf que se utilizar�.
-	if (FT_New_Face(ft_lib, "../Fonts/Dashhorizon.otf", 0, &face) != 0) {
-		std::cerr << "Unable to load Dashhorizon.otf\n";
+	if (FT_New_Face(ft_lib, "../Fonts/Megamax.ttf", 0, &face) != 0) {
+		std::cerr << "Unable to load Megamax.ttf\n";
 		cleanup();
 		return exit(-1);
 	}
