@@ -135,3 +135,8 @@ void Enemy::setTerrain(Terrain *terrain)
 {
   this->terrain = terrain;
 }
+
+void Enemy::removeCollider()
+{
+  cc->removeCollidersOBB(colliderName);
+}

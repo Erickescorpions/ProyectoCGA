@@ -41,6 +41,7 @@ public:
   void update(float dt, glm::vec3 posicionObjetivo);
   void render();
   void setTerrain(Terrain *terrain);
+  void removeCollider();
 
 private:
   glm::vec3 posicionInicial;

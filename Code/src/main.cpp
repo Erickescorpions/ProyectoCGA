@@ -1,5 +1,5 @@
 #define _USE_MATH_DEFINES
-#define TIEMPO_CARGA_INTRO 7
+#define TIEMPO_CARGA_INTRO 0.1
 
 #include <cmath>
 // glew include
@@ -863,10 +863,49 @@ void applicationLoop()
 	Cube cubo10 = Cube("../models/cubo/cubo.fbx", &shaderMulLighting, cc, glm::vec3(dist(gen), 0.0f, dist(gen)), contador);
 	cubo10.setTerrain(&island3);
 
+	std::uniform_real_distribution<float> dist2(10.0f, 30.0f);
+	std::mt19937 genRadioDeteccion(rd());
+
 	// Creamos un enemigo
 	glm::vec3 posicionEnemigo = glm::vec3(0.0f, 3.0f, 0.0f);
 	Enemy enemigo = Enemy("../models/enemy/zombie.fbx", &shaderMulLighting, cc, posicionEnemigo, 30.0f);
 	enemigo.setTerrain(&island1);
+
+	posicionEnemigo = glm::vec3(dist(gen), 3.0f, dist(gen));
+	Enemy enemigo2 = Enemy("../models/enemy/zombie.fbx", &shaderMulLighting, cc, posicionEnemigo, dist2(genRadioDeteccion));
+	enemigo2.setTerrain(&island1);
+
+	posicionEnemigo = glm::vec3(dist(gen), 3.0f, dist(gen));
+	Enemy enemigo3 = Enemy("../models/enemy/zombie.fbx", &shaderMulLighting, cc, posicionEnemigo, dist2(genRadioDeteccion));
+	enemigo3.setTerrain(&island1);
+
+	posicionEnemigo = glm::vec3(dist(gen), 3.0f, dist(gen));
+	Enemy enemigo4 = Enemy("../models/enemy/zombie.fbx", &shaderMulLighting, cc, posicionEnemigo, dist2(genRadioDeteccion));
+	enemigo4.setTerrain(&island1);
+
+	posicionEnemigo = glm::vec3(dist(gen), 3.0f, dist(gen));
+	Enemy enemigo5 = Enemy("../models/enemy/zombie.fbx", &shaderMulLighting, cc, posicionEnemigo, dist2(genRadioDeteccion));
+	enemigo5.setTerrain(&island2);
+
+	posicionEnemigo = glm::vec3(dist(gen), 3.0f, dist(gen));
+	Enemy enemigo6 = Enemy("../models/enemy/zombie.fbx", &shaderMulLighting, cc, posicionEnemigo, dist2(genRadioDeteccion));
+	enemigo6.setTerrain(&island2);
+
+	posicionEnemigo = glm::vec3(dist(gen), 3.0f, dist(gen));
+	Enemy enemigo7 = Enemy("../models/enemy/zombie.fbx", &shaderMulLighting, cc, posicionEnemigo, dist2(genRadioDeteccion));
+	enemigo7.setTerrain(&island2);
+
+	posicionEnemigo = glm::vec3(dist(gen), 3.0f, dist(gen));
+	Enemy enemigo8 = Enemy("../models/enemy/zombie.fbx", &shaderMulLighting, cc, posicionEnemigo, dist2(genRadioDeteccion));
+	enemigo8.setTerrain(&island3);
+
+	posicionEnemigo = glm::vec3(dist(gen), 3.0f, dist(gen));
+	Enemy enemigo9 = Enemy("../models/enemy/zombie.fbx", &shaderMulLighting, cc, posicionEnemigo, dist2(genRadioDeteccion));
+	enemigo9.setTerrain(&island3);
+
+	posicionEnemigo = glm::vec3(dist(gen), 3.0f, dist(gen));
+	Enemy enemigo10 = Enemy("../models/enemy/zombie.fbx", &shaderMulLighting, cc, posicionEnemigo, dist2(genRadioDeteccion));
+	enemigo10.setTerrain(&island3);
 
 	countdownStartTime = TimeManager::Instance().GetTime();
 
@@ -1177,20 +1216,29 @@ void applicationLoop()
 		enemigo.update(deltaTime, jugador.posicion);
 		if (isIsland1Active)
 		{
+			enemigo2.update(deltaTime, jugador.posicion);
+			enemigo3.update(deltaTime, jugador.posicion);
+			enemigo4.update(deltaTime, jugador.posicion);
 			cubo.update(deltaTime, jugador.posicion);
 			cubo2.update(deltaTime, jugador.posicion);
 			cubo3.update(deltaTime, jugador.posicion);
-		} 
+		}
 
-		if(isIsland2Active)
+		if (isIsland2Active)
 		{
+			enemigo5.update(deltaTime, jugador.posicion);
+			enemigo6.update(deltaTime, jugador.posicion);
+			enemigo7.update(deltaTime, jugador.posicion);
 			cubo4.update(deltaTime, jugador.posicion);
 			cubo5.update(deltaTime, jugador.posicion);
 			cubo6.update(deltaTime, jugador.posicion);
 		}
 
-		if(isIsland3Active)
+		if (isIsland3Active)
 		{
+			enemigo8.update(deltaTime, jugador.posicion);
+			enemigo9.update(deltaTime, jugador.posicion);
+			enemigo10.update(deltaTime, jugador.posicion);
 			cubo7.update(deltaTime, jugador.posicion);
 			cubo8.update(deltaTime, jugador.posicion);
 			cubo9.update(deltaTime, jugador.posicion);
@@ -1203,26 +1251,56 @@ void applicationLoop()
 
 		if (isIsland1Active)
 		{
+			enemigo8.removeCollider();
+			enemigo9.removeCollider();
+			enemigo10.removeCollider();
+			cubo7.removeCollider();
+			cubo8.removeCollider();
+			cubo9.removeCollider();
+			cubo10.removeCollider();
+
+			enemigo2.render();
+			enemigo3.render();
+			enemigo4.render();
 			cubo.render();
 			cubo2.render();
 			cubo3.render();
 		}
 
-		if(isIsland2Active)
+		if (isIsland2Active)
 		{
+			enemigo2.removeCollider();
+			enemigo3.removeCollider();
+			enemigo4.removeCollider();
+			cubo.removeCollider();
+			cubo2.removeCollider();
+			cubo3.removeCollider();
+
+			enemigo5.render();
+			enemigo6.render();
+			enemigo7.render();
 			cubo4.render();
 			cubo5.render();
 			cubo6.render();
 		}
 
-		if(isIsland3Active)
+		if (isIsland3Active)
 		{
+			enemigo5.removeCollider();
+			enemigo6.removeCollider();
+			enemigo7.removeCollider();
+			cubo4.removeCollider();
+			cubo5.removeCollider();
+			cubo6.removeCollider();
+
+			enemigo8.render();
+			enemigo9.render();
+			enemigo10.render();
 			cubo7.render();
 			cubo8.render();
 			cubo9.render();
 			cubo10.render();
 		}
-
 
 		// Para mostrar las colisiones
 		cc->render();

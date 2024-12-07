@@ -60,7 +60,8 @@ void Player::update(float dt)
     }
 
     this->posicion.y = terrain->getHeightTerrain(this->posicion.x, this->posicion.z);
-    this->modelMatrix = glm::translate(glm::mat4(1.0f), this->posicion);
+    this->modelMatrix = glm::mat4(1.0f);
+    this->modelMatrix = glm::translate(this->modelMatrix, this->posicion);
     this->modelMatrix = glm::rotate(this->modelMatrix, this->anguloOrientacion, glm::vec3(0.0f, 1.0f, 0.0f));
     this->modelMatrix = glm::scale(this->modelMatrix, glm::vec3(this->scaleFactor));
 

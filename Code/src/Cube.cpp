@@ -68,3 +68,8 @@ void Cube::addOrUpdateColliders() {
 
     cc->addOrUpdateCollidersOBB(colliderName, collider, modelMatrixCollider);
 }
+
+void Cube::removeCollider()
+{
+    cc->removeCollidersOBB(colliderName);
+}

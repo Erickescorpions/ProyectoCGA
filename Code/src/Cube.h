@@ -33,6 +33,7 @@ public:
 
     void setTerrain(Terrain* terrain); 
     void update(float dt, glm::vec3 targetPosition); 
+    void removeCollider();
     void render();                     
     void addOrUpdateColliders();       
     glm::mat4 getModelMatrix() const { return modelMatrix; }
