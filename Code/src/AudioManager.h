@@ -25,7 +25,6 @@ class AudioManager {
 public:
     static void init();
     static void playBackgroundMusic(const std::string& filename);
-    static void clean();
     static void cleanup();
 };
 
