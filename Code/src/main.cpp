@@ -1,5 +1,5 @@
 #define _USE_MATH_DEFINES
-#define TIEMPO_CARGA_INTRO 1
+#define TIEMPO_CARGA_INTRO 10
 
 #include <cmath>
 // glew include
