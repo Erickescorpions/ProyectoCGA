@@ -1,4 +1,6 @@
 #define _USE_MATH_DEFINES
+#define TIEMPO_CARGA_INTRO 0.1
+
 #include <cmath>
 // glew include
 #include <GL/glew.h>
@@ -6,6 +8,7 @@
 // std includes
 #include <string>
 #include <iostream>
+#include <random>
 
 // glfw include
 #include <GLFW/glfw3.h>
@@ -53,6 +56,7 @@
 #include "Cube.h"
 #include "Player.h"
 #include "AudioManager.h"
+#include "Contador.h"
 
 #include "CollidersController.h"
 
@@ -83,15 +87,10 @@ GLuint textureCuboID;
 // Colliders
 std::map<std::string, std::tuple<AbstractModel::OBB, glm::mat4, glm::mat4>> collidersOBB;
 std::map<std::string, std::tuple<AbstractModel::SBB, glm::mat4, glm::mat4>> collidersSBB;
-int cuboContador = 0;
-bool cuboAgarrado = false;		 // Bandera que indica si el cubo ha sido agarrado
-float proximidadUmbral = 3.0f; // Umbral de proximidad para que el personaje agarre el cubo
-glm::vec3 posicionInicialCubo = glm::vec3(10.0f, 0.0f, 10.0f);
 
 // Modelo para renderizar la pantalla de introducción
 Box boxIntro;
 Box boxBarraVida;
-Box boxImagenCubo;
 Box Conteo;
 Shader shaderTexture;
 
@@ -473,7 +472,6 @@ void destroy()
 	shaderTexture.destroy();
 	boxIntro.destroy();
 	boxBarraVida.destroy();
-	boxImagenCubo.destroy();
 
 	// Basic objects Delete
 	skyboxSphere.destroy();
@@ -748,24 +746,32 @@ bool processInput(bool continueApplication, Player *jugador)
 
 bool processInputController(bool continueApplication, Player *jugador)
 {
-	if (exitApp || glfwWindowShouldClose(window) != 0)
+	if (glfwJoystickPresent(GLFW_JOYSTICK_1) != GL_TRUE)
 	{
-		return false;
+		std::cout << "No se detecto el control" << std::endl;
+		glfwPollEvents();
+		return continueApplication;
 	}
 
 	int count;
 	const unsigned char *buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
 
+	for (int i = 0; i < count; i++)
+	{
+		std::cout << "Botón " << i << ": " << (int)buttons[i] << std::endl;
+	}
+
 	if (!buttons)
 	{
-		std::cout << "No se detectó un control conectado.\n";
+		std::cout << "No se detecto el control\n";
+		glfwPollEvents();
 		return continueApplication;
 	}
 
-	const int DPAD_UP = 11;		 // Flecha arriba
+	const int DPAD_UP = 10;		 // Flecha arriba
+	const int DPAD_RIGHT = 11; // Flecha derecha
+	const int DPAD_LEFT = 12;	 // Flecha izquierda
 	const int DPAD_DOWN = 13;	 // Flecha abajo
-	const int DPAD_LEFT = 14;	 // Flecha izquierda
-	const int DPAD_RIGHT = 12; // Flecha derecha
 
 	if (buttons[DPAD_LEFT] == GLFW_PRESS)
 	{
@@ -799,22 +805,6 @@ bool processInputController(bool continueApplication, Player *jugador)
 	return continueApplication;
 }
 
-void renderContador(GLuint textureCuboID, FontTypeRendering::FontTypeRendering *modelText, const std::string &text)
-{
-	shaderTexture.setFloat("scaleUV", 0.0f);
-	shaderTexture.setMatrix4("projection", 1, false, glm::value_ptr(glm::mat4(1.0)));
-	shaderTexture.setMatrix4("view", 1, false, glm::value_ptr(glm::mat4(1.0)));
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, textureCuboID);
-	shaderTexture.setInt("outTexture", 0);
-	glm::mat4 boxMatrixModel = glm::mat4(1.0f);
-	boxMatrixModel = glm::translate(boxMatrixModel, glm::vec3(0.7f, 0.9f, 0.0f));
-	boxImagenCubo.render(boxMatrixModel);
-
-	// Renderiza el texto
-	modelText->render(text, 0.8f, 0.9f, 1.1f);
-}
-
 void applicationLoop()
 {
 	bool psi = true;
@@ -833,22 +823,50 @@ void applicationLoop()
 	camera->setDistanceFromTarget(distanceFromPlayer);
 
 	CollidersController *cc = new CollidersController(&shader);
+	Contador *contador = new Contador(&shaderTexture, modelText, textureCuboID);
+	AudioManager::playBackgroundMusic("../sounds/intro.wav");
 
 	Player jugador = Player(&shaderJugador, cc);
 	jugador.setTerrain(&island1);
 
-	Cube cubo = Cube("../models/cubo/cubo.fbx", &shaderMulLighting, cc, posicionInicialCubo);
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_real_distribution<float> dist(-100.0f, 100.0f);
+
+	Cube cubo = Cube("../models/cubo/cubo.fbx", &shaderMulLighting, cc, glm::vec3(10.0f, 0.0f, 10.0f), contador);
 	cubo.setTerrain(&island1);
 
-	glm::vec3 posicionEnemigo = glm::vec3(0.0f, 3.0f, 0.0f);
+	Cube cubo2 = Cube("../models/cubo/cubo.fbx", &shaderMulLighting, cc, glm::vec3(dist(gen), 0.0f, dist(gen)), contador);
+	cubo2.setTerrain(&island1);
+
+	Cube cubo3 = Cube("../models/cubo/cubo.fbx", &shaderMulLighting, cc, glm::vec3(dist(gen), 0.0f, dist(gen)), contador);
+	cubo3.setTerrain(&island1);
+
+	Cube cubo4 = Cube("../models/cubo/cubo.fbx", &shaderMulLighting, cc, glm::vec3(dist(gen), 0.0f, dist(gen)), contador);
+	cubo4.setTerrain(&island2);
+
+	Cube cubo5 = Cube("../models/cubo/cubo.fbx", &shaderMulLighting, cc, glm::vec3(dist(gen), 0.0f, dist(gen)), contador);
+	cubo5.setTerrain(&island2);
+
+	Cube cubo6 = Cube("../models/cubo/cubo.fbx", &shaderMulLighting, cc, glm::vec3(dist(gen), 0.0f, dist(gen)), contador);
+	cubo6.setTerrain(&island2);
+
+	Cube cubo7 = Cube("../models/cubo/cubo.fbx", &shaderMulLighting, cc, glm::vec3(dist(gen), 0.0f, dist(gen)), contador);
+	cubo7.setTerrain(&island3);
+
+	Cube cubo8 = Cube("../models/cubo/cubo.fbx", &shaderMulLighting, cc, glm::vec3(dist(gen), 0.0f, dist(gen)), contador);
+	cubo8.setTerrain(&island3);
+
+	Cube cubo9 = Cube("../models/cubo/cubo.fbx", &shaderMulLighting, cc, glm::vec3(dist(gen), 0.0f, dist(gen)), contador);
+	cubo9.setTerrain(&island3);
+
+	Cube cubo10 = Cube("../models/cubo/cubo.fbx", &shaderMulLighting, cc, glm::vec3(dist(gen), 0.0f, dist(gen)), contador);
+	cubo10.setTerrain(&island3);
+
 	// Creamos un enemigo
+	glm::vec3 posicionEnemigo = glm::vec3(0.0f, 3.0f, 0.0f);
 	Enemy enemigo = Enemy("../models/enemy/zombie.fbx", &shaderMulLighting, cc, posicionEnemigo, 15.0f);
 	enemigo.setTerrain(&island1);
-
-	// Enemy enemigo1 = Enemy("../models/enemy/zombie.fbx", &shaderMulLighting, cc, glm::vec3(10.0f, 10.0f, 20.0f), 15.0f);
-	// enemigo.setTerrain(&island1);
-
-	AudioManager::playBackgroundMusic("../sounds/intro.wav");
 
 	countdownStartTime = TimeManager::Instance().GetTime();
 
@@ -864,7 +882,7 @@ void applicationLoop()
 		TimeManager::Instance().CalculateFrameRate(false);
 		deltaTime = TimeManager::Instance().DeltaTime;
 		psi = processInput(true, &jugador);
-		psic = processInputController(true, &jugador);
+		// psic = processInputController(true, &jugador);
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -887,7 +905,7 @@ void applicationLoop()
 			boxIntro.render();
 
 			// Cambiar de imagen cada 7 segundos
-			if (currentTime - introStartTime > 0.1)
+			if (currentTime - introStartTime > TIEMPO_CARGA_INTRO)
 			{
 				currentIntroImage++;
 				introStartTime = currentTime;
@@ -1149,43 +1167,62 @@ void applicationLoop()
 
 		glActiveTexture(GL_TEXTURE0);
 
-		// Definir colisionadores para los círculos mágicos
-		// Definir colisionador para el personaje
+		/*	=========================================
+				===== Render Elementos del Juego ========
+				=========================================
+		*/
 
-		// Actualizar el temporizador de enfriamiento de teletransporte
-		/* if (teleportCooldown > 0.0f) {
-				teleportCooldown -= deltaTime;
-		} */
-		// Detectar colisiones
-		// if (teleportCooldown <= 0.0f) {
-		//}
-
-		/*****************************************
-		 * Render Jugador
-		 * **************************************/
 		cc->update(deltaTime);
 		jugador.update(deltaTime);
 		enemigo.update(deltaTime, jugador.posicion);
-		// enemigo1.update(deltaTime, jugador.posicion);
-		cubo.update(deltaTime, jugador.posicion, 2.0f);
+		if (isIsland1Active)
+		{
+			cubo.update(deltaTime, jugador.posicion);
+			cubo2.update(deltaTime, jugador.posicion);
+			cubo3.update(deltaTime, jugador.posicion);
+		} 
+
+		if(isIsland2Active)
+		{
+			cubo4.update(deltaTime, jugador.posicion);
+			cubo5.update(deltaTime, jugador.posicion);
+			cubo6.update(deltaTime, jugador.posicion);
+		}
+
+		if(isIsland3Active)
+		{
+			cubo7.update(deltaTime, jugador.posicion);
+			cubo8.update(deltaTime, jugador.posicion);
+			cubo9.update(deltaTime, jugador.posicion);
+			cubo10.update(deltaTime, jugador.posicion);
+		}
 
 		// Renderizamos al jugador
 		jugador.render();
 		enemigo.render();
-		// enemigo1.render();
 
-		glm::vec3 posicionCubo = cubo.getPosition();
-		float distancia = glm::distance(jugador.posicion, posicionCubo);
-		if (distancia < proximidadUmbral && !cuboAgarrado)
-		{
-			cuboAgarrado = true;
-			cuboContador++;
-		}
-		if (!cuboAgarrado)
+		if (isIsland1Active)
 		{
 			cubo.render();
+			cubo2.render();
+			cubo3.render();
 		}
-		std::string text = std::to_string(cuboContador) + " - 10";
+
+		if(isIsland2Active)
+		{
+			cubo4.render();
+			cubo5.render();
+			cubo6.render();
+		}
+
+		if(isIsland3Active)
+		{
+			cubo7.render();
+			cubo8.render();
+			cubo9.render();
+			cubo10.render();
+		}
+
 
 		// Para mostrar las colisiones
 		cc->render();
@@ -1252,7 +1289,7 @@ void applicationLoop()
 		boxMatrixModel = glm::translate(boxMatrixModel, glm::vec3(-0.7f, -0.85f, 0.0f));
 		boxBarraVida.render(boxMatrixModel);
 
-		renderContador(textureCuboID, modelText, text);
+		contador->render();
 		// Renderizar el texto con estilo más grande
 		modelText->render("tiempo", 0.0f, 0.9f, 1.5f);			// Título
 		modelText->render(countdownText, 0.0f, 0.8f, 1.5f); // Cuenta regresiva
@@ -1354,10 +1391,6 @@ void loadModels()
 	boxBarraVida.init();
 	boxBarraVida.setShader(&shaderTexture);
 	boxBarraVida.setScale(glm::vec3(0.5f, 0.15f, 0.00001f));
-
-	boxImagenCubo.init();
-	boxImagenCubo.setShader(&shaderTexture);
-	boxImagenCubo.setScale(glm::vec3(0.08f, 0.1f, 0.00001f));
 }
 
 void renderModel(Model &model, const glm::vec3 &position, const glm::vec3 &scale, float rotation, Terrain *terrain)

@@ -10,7 +10,8 @@
 #include "Headers/Terrain.h"
 #include "CollidersController.h"
 #include "Headers/FontTypeRendering.h"
-#include "Player.h" 
+#include "Player.h"
+#include "Contador.h"
 
 class Cube {
 private:
@@ -23,13 +24,15 @@ private:
     AbstractModel::OBB collider;       
     std::string colliderName;          
     bool cuboAgarrado;
+    Contador* contador;
+    glm::vec3 posicion;
 
 public:
-    Cube(const std::string& modelPath, Shader* shader, CollidersController* cc, glm::vec3 posicionInicial); 
+    Cube(const std::string& modelPath, Shader* shader, CollidersController* cc, glm::vec3 posicionInicial, Contador* c); 
     ~Cube();
 
     void setTerrain(Terrain* terrain); 
-    bool update(float dt, glm::vec3 targetPosition, float proximidadUmbral); 
+    void update(float dt, glm::vec3 targetPosition); 
     void render();                     
     void addOrUpdateColliders();       
     glm::mat4 getModelMatrix() const { return modelMatrix; }
