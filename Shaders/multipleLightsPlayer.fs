@@ -54,8 +54,8 @@ uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
 uniform vec3 viewPos;
 uniform sampler2D texture1;
 
-uniform vec3 damageColor;       // Color del daño (por ejemplo, rojo)
-uniform float blinkIntensity;   // Intensidad del parpadeo (0.0 = normal, 1.0 = totalmente rojo)
+uniform vec3 damageColor;       // Color del daño
+uniform float blinkIntensity;   // Intensidad del parpadeo
 
 vec3 calculateDirectionalLight(Light light, vec3 direction) {
     // Ambient
