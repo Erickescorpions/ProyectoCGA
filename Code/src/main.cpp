@@ -1468,7 +1468,7 @@ void loadModels()
 	// Box barra vida
 	boxBarraVida.init();
 	boxBarraVida.setShader(&shaderTexture);
-	boxBarraVida.setScale(glm::vec3(0.5f, 0.15f, 0.00001f));
+	boxBarraVida.setScale(glm::vec3(0.5f, 0.2f, 0.00001f));
 }
 
 void renderModel(Model &model, const glm::vec3 &position, const glm::vec3 &scale, float rotation, Terrain *terrain)
