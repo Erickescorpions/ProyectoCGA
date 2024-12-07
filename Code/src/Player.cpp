@@ -17,7 +17,7 @@ Player::Player(Shader *shader, CollidersController *cc)
     this->modelMatrix = glm::mat4(1.0f);
     this->modelMatrixCollider = glm::mat4(1.0f);
 
-    this->posicion = glm::vec3(30.0f, 3.0f, 0.0f);
+    this->posicion = glm::vec3(30.0f, 0.0f, 0.0f);
     this->recibioDanio = false;
     this->contadorTiempoRecuperacion = 0.0f;
 
@@ -115,7 +115,7 @@ void Player::setJugador(Personaje jugador)
     this->modelo.setAnimationIndex(2);
 
     this->modelMatrix = glm::mat4(1.0f);
-    //this->modelMatrix = glm::rotate(this->modelMatrix, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    this->modelMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 }
 
 void Player::setAccion(AccionJugador accion)

@@ -36,10 +36,10 @@ double TimeManager::CalculateFrameRate(bool writeToConsole = false) {
 		 */
 		startTime = CurrentTime;
 
-		/* // Si la bandera esta habilitada muestra los frames por segundo acutales.
+		// Si la bandera esta habilitada muestra los frames por segundo acutales.
 		if (writeToConsole)
 			fprintf(stderr, "Current Frames Per Second: %d\n",
-					int(framesPerSecond)); */
+					int(framesPerSecond));
 
 		// Se almacenan los FPS actuales, reiniciamos este en la siguiente linea
 		currentFPS = framesPerSecond;

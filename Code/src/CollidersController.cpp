@@ -214,7 +214,7 @@ bool CollidersController::verificarColision2(std::string collider1, std::string 
 
   if (it == this->collisionDetection2.end())
   {
-    std::cout << "No se encontró un collider llamado " << collider1 << ".\n";
+    //std::cout << "No se encontró un collider llamado " << collider1 << ".\n";
     return false;
   }
 

@@ -1,5 +1,5 @@
 #define _USE_MATH_DEFINES
-#define TIEMPO_CARGA_INTRO 10
+#define TIEMPO_CARGA_INTRO 1
 
 #include <cmath>
 // glew include
@@ -166,10 +166,8 @@ std::vector<glm::vec3> lamp1Position = {
 std::vector<float> lamp1Orientation = {
 		-17.0, -82.67, 23.70};
 
-// Posición de árboles ISLA 1
-#include <random>
 
-// Generar bosque en isla 1
+// Determinar Posicion de arboles de isla 1 de manera aleatoria
 std::vector<glm::vec3> generarBosque(int cantidadArboles, float minX, float maxX, float minZ, float maxZ) {
     std::vector<glm::vec3> posiciones;
     std::random_device rd;
@@ -199,7 +197,7 @@ std::vector<float> arbol4_Isla1_Orientation = {15.0, 25.0, 35.0, 45.0, 55.0, 65.
 std::vector<glm::vec3> arbol5_Isla1_Position = generarBosque(10, -90.0f, 90.0f, -90.0f, 90.0f);
 std::vector<float> arbol5_Isla1_Orientation = {15.0, 25.0, 35.0, 45.0, 55.0, 65.0};
 
-// Posición de árboles ISLA 2
+// Generar bosque para los árboles de la isla 2 (fijos)
 std::vector<glm::vec3> arbol1_Isla2_Position = {
 		glm::vec3(15.0, 0.0, -25.0),
 		glm::vec3(85.0, 0.0, -30.0),
@@ -259,8 +257,6 @@ void reshapeCallback(GLFWwindow *Window, int widthRes, int heightRes);
 void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mode);
 void mouseCallback(GLFWwindow *window, double xpos, double ypos);
 void mouseButtonCallback(GLFWwindow *window, int button, int state, int mod);
-
-// Firma del metodo para usar el scroll
 void scrollCallback(GLFWwindow *window, double xoffset, double yoffset);
 void init(int width, int height, std::string strTitle, bool bFullScreen);
 void destroy();
@@ -277,32 +273,41 @@ void renderArboles(Model &model, std::vector<glm::vec3> &positions, const std::v
 GLuint loadCubemapTextures(std::string fileNames[6]);
 void enforceMapLimits(glm::mat4 &modelMatrix);
 
-// Isla Activa inicialmente
+// Para Isla Activa inicialmente
 bool isIsland1Active = true;
 bool isIsland2Active = false;
 bool isIsland3Active = false;
-
 int activeSkybox = 1; // 1 para isla1, 2 para isla2, 3 para isla3
 
+// Para limites del mapa
 const float MAP_MIN_X = -95.0f; // Límite mínimo en X
 const float MAP_MAX_X = 95.0f;	// Límite máximo en X
 const float MAP_MIN_Z = -95.0f; // Límite mínimo en Z
 const float MAP_MAX_Z = 95.0f;	// Límite máximo en Z
 
+// Para introduccion
 GLuint introTextures[5];
 int currentIntroImage = 0;
 double introStartTime = 0.0;
 bool showIntro = true;
 bool seleccionPersonaje = false;
 
+// Para timer
 double countdownStartTime = 0.0;
-double countdownDuration = 600.0f; // 5 minutos
+double countdownDuration = 600.0f; // 10 minutos
 
+// Para game over
 bool gameOver = false;
-bool gameOverMusicPlayed = false;                // Para saber si el juego terminó
-float gameOverDuration = 8.0f;       // Duración de la pantalla final en segundos
-float gameOverTimer = 0.0f;          // Temporizador para la pantalla final
+bool gameOverMusicPlayed = false;
+float gameOverDuration = 8.0f;
+float gameOverTimer = 0.0f;
 bool gameWon = false; 
+
+// Para reiniciar
+bool isSelecting = false;
+int selectedOption = 0;
+GLuint textureRestartID;
+GLuint textureExitID;
 
 // float teleportCooldown = 0.0f;
 // float teleportCooldownTime = 2.0f; // 2 segundos de enfriamiento después de teletransportarse
@@ -357,7 +362,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen)
 	}
 
 	glViewport(0, 0, screenWidth, screenHeight);
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+	glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
@@ -470,7 +475,6 @@ void init(int width, int height, std::string strTitle, bool bFullScreen)
 
 	Texture lose("../textures/moriste.png");
 	GenerarTextura(lose, textureLoseID);
-
 	Texture win("../textures/ganaste.png");
 	GenerarTextura(win, textureWinID);
 
@@ -696,7 +700,7 @@ bool processInput(bool continueApplication, Player *jugador)
 			}
 			textureActivaID = textureCuboID;
 		}
-		else if (!presionarOpcion && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+		else if (!presionarOpcion && glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
 		{
 			presionarOpcion = true;
 			if (textureActivaID == textureInit1ID)
@@ -712,7 +716,7 @@ bool processInput(bool continueApplication, Player *jugador)
 				textureActivaID = textureInit1ID;
 			}
 		}
-		else if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE)
+		else if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE)
 			presionarOpcion = false;
 
 		// Important to return here to prevent other inputs from interfering
