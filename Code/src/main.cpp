@@ -294,7 +294,7 @@ bool seleccionPersonaje = false;
 
 // Para timer
 double countdownStartTime = 0.0;
-double countdownDuration = 600.0f; // 10 minutos
+double countdownDuration = 300.0f; // 10 minutos
 
 // Para game over
 bool gameOver = false;
